@@ -1,4 +1,4 @@
-package carrental.model;
+package carrental.api.car;
 
 public enum CarSegment {
     A('A'),
