@@ -22,6 +22,7 @@ public class Car {
     @Column(name = "model", nullable = false, length = 30)
     private String model;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "segment", nullable = false, length = 1)
     private CarSegment segment;
 
