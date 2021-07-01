@@ -1,4 +1,4 @@
-package carrental.api.car;
+package car_rental.api.car;
 
 import org.springframework.stereotype.Service;
 
@@ -22,7 +22,7 @@ public Car getCarById(long id){
         return carRepository.findById(id).orElse(null);
 }
 
-public Car createCar(Car car){
+public Car createOrUpdateCar(Car car){
         return carRepository.save(car);
 }
 
@@ -31,16 +31,12 @@ public int deleteCarById(long id){
         return carRepository.deleteCarById(id);
 }
 
-public Car updateCar(Car car){
-        return carRepository.save(car);
-}
-
 public List<Car> getAvailableCar(){
         return carRepository.getAvailableCars().orElse(null);
 }
 
-public List<Car> getNotAvailableCars(){
-        return carRepository.getNotAvailableCars().orElse(null);
+public List<Car> getUnavailableCars(){
+        return carRepository.getUnavailableCars().orElse(null);
 }
 
 }

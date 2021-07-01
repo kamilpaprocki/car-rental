@@ -1,4 +1,4 @@
-package carrental.api.car;
+package car_rental.api.car;
 
 import lombok.Data;
 import org.hibernate.annotations.ColumnDefault;
@@ -23,7 +23,7 @@ public class Car {
     private String model;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "segment", nullable = false, length = 1)
+    @Column(name = "segment", nullable = false)
     private CarSegment segment;
 
     @Column(name = "model_year", nullable = false, length = 4)

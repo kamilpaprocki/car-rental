@@ -1,7 +1,7 @@
-package carrental.api.rents;
+package car_rental.api.rents;
 
-import carrental.api.car.Car;
-import carrental.api.client.Client;
+import car_rental.api.car.Car;
+import car_rental.api.client.Client;
 import lombok.Data;
 import org.hibernate.annotations.ColumnDefault;
 

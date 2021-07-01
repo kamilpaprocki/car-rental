@@ -1,4 +1,4 @@
-package carrental.api.client;
+package car_rental.api.client;
 
 import lombok.Data;
 
