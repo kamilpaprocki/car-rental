@@ -56,6 +56,9 @@ public class CarRestController {
 
     @PostMapping("/cars")
     public ResponseEntity<Car> createOrUpdateCar(@RequestBody Car car){
+        if (car.getId() != null){
+            return new ResponseEntity<>(carService.createOrUpdateCar(car), HttpStatus.OK);
+        }
         return new ResponseEntity<>(carService.createOrUpdateCar(car), HttpStatus.CREATED);
     }
 
