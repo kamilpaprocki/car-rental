@@ -2,12 +2,14 @@ package car_rental.api.car;
 
 import lombok.Data;
 import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.DynamicInsert;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
 
 @Data
 @Entity
+@DynamicInsert
 @Table(name = "cars")
 public class Car {
 
@@ -36,7 +38,7 @@ public class Car {
     private BigDecimal pricePerDay;
 
     @Column(name = "is_available")
-    @ColumnDefault(value = "true")
-    private boolean isAvailable;
+    @ColumnDefault("true")
+    private Boolean isAvailable;
 
 }

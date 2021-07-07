@@ -47,7 +47,7 @@ public class PromotionCodeService {
         return promotionCodeRepository.findAll();
     }
 
-    public PromotionCode getPromotionCodeById(long id){
+    public PromotionCode getPromotionCodeById(Long id){
         return promotionCodeRepository.findById(id).orElse(null);
     }
 
@@ -60,7 +60,7 @@ public class PromotionCodeService {
     }
 
     @Transactional
-    public int deletePromotionCodeById(long id){
+    public int deletePromotionCodeById(Long id){
         return promotionCodeRepository.deletePromotionCodeById(id);
     }
 

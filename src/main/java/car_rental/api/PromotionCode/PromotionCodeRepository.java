@@ -19,7 +19,7 @@ public interface PromotionCodeRepository extends JpaRepository<PromotionCode, Lo
 
     @Modifying
     @Query(value = "DELETE FROM PromotionCode p WHERE p.id = :id")
-    int deletePromotionCodeById(long id);
+    int deletePromotionCodeById(Long id);
 
     @Query(value = "SELECT p FROM PromotionCode  p WHERE p.promotionCode = :promotionCode")
     Optional<PromotionCode> getPromotionCodeByCode(String promotionCode);

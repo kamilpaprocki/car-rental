@@ -26,8 +26,8 @@ public class PromotionCodeRestController {
         }
     }
 
-    @GetMapping("/promotioncodes/{status}")
-    public ResponseEntity<List<PromotionCode>> getAllPromotionCodes(@RequestParam (required = false) String promotionCodeStatus){
+    @GetMapping("/promotioncodes/")
+    public ResponseEntity<List<PromotionCode>> getAllPromotionCodes(@RequestParam(required = false) String promotionCodeStatus){
         List<PromotionCode> promotionCodes;
         if (promotionCodeStatus == null){
             promotionCodes = promotionCodeService.getAllPromotionCodes();
@@ -54,7 +54,7 @@ public class PromotionCodeRestController {
     }
 
     @GetMapping("/promotioncodes/{id}")
-    public ResponseEntity<PromotionCode> getPromotionCodeById(@PathVariable long id){
+    public ResponseEntity<PromotionCode> getPromotionCodeById(@PathVariable Long id){
         PromotionCode promotionCode = promotionCodeService.getPromotionCodeById(id);
         if (promotionCode == null){
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -62,7 +62,7 @@ public class PromotionCodeRestController {
         return new ResponseEntity<>(promotionCode, HttpStatus.OK);
     }
 
-    @GetMapping("/promotioncodes/{promotioncode}")
+    @GetMapping("/promotioncodes/code/{promotioncode}")
     public ResponseEntity<PromotionCode> getPromotionCodeByCode(@PathVariable String promotioncode){
         PromotionCode pC = promotionCodeService.getPromotionCodeByCode(promotioncode);
         if (pC == null){
@@ -83,7 +83,7 @@ public class PromotionCodeRestController {
     }
 
     @DeleteMapping("/promotioncodes/{id}/delete")
-    public ResponseEntity<PromotionCode> deletePromotionCodeById(@PathVariable long id){
+    public ResponseEntity<PromotionCode> deletePromotionCodeById(@PathVariable Long id){
         if (promotionCodeService.deletePromotionCodeById(id) > 0){
             return new ResponseEntity<>(HttpStatus.OK);
         }
