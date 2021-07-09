@@ -1,14 +1,10 @@
 package car_rental.api.rents;
 
 import car_rental.api.PromotionCode.PromotionCodeService;
-import car_rental.api.car.Car;
 import car_rental.api.car.CarService;
-import car_rental.api.client.Client;
 import car_rental.api.client.ClientService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import javax.persistence.Transient;
 import java.math.BigDecimal;
 import java.sql.Date;
 import java.util.List;
@@ -18,14 +14,10 @@ public class RentService {
 
     private final RentRepository rentRepository;
     private final PromotionCodeService promotionCodeService;
-    private final CarService carService;
-    private final ClientService clientService;
 
-    public RentService(RentRepository rentRepository, PromotionCodeService promotionCodeService, CarService carService, ClientService clientService) {
+    public RentService(RentRepository rentRepository, PromotionCodeService promotionCodeService) {
         this.rentRepository = rentRepository;
         this.promotionCodeService = promotionCodeService;
-        this.carService = carService;
-        this.clientService = clientService;
     }
 
     public Rent createRent(Rent rent, String promotionCode){

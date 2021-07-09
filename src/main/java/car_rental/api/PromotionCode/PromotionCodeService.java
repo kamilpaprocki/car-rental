@@ -1,8 +1,7 @@
 package car_rental.api.PromotionCode;
 
-import org.springframework.data.jpa.repository.Modifying;
-import org.springframework.stereotype.Service;
 
+import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.math.BigDecimal;
 import java.sql.Date;

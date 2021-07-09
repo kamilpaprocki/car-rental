@@ -49,10 +49,6 @@ public class PromotionCode {
         return id;
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
     public String getPromotionCode() {
         return promotionCode;
     }
