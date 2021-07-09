@@ -23,8 +23,8 @@ public class Rent {
     @Column(name = "id")
     private Long id;
 
-    @PrimaryKeyJoinColumn(name = "client_id")
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    @PrimaryKeyJoinColumn(name = "client_id")
     private Client client;
 
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
@@ -208,7 +208,7 @@ public class Rent {
         if (this == o) return true;
         if (!(o instanceof Rent)) return false;
         Rent rent = (Rent) o;
-        return getRentalDays() == rent.getRentalDays() && getOdomoterDistance() == rent.getOdomoterDistance() && getId().equals(rent.getId()) && getClient().equals(rent.getClient()) && getCar().equals(rent.getCar()) && getRentDate().equals(rent.getRentDate()) && getRentAddress().equals(rent.getRentAddress()) && getPlannedReturnDate().equals(rent.getPlannedReturnDate()) && Objects.equals(getReturnDate(), rent.getReturnDate()) && getReturnAddress().equals(rent.getReturnAddress()) && getRentalCost().equals(rent.getRentalCost()) && Objects.equals(getPromotionCode(), rent.getPromotionCode()) && getPaymentMethod() == rent.getPaymentMethod() && isFinished.equals(rent.isFinished);
+        return getRentalDays() == rent.getRentalDays() && getOdomoterDistance() == rent.getOdomoterDistance() && getId().equals(rent.getId()) && getClient().equals(rent.getClient()) && getCar().equals(rent.getCar()) && getRentDate().equals(rent.getRentDate()) && getRentAddress().equals(rent.getRentAddress()) && getPlannedReturnDate().equals(rent.getPlannedReturnDate()) && Objects.equals(getReturnDate(), rent.getReturnDate()) && getReturnAddress().equals(rent.getReturnAddress()) && Objects.equals(getRentalCost(), rent.getRentalCost()) && Objects.equals(getPromotionCode(), rent.getPromotionCode()) && getPaymentMethod() == rent.getPaymentMethod() && isFinished.equals(rent.isFinished);
     }
 
     @Override
