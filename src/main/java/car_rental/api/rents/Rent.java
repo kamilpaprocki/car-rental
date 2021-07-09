@@ -23,12 +23,12 @@ public class Rent {
     @Column(name = "id")
     private Long id;
 
+    @PrimaryKeyJoinColumn(name = "client_id")
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "client_id", referencedColumnName = "id")
     private Client client;
 
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "car_id", referencedColumnName = "id")
+    @PrimaryKeyJoinColumn(name = "car_id")
     private Car car;
 
     @Column(name = "rent_date", nullable = false)
@@ -59,8 +59,8 @@ public class Rent {
     @ColumnDefault("0")
     private long odomoterDistance;
 
-    @JoinColumn(name = "promotion_code_id")
-    @ManyToOne(cascade = CascadeType.MERGE)
+    @PrimaryKeyJoinColumn(name = "promotion_code_id")
+    @OneToOne(cascade = {CascadeType.MERGE}, orphanRemoval = true)
     private PromotionCode promotionCode;
 
     @Enumerated(EnumType.STRING)

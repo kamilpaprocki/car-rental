@@ -21,7 +21,7 @@ public class CarRestController {
         List<Car> cars;
         if("available".equals(carStatus)) {
             cars = carService.getAvailableCar();
-            if (cars == null){
+            if (cars.isEmpty()){
                 return new ResponseEntity<>(HttpStatus.NO_CONTENT);
             }
             return new ResponseEntity<>(cars, HttpStatus.OK);
@@ -29,7 +29,7 @@ public class CarRestController {
 
         if ("unavailable".equals(carStatus)){
             cars = carService.getUnavailableCars();
-            if (cars == null){
+            if (cars.isEmpty()){
                 return new ResponseEntity<>(HttpStatus.NO_CONTENT);
             }
             return new ResponseEntity<>(cars, HttpStatus.OK);
@@ -37,7 +37,7 @@ public class CarRestController {
 
         if (carStatus == null){
             cars = carService.getAllCars();
-            if (cars == null){
+            if (cars.isEmpty()){
                 return new ResponseEntity<>(HttpStatus.NO_CONTENT);
             }
             return new ResponseEntity<>(cars, HttpStatus.OK);

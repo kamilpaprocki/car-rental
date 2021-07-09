@@ -1,5 +1,6 @@
 package car_rental.api.car;
 
+
 import lombok.Data;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
@@ -12,6 +13,7 @@ import java.math.BigDecimal;
 @DynamicInsert
 @Table(name = "cars")
 public class Car {
+
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -40,5 +42,7 @@ public class Car {
     @Column(name = "is_available")
     @ColumnDefault("true")
     private Boolean isAvailable;
+
+
 
 }

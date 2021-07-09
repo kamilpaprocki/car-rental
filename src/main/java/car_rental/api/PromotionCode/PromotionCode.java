@@ -1,17 +1,16 @@
 package car_rental.api.PromotionCode;
 
-import lombok.Data;
+
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
-import org.springframework.boot.context.properties.bind.DefaultValue;
-
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.sql.Date;
+import java.util.Objects;
+
 
 @Entity
 @Table(name = "promotion_code")
-@Data
 @DynamicInsert
 public class PromotionCode {
 
@@ -45,4 +44,104 @@ public class PromotionCode {
     @ColumnDefault("true")
     private Boolean isActive;
 
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getPromotionCode() {
+        return promotionCode;
+    }
+
+    public void setPromotionCode(String promotionCode) {
+        this.promotionCode = promotionCode;
+    }
+
+    public Date getUsedDate() {
+        return usedDate;
+    }
+
+    public void setUsedDate(Date usedDate) {
+        this.usedDate = usedDate;
+    }
+
+    public Date getGenerateDate() {
+        return generateDate;
+    }
+
+    public void setGenerateDate(Date generateDate) {
+        this.generateDate = generateDate;
+    }
+
+    public Date getExpDate() {
+        return expDate;
+    }
+
+    public void setExpDate(Date expDate) {
+        this.expDate = expDate;
+    }
+
+    public BigDecimal getDiscount() {
+        return discount;
+    }
+
+    public void setDiscount(BigDecimal discount) {
+        this.discount = discount;
+    }
+
+    public boolean isMultipleUse() {
+        return isMultipleUse;
+    }
+
+    public void setMultipleUse(boolean multipleUse) {
+        isMultipleUse = multipleUse;
+    }
+
+    public int getAvailableUse() {
+        return availableUse;
+    }
+
+    public void setAvailableUse(int availableUse) {
+        this.availableUse = availableUse;
+    }
+
+    public Boolean getActive() {
+        return isActive;
+    }
+
+    public void setActive(Boolean active) {
+        isActive = active;
+    }
+
+    @Override
+    public String toString() {
+        return "PromotionCode{" +
+                "id=" + id +
+                ", promotionCode='" + promotionCode + '\'' +
+                ", usedDate=" + usedDate +
+                ", generateDate=" + generateDate +
+                ", expDate=" + expDate +
+                ", discount=" + discount +
+                ", isMultipleUse=" + isMultipleUse +
+                ", availableUse=" + availableUse +
+                ", isActive=" + isActive +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof PromotionCode)) return false;
+        PromotionCode that = (PromotionCode) o;
+        return isMultipleUse() == that.isMultipleUse() && getAvailableUse() == that.getAvailableUse() && getId().equals(that.getId()) && getPromotionCode().equals(that.getPromotionCode()) && Objects.equals(getUsedDate(), that.getUsedDate()) && getGenerateDate().equals(that.getGenerateDate()) && getExpDate().equals(that.getExpDate()) && getDiscount().equals(that.getDiscount()) && isActive.equals(that.isActive);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getId(), getPromotionCode(), getUsedDate(), getGenerateDate(), getExpDate(), getDiscount(), isMultipleUse(), getAvailableUse(), isActive);
+    }
 }

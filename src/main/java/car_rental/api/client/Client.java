@@ -1,7 +1,7 @@
 package car_rental.api.client;
 
-import lombok.Data;
 
+import lombok.Data;
 import javax.persistence.*;
 import java.sql.Date;
 

@@ -73,13 +73,13 @@ public class PromotionCodeService {
         if (pC == null){
             throw new WrongPromotionCodeException("Wrong promotion code");
         }
-        if (!pC.getIsActive()){
+        if (!pC.getActive()){
             throw new WrongPromotionCodeException("Used Promotion Code");
         }
         pC.setAvailableUse(pC.getAvailableUse()-1);
         if (pC.getAvailableUse() == 0){
             pC.setUsedDate(Date.valueOf(LocalDate.now()));
-            pC.setIsActive(false);
+            pC.setActive(false);
         }
         return promotionCodeRepository.save(pC);
     }
