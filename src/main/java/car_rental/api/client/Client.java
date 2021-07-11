@@ -24,7 +24,7 @@ public class Client {
     private String nationality;
 
     @OneToOne(cascade = CascadeType.ALL)
-    private Address address;
+    private ClientAddress clientAddress;
 
     @Column(name = "driving_license_number", nullable = false, length = 13)
     private String drivingLicenseNumber;
@@ -69,12 +69,12 @@ public class Client {
         this.nationality = nationality;
     }
 
-    public Address getAddress() {
-        return address;
+    public ClientAddress getClientAddress() {
+        return clientAddress;
     }
 
-    public void setAddress(Address address) {
-        this.address = address;
+    public void setAddress(ClientAddress clientAddress) {
+        this.clientAddress = clientAddress;
     }
 
     public String getDrivingLicenseNumber() {
@@ -122,12 +122,12 @@ public class Client {
         if (this == o) return true;
         if (!(o instanceof Client)) return false;
         Client client = (Client) o;
-        return getId().equals(client.getId()) && getName().equals(client.getName()) && getLastName().equals(client.getLastName()) && getNationality().equals(client.getNationality()) && getAddress().equals(client.getAddress()) && getDrivingLicenseNumber().equals(client.getDrivingLicenseNumber()) && getIdentityCardNumber().equals(client.getIdentityCardNumber()) && getPeselNumber().equals(client.getPeselNumber()) && getPhoneNumber().equals(client.getPhoneNumber()) && getBirthDate().equals(client.getBirthDate());
+        return getId().equals(client.getId()) && getName().equals(client.getName()) && getLastName().equals(client.getLastName()) && getNationality().equals(client.getNationality()) && getClientAddress().equals(client.getClientAddress()) && getDrivingLicenseNumber().equals(client.getDrivingLicenseNumber()) && getIdentityCardNumber().equals(client.getIdentityCardNumber()) && getPeselNumber().equals(client.getPeselNumber()) && getPhoneNumber().equals(client.getPhoneNumber()) && getBirthDate().equals(client.getBirthDate());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getId(), getName(), getLastName(), getNationality(), getAddress(), getDrivingLicenseNumber(), getIdentityCardNumber(), getPeselNumber(), getPhoneNumber(), getBirthDate());
+        return Objects.hash(getId(), getName(), getLastName(), getNationality(), getClientAddress(), getDrivingLicenseNumber(), getIdentityCardNumber(), getPeselNumber(), getPhoneNumber(), getBirthDate());
     }
 
     @Override
@@ -137,7 +137,7 @@ public class Client {
                 ", name='" + name + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", nationality='" + nationality + '\'' +
-                ", address=" + address +
+                ", clientAddress=" + clientAddress +
                 ", drivingLicenseNumber='" + drivingLicenseNumber + '\'' +
                 ", identityCardNumber='" + identityCardNumber + '\'' +
                 ", peselNumber='" + peselNumber + '\'' +

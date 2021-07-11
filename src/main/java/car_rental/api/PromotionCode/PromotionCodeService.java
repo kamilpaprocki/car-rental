@@ -72,7 +72,7 @@ public class PromotionCodeService {
         if (pC == null){
             throw new WrongPromotionCodeException("Wrong promotion code");
         }
-        if (!pC.getActive()){
+        if (!pC.isActive()){
             throw new WrongPromotionCodeException("Used Promotion Code");
         }
         pC.setAvailableUse(pC.getAvailableUse()-1);
