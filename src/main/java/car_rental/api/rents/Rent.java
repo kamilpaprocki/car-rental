@@ -175,7 +175,7 @@ public class Rent {
         this.paymentMethod = paymentMethod;
     }
 
-    public Boolean getFinished() {
+    public Boolean isFinished() {
         return isFinished;
     }
 

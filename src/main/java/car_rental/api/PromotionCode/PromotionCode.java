@@ -105,7 +105,7 @@ public class PromotionCode {
         this.availableUse = availableUse;
     }
 
-    public Boolean getActive() {
+    public Boolean isActive() {
         return isActive;
     }
 

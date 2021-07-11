@@ -5,7 +5,7 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "address")
-public class Address {
+public class ClientAddress {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -74,9 +74,9 @@ public class Address {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Address)) return false;
-        Address address = (Address) o;
-        return getId().equals(address.getId()) && getStreet().equals(address.getStreet()) && getStreetNumber().equals(address.getStreetNumber()) && Objects.equals(getApartmentNumber(), address.getApartmentNumber()) && getPostalCode().equals(address.getPostalCode()) && getCity().equals(address.getCity());
+        if (!(o instanceof ClientAddress)) return false;
+        ClientAddress clientAddress = (ClientAddress) o;
+        return getId().equals(clientAddress.getId()) && getStreet().equals(clientAddress.getStreet()) && getStreetNumber().equals(clientAddress.getStreetNumber()) && Objects.equals(getApartmentNumber(), clientAddress.getApartmentNumber()) && getPostalCode().equals(clientAddress.getPostalCode()) && getCity().equals(clientAddress.getCity());
     }
 
     @Override
