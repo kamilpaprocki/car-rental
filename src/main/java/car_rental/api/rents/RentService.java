@@ -1,8 +1,6 @@
 package car_rental.api.rents;
 
-import car_rental.api.PromotionCode.PromotionCodeService;
-import car_rental.api.car.CarService;
-import car_rental.api.client.ClientService;
+import car_rental.api.promotionCode.PromotionCodeService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
@@ -44,7 +42,10 @@ public class RentService {
     public Rent extendPlannedRentDays(Long id, int days){
         Rent rent = getRentById(id);
         if (rent == null){
-            throw new WrongRentException("Rent don't exist");
+            throw new WrongRentException("There is no rent with id: " + id);
+        }
+        if(days <= 0){
+            throw new WrongRentException("Days can not be less than zero. Input days: " + days);
         }
         rent.setPlannedReturnDate(Date.valueOf(rent.getPlannedReturnDate().toLocalDate().plusDays(days)));
         return rentRepository.save(rent);
@@ -53,10 +54,10 @@ public class RentService {
     public Rent updatePlannedReturnDate(Long id, String plannedReturnDate){
         Rent rent = getRentById(id);
         if (rent == null){
-            throw new WrongRentException("Rent don't exist");
+            throw new WrongRentException("There is no rent with id: " + id);
         }
         if (!plannedReturnDate.matches("\\d{4}[-]\\d{1,2}[-]\\d{1,2}")){
-            throw new WrongRentException("Wrong Data format");
+            throw new WrongRentException("Wrong Data format. Input planned return date: " + plannedReturnDate);
         }
         rent.setPlannedReturnDate(Date.valueOf(plannedReturnDate));
         return rentRepository.save(rent);

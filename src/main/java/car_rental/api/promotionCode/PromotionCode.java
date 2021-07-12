@@ -1,4 +1,4 @@
-package car_rental.api.PromotionCode;
+package car_rental.api.promotionCode;
 
 
 import org.hibernate.annotations.ColumnDefault;

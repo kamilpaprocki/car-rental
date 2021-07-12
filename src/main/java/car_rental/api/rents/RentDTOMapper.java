@@ -1,6 +1,6 @@
 package car_rental.api.rents;
 
-import car_rental.api.PromotionCode.PromotionCodeMapper;
+import car_rental.api.promotionCode.PromotionCodeMapper;
 import car_rental.api.car.CarMapper;
 import car_rental.api.client.ClientMapper;
 import car_rental.utils.DTOMapper;

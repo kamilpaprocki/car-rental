@@ -1,6 +1,6 @@
 package car_rental.api.rents;
 
-import car_rental.api.PromotionCode.PromotionCode;
+import car_rental.api.promotionCode.PromotionCode;
 import car_rental.api.car.Car;
 import car_rental.api.client.Client;
 import org.hibernate.annotations.*;
