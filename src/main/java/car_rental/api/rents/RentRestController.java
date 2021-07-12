@@ -1,6 +1,8 @@
 package car_rental.api.rents;
 
-import car_rental.api.PromotionCode.WrongPromotionCodeException;
+import car_rental.api.exceptions.BadRequestException;
+import car_rental.api.exceptions.RentNotFoundException;
+import car_rental.api.promotionCode.WrongPromotionCodeException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,13 +22,12 @@ public class RentRestController {
     @PostMapping("/rents")
     public ResponseEntity<Rent> createRent(@RequestBody Rent rent, @RequestParam(required = false) String promotionCode){
         try{
-
         if (promotionCode == null){
             return new ResponseEntity<>(rentService.createRent(rent), HttpStatus.CREATED);
         }
         return new ResponseEntity<>(rentService.createRent(rent, promotionCode), HttpStatus.CREATED);
     }catch(WrongPromotionCodeException e){
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            throw new BadRequestException(e.getMessage());
         }
     }
 
@@ -35,7 +36,7 @@ public class RentRestController {
     public ResponseEntity<List<Rent>> getAllRents(){
         List<Rent> rents = rentService.getAllRents();
         if (rents.isEmpty()){
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            throw new RentNotFoundException("There are no rents");
         }
         return new ResponseEntity<>(rents, HttpStatus.OK);
     }
@@ -44,7 +45,7 @@ public class RentRestController {
     public ResponseEntity<Rent> getRentById(@PathVariable Long id){
         Rent rent = rentService.getRentById(id);
         if (rent == null){
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            throw new RentNotFoundException("There is no rent with id: " + id);
         }
         return new ResponseEntity<>(rent, HttpStatus.OK);
     }
@@ -54,7 +55,7 @@ public class RentRestController {
         try{
             return new ResponseEntity<>(rentService.extendPlannedRentDays(id,days), HttpStatus.OK);
         }catch(WrongRentException e){
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            throw new RentNotFoundException(e.getMessage());
         }
     }
 
@@ -63,7 +64,7 @@ public class RentRestController {
         try{
             return new ResponseEntity<>(rentService.updatePlannedReturnDate(id, returndate), HttpStatus.OK);
         }catch(WrongRentException e){
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            throw new RentNotFoundException(e.getMessage());
         }
     }
 

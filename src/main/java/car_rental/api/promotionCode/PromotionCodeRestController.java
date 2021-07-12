@@ -1,5 +1,7 @@
-package car_rental.api.PromotionCode;
+package car_rental.api.promotionCode;
 
+import car_rental.api.exceptions.BadRequestException;
+import car_rental.api.exceptions.PromotionCodeNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,7 +24,7 @@ public class PromotionCodeRestController {
         try{
             return new ResponseEntity<>(promotionCodeService.createPromotionCode(discount, activeDays, isMultipleUse), HttpStatus.CREATED);
         }catch(WrongPromotionCodeException e){
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            throw new BadRequestException(e.getMessage());
         }
     }
 
@@ -32,32 +34,32 @@ public class PromotionCodeRestController {
         if (promotionCodeStatus == null){
             promotionCodes = promotionCodeService.getAllPromotionCodes();
             if (promotionCodes.isEmpty()){
-                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+                throw new PromotionCodeNotFoundException("There are no promotion codes");
             }
             return new ResponseEntity<>(promotionCodes, HttpStatus.OK);
         }
         if ("active".equals(promotionCodeStatus)){
             promotionCodes = promotionCodeService.getActivePromotionCodes();
             if (promotionCodes.isEmpty()){
-                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+                throw new PromotionCodeNotFoundException("There are no promotion codes active");
             }
             return new ResponseEntity<>(promotionCodes, HttpStatus.OK);
         }
         if ("inactive".equals(promotionCodeStatus)){
             promotionCodes = promotionCodeService.getInactivePromotionCodes();
             if (promotionCodes.isEmpty()){
-                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+                throw new PromotionCodeNotFoundException("There are no promotion codes inactive");
             }
             return new ResponseEntity<>(promotionCodes, HttpStatus.OK);
         }
-        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        throw new BadRequestException("Wrong input parameter. Input promotion code status: " + promotionCodeStatus);
     }
 
     @GetMapping("/promotioncodes/{id}")
     public ResponseEntity<PromotionCode> getPromotionCodeById(@PathVariable Long id){
         PromotionCode promotionCode = promotionCodeService.getPromotionCodeById(id);
         if (promotionCode == null){
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            throw new PromotionCodeNotFoundException("There is no promotion code with id: " + id);
         }
         return new ResponseEntity<>(promotionCode, HttpStatus.OK);
     }
@@ -66,7 +68,7 @@ public class PromotionCodeRestController {
     public ResponseEntity<PromotionCode> getPromotionCodeByCode(@PathVariable String promotioncode){
         PromotionCode pC = promotionCodeService.getPromotionCodeByCode(promotioncode);
         if (pC == null){
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            throw new PromotionCodeNotFoundException("There are no promotion code : " + promotioncode);
         }
         return new ResponseEntity<>(pC, HttpStatus.OK);
     }
@@ -77,7 +79,7 @@ public class PromotionCodeRestController {
             promotionCodeService.usePromotionCode(promotioncode);
         }
         catch (WrongPromotionCodeException e){
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            throw new PromotionCodeNotFoundException(e.getMessage());
         }
         return new ResponseEntity<>(HttpStatus.OK);
     }

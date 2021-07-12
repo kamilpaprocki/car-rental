@@ -1,5 +1,6 @@
 package car_rental.api.client;
 
+import car_rental.api.exceptions.ClientNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -28,7 +29,7 @@ public class ClientRestController {
     public ResponseEntity<List<Client>> getAllClients(){
         List<Client> clients = clientService.getAllClient();
         if(clients.isEmpty()){
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            throw new ClientNotFoundException("There are no clients");
         }
             return new ResponseEntity<>(clients, HttpStatus.OK);
     }
@@ -37,7 +38,7 @@ public class ClientRestController {
     public ResponseEntity<Client> getClientById(@RequestParam long id){
         Client client = clientService.getClientById(id);
         if (client == null){
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            throw new ClientNotFoundException("There is no client with id: " + id);
         }
         return new ResponseEntity<>(client, HttpStatus.OK);
     }

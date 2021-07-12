@@ -1,11 +1,6 @@
 package car_rental.api.rents;
 
-import car_rental.api.PromotionCode.PromotionCode;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.hibernate.annotations.ColumnDefault;
-
-import javax.persistence.*;
-import java.math.BigDecimal;
 
 public class RentDTO {
 

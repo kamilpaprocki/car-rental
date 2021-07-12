@@ -1,7 +1,7 @@
 package car_rental.api.client;
 
-import org.springframework.stereotype.Service;
 
+import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.util.List;
 

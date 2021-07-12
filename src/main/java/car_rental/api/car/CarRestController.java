@@ -1,5 +1,7 @@
 package car_rental.api.car;
 
+import car_rental.api.exceptions.BadRequestException;
+import car_rental.api.exceptions.CarNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,7 +24,7 @@ public class CarRestController {
         if("available".equals(carStatus)) {
             cars = carService.getAvailableCar();
             if (cars.isEmpty()){
-                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+                throw new CarNotFoundException("There are no cars available");
             }
             return new ResponseEntity<>(cars, HttpStatus.OK);
         }
@@ -30,7 +32,7 @@ public class CarRestController {
         if ("unavailable".equals(carStatus)){
             cars = carService.getUnavailableCars();
             if (cars.isEmpty()){
-                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+                throw new CarNotFoundException("There are no cars unavailable");
             }
             return new ResponseEntity<>(cars, HttpStatus.OK);
         }
@@ -38,18 +40,18 @@ public class CarRestController {
         if (carStatus == null){
             cars = carService.getAllCars();
             if (cars.isEmpty()){
-                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+                throw new CarNotFoundException("There are no cars");
             }
             return new ResponseEntity<>(cars, HttpStatus.OK);
         }
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        throw new BadRequestException("Wrong input parameter. Input car status: " + carStatus);
     }
 
     @GetMapping("/cars/{id}")
     public ResponseEntity<Car> getCarById(@RequestParam long id){
         Car car = carService.getCarById(id);
         if (car == null){
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            throw new CarNotFoundException("There is no car with id: " + id);
         }
         return new ResponseEntity<>(car, HttpStatus.OK);
     }

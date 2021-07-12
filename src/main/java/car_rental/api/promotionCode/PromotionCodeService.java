@@ -1,4 +1,4 @@
-package car_rental.api.PromotionCode;
+package car_rental.api.promotionCode;
 
 
 import org.springframework.stereotype.Service;
@@ -23,10 +23,13 @@ public class PromotionCodeService {
 
     public PromotionCode createPromotionCode(BigDecimal discount, int activeDays, boolean isMultipleUse){
         if (discount.compareTo(BigDecimal.ZERO) <=0){
-            throw new WrongPromotionCodeException("Wrong discount");
+            throw new WrongPromotionCodeException("Wrong discount. This can not be less than zero. Input discount: " + discount);
         }
         if (discount.compareTo(maxDiscount) > 0){
-            throw new WrongPromotionCodeException("Wrong discount");
+            throw new WrongPromotionCodeException("Wrong discount. This can not be more than max discount. Input discount: " + discount);
+        }
+        if (activeDays <= 0){
+            throw new WrongPromotionCodeException("Wrong Discount. Active days can not be less than zero. Input active days: " + activeDays);
         }
         PromotionCode promotionCode = new PromotionCode();
         promotionCode.setPromotionCode(UUID.randomUUID().toString());
@@ -70,10 +73,10 @@ public class PromotionCodeService {
     public PromotionCode usePromotionCode(String promotionCode){
         PromotionCode pC = getPromotionCodeByCode(promotionCode);
         if (pC == null){
-            throw new WrongPromotionCodeException("Wrong promotion code");
+            throw new WrongPromotionCodeException("Wrong promotion code. Input promotion code: " + promotionCode);
         }
         if (!pC.isActive()){
-            throw new WrongPromotionCodeException("Used Promotion Code");
+            throw new WrongPromotionCodeException("Used Promotion Code. Input promotion code: " + promotionCode);
         }
         pC.setAvailableUse(pC.getAvailableUse()-1);
         if (pC.getAvailableUse() == 0){
