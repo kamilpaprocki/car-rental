@@ -1,6 +1,6 @@
 package car_rental.api.promotionCode;
 
-import car_rental.utils.DTOMapper;
+import car_rental.api.utils.DTOMapper;
 
 public class PromotionCodeMapper implements DTOMapper<PromotionCode, PromotionCodeDTO> {
 

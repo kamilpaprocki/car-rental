@@ -1,5 +1,8 @@
 package car_rental.api.client;
 
+import org.springframework.stereotype.Component;
+
+@Component
 public class ClientDataFormatValidator {
 
     public boolean isCorrectFormatName(String name){

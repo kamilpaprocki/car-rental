@@ -1,6 +1,6 @@
 package car_rental.api.rents;
 
-import car_rental.utils.DTOMapper;
+import car_rental.api.utils.DTOMapper;
 
 public class AddressMapper implements DTOMapper<Address, AddressDTO> {
 
