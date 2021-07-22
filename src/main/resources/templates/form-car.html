@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org">
+<head th:replace="headers::default"></head>
+
+<body>
+
+
+<div class = "container-sm ">
+    <div class ="row">
+            <div class="col-sm-10 mt-5">
+
+            <form method="post" th:action="@{/add/car}" th:object="${car}">
+
+                <div class = "container-fluid" >
+                    <div class = "model-container">
+                    <div class="mb-3 row">
+                        <label for="brand" class="col-sm-2 col-form-label">Car brand: </label>
+                        <div class="col-sm-6">
+                            <input th:type="text" class="form-control" id="brand" placeholder="brand" name = "brand">
+                        </div>
+                    </div>
+                    <div class="mb-3 row">
+                        <label for="model" class="col-sm-2 col-form-label">Car model: </label>
+                        <div class="col-sm-6">
+                            <input th:type="text" class="form-control" id="model" placeholder="model" name = "model">
+                        </div>
+                    </div>
+
+                        <div class="mb-3 row">
+                            <label class="col-sm-2" >Car segment: </label>
+                            <div class="col-sm-6">
+
+                                    <div class="form-check form-check-inline " th:each="carSegment : ${T(car_rental.api.car.CarSegment).values()}">
+                                    <input type="radio" th:field = "*{segment}" th:value="${carSegment}" class = "form-check-input" name = "segment">
+                                    <label class = "col-sm-2 form-check-label" th:for = "${#ids.prev('segment')}" th:text="${carSegment}">carSegment</label>
+                                </div>
+
+                            </div>
+                        </div>
+
+                    <div class="mb-3 row">
+                        <label for="modelYear" class="col-sm-2 col-form-label">Car model year: </label>
+                        <div class="col-sm-6">
+                            <input th:type="number" class="form-control" id="modelYear" placeholder="model year" name = "modelYear">
+                        </div>
+                    </div>
+                    <div class="mb-3 row">
+                        <label for="currentOdometer" class="col-sm-2 col-form-label">Current odometer: </label>
+                        <div class="col-sm-6">
+                            <input th:type="number" class="form-control" id="currentOdometer" placeholder="odometer" name = "currentOdometer">
+                        </div>
+                    </div>
+                    <div class="mb-3 row">
+                        <label for="pricePerDay" class="col-sm-2 col-form-label">Rental price per day : </label>
+                        <div class="col-sm-6">
+                            <input th:type="number" class="form-control" id="pricePerDay" placeholder="price" name = "pricePerDay">
+                        </div>
+                    </div>
+                    </div>
+                    </div>
+
+                        <div class = "d-flex flex-row text-center">
+                            <div class="col-sm-1"></div>
+                        <button type="submit" class="col-sm-2 btn btn-success">Submit</button>
+                            <div class="col-sm-1"></div>
+                        <button type="reset" class="col-sm-2 btn btn-danger">Reset</button>
+                    </div>
+
+
+            </form>
+</div>
+    </div>
+</div>
+</body>
+</html>
