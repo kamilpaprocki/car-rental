@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org">
+<head th:replace="headers::default"></head>
+
+<body>
+<div th:replace="navigation :: nav"></div>
+
+<div class = "container-sm ">
+    <div class ="row">
+        <div class="col-sm-10 mt-5">
+
+    <table class="table table-striped table-hover" xmlns:th="https://www.thymeleaf.org" th:if="${carById != null}">
+        <thead>
+        <tr>
+            <th scope="col">Id</th>
+            <th scope="col">Brand</th>
+            <th scope="col">Model</th>
+            <th scope="col">Segment</th>
+            <th scope="col">Model year</th>
+            <th scope="col">Current Odometer</th>
+            <th scope="col">Price Per Day</th>
+            <th scope="col">Is available</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:value = "${carById}">
+            <td th:text = "${carById.getId()}"></td>
+            <td th:text = "${carById.getBrand()}"></td>
+            <td th:text = "${carById.getModel()}"></td>
+            <td th:text = "${carById.getSegment()}"></td>
+            <td th:text = "${carById.getModelYear()}"></td>
+            <td th:text = "${carById.getCurrentOdometer()}"></td>
+            <td th:text = "${carById.getPricePerDay()}"></td>
+            <td th:text = "${carById.getAvailable()}"></td>
+        </tr>
+        </tbody>
+    </table>
+
+            <table class="table table-striped table-hover" xmlns:th="https://www.thymeleaf.org" th:if="${allCars != null}">
+                <thead>
+                <tr>
+                    <th scope="col">Id</th>
+                    <th scope="col">Brand</th>
+                    <th scope="col">Model</th>
+                    <th scope="col">Segment</th>
+                    <th scope="col">Model year</th>
+                    <th scope="col">Current Odometer</th>
+                    <th scope="col">Price Per Day</th>
+                    <th scope="col">Is available</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each = "c : ${allCars}">
+                    <td th:text = "${c.getId()}"></td>
+                    <td th:text = "${c.getBrand()}"></td>
+                    <td th:text = "${c.getModel()}"></td>
+                    <td th:text = "${c.getSegment()}"></td>
+                    <td th:text = "${c.getModelYear()}"></td>
+                    <td th:text = "${c.getCurrentOdometer()}"></td>
+                    <td th:text = "${c.getPricePerDay()}"></td>
+                    <td th:text = "${c.getAvailable()}"></td>
+                </tr>
+                </tbody>
+            </table>
+
+            <table class="table table-striped table-hover" xmlns:th="https://www.thymeleaf.org" th:if="${availableCars != null}">
+                <thead>
+                <tr>
+                    <th scope="col">Id</th>
+                    <th scope="col">Brand</th>
+                    <th scope="col">Model</th>
+                    <th scope="col">Segment</th>
+                    <th scope="col">Model year</th>
+                    <th scope="col">Current Odometer</th>
+                    <th scope="col">Price Per Day</th>
+                    <th scope="col">Is available</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each = "aC : ${availableCars}">
+                    <td th:text = "${aC.getId()}"></td>
+                    <td th:text = "${aC.getBrand()}"></td>
+                    <td th:text = "${aC.getModel()}"></td>
+                    <td th:text = "${aC.getSegment()}"></td>
+                    <td th:text = "${aC.getModelYear()}"></td>
+                    <td th:text = "${aC.getCurrentOdometer()}"></td>
+                    <td th:text = "${aC.getPricePerDay()}"></td>
+                    <td th:text = "${aC.getAvailable()}"></td>
+                </tr>
+                </tbody>
+            </table>
+
+            <table class="table table-striped table-hover" xmlns:th="https://www.thymeleaf.org" th:if="${unavailableCars != null}">
+                <thead>
+                <tr>
+                    <th scope="col">Id</th>
+                    <th scope="col">Brand</th>
+                    <th scope="col">Model</th>
+                    <th scope="col">Segment</th>
+                    <th scope="col">Model year</th>
+                    <th scope="col">Current Odometer</th>
+                    <th scope="col">Price Per Day</th>
+                    <th scope="col">Is available</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each = "uC : ${unavailableCars}">
+                    <td th:text = "${uC.getId()}"></td>
+                    <td th:text = "${uC.getBrand()}"></td>
+                    <td th:text = "${uC.getModel()}"></td>
+                    <td th:text = "${uC.getSegment()}"></td>
+                    <td th:text = "${uC.getModelYear()}"></td>
+                    <td th:text = "${uC.getCurrentOdometer()}"></td>
+                    <td th:text = "${uC.getPricePerDay()}"></td>
+                    <td th:text = "${uC.getAvailable()}"></td>
+                </tr>
+                </tbody>
+            </table>
+
+
+</div>
+    </div>
+</div>
+</body>
+</html>

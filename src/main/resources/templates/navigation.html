@@ -1,7 +1,7 @@
 <div lang="en" xmlns:th="http://www.thymeleaf.org" th:fragment="nav">
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class = "container">
-        <a class="navbar-brand" href="#">Car Rental</a>
+        <a class="navbar-brand">Car Rental</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -9,21 +9,28 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav mr-auto">
                 <li class="nav-item active">
-                    <a class="nav-link" href="index.html" th:href="@{/home}">Home <span class="sr-only">(current)</span></a>
+                    <a class="nav-link" href="index.html" th:href="@{/home}">Home </a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="form-car.html" th:href="@{/car}">Car</a>
-                </li>
+
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" data-toggle="dropdown" >
-                        Dropdown
+                    <a class="nav-link dropdown-toggle" href="#" id="car" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Car
                     </a>
-                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <a class="dropdown-item" href="form-car.html">Add car</a>
-                        <a class="dropdown-item" href="#">Update car</a>
-                        <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="#">Something else here</a>
-                    </div>
+                    <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="car">
+                        <li><a class="dropdown-item" href="add-form-car.html" th:href="@{/add/car}">Add car</a></li>
+                        <li><a class="dropdown-item" href="update-car.html" th:href="@{/update/edit-car}">Update car</a></li>
+                        <li><a class="dropdown-item" href="get-car.html" th:href="@{/cars}">Get car</a></li>
+                        <li><a class="dropdown-item" href="delete-car.html" th:href="@{/delete/delete-car}">Delete car</a></li>
+                    </ul>
+                </li>
+
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="promocodes" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Promo codes
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="promocodes">
+
+                    </ul>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link disabled" href="#">Disabled</a>
