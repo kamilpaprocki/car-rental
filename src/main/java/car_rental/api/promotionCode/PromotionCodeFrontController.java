@@ -57,7 +57,7 @@ private final PromotionCodeService promotionCodeService;
     public String generatePromotionCode(RedirectAttributes redirectAttributes, @RequestParam BigDecimal discount, @RequestParam int activeDays, @RequestParam boolean isMultipleUse){
         PromotionCode promotionCode = promotionCodeService.createPromotionCode(discount, activeDays, isMultipleUse);
         redirectAttributes.addFlashAttribute("generatedPromotionCode", promotionCode.getPromotionCode());
-        return "redirect:/home?info=generated";
+        return "redirect:/generate/promotioncode?info=generated";
     }
 
     @GetMapping("/promotioncodes")
