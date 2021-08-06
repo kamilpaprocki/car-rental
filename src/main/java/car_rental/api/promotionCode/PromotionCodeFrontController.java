@@ -48,9 +48,8 @@ private final PromotionCodeService promotionCodeService;
     }
 
     @GetMapping("/generate/promotioncode")
-    public String getPromotionCodePage(Model model, @ModelAttribute("generatedPromotionCode") String generatedPromotionCode, @RequestParam(required = false) String info){
+    public String getPromotionCodePage(Model model, @ModelAttribute("generatedPromotionCode") String generatedPromotionCode){
         model.addAttribute("promotioncode", new PromotionCode());
-        model.addAttribute("info", info);
         return "generate-promotioncode";
     }
 
@@ -58,12 +57,23 @@ private final PromotionCodeService promotionCodeService;
     public String generatePromotionCode(RedirectAttributes redirectAttributes, @RequestParam BigDecimal discount, @RequestParam int activeDays, @RequestParam boolean isMultipleUse){
         PromotionCode promotionCode = promotionCodeService.createPromotionCode(discount, activeDays, isMultipleUse);
         redirectAttributes.addFlashAttribute("generatedPromotionCode", promotionCode.getPromotionCode());
-        return "redirect:/generate/promotioncode?info=generated";
+        return "redirect:/home?info=generated";
     }
 
     @GetMapping("/promotioncodes")
     public String getPromotionCodesPage(){
         return "get-promotion-code";
+    }
+
+    @GetMapping("/delete/delete-promotion-code")
+    public String getDeletePromotionCode(){
+        return "delete-promotion-code";
+    }
+
+    @GetMapping("/delete/promotioncode")
+    public String deletePromotionCodePage(@RequestParam(required = false) Long id){
+        promotionCodeService.deletePromotionCodeById(id);
+        return "redirect:/home?info=deleted";
     }
 
 
