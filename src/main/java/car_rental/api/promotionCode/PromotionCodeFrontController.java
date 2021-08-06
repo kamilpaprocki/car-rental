@@ -20,6 +20,34 @@ private final PromotionCodeService promotionCodeService;
     }
 
     @GetMapping("/promotioncode")
+    public String promotionCodePage(Model model,
+                                    @RequestParam(required = false) Long id,
+                                    @RequestParam(required = false) String promotioncode,
+                                    @RequestParam(required = false) String promotioncodestatus){
+        if ("allPromotionCodes".equals(promotioncodestatus)){
+            model.addAttribute("allPromotionCodes", promotionCodeService.getAllPromotionCodes());
+
+        }
+        if("activePromotionCodes".equals(promotioncodestatus)){
+            model.addAttribute("activePromotionCodes", promotionCodeService.getActivePromotionCodes());
+
+        }
+        if ("inactivePromotionCodes".equals(promotioncodestatus)){
+            model.addAttribute("inactivePromotionCodes", promotionCodeService.getInactivePromotionCodes());
+
+        }
+        if (id != null){
+            model.addAttribute("promotionCodeById", promotionCodeService.getPromotionCodeById(id));
+
+        }
+        if (promotioncode != null){
+            model.addAttribute("promotionCode", promotionCodeService.getPromotionCodeByCode(promotioncode));
+
+        }
+        return "promotioncodes";
+    }
+
+    @GetMapping("/generate/promotioncode")
     public String getPromotionCodePage(Model model, @ModelAttribute("generatedPromotionCode") String generatedPromotionCode, @RequestParam(required = false) String info){
         model.addAttribute("promotioncode", new PromotionCode());
         model.addAttribute("info", info);
@@ -30,7 +58,12 @@ private final PromotionCodeService promotionCodeService;
     public String generatePromotionCode(RedirectAttributes redirectAttributes, @RequestParam BigDecimal discount, @RequestParam int activeDays, @RequestParam boolean isMultipleUse){
         PromotionCode promotionCode = promotionCodeService.createPromotionCode(discount, activeDays, isMultipleUse);
         redirectAttributes.addFlashAttribute("generatedPromotionCode", promotionCode.getPromotionCode());
-        return "redirect:/promotioncode?info=generated";
+        return "redirect:/generate/promotioncode?info=generated";
+    }
+
+    @GetMapping("/promotioncodes")
+    public String getPromotionCodesPage(){
+        return "get-promotion-code";
     }
 
 
