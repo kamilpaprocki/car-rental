@@ -46,6 +46,10 @@ public class Car {
         return id;
     }
 
+    public void setId(Long id) {
+        this.id = id;
+    }
+
     public String getBrand() {
         return brand;
     }
@@ -98,8 +102,8 @@ public class Car {
         return isAvailable;
     }
 
-    public void setAvailable(Boolean available) {
-        isAvailable = available;
+    public void setAvailable(Boolean isAvailable) {
+        this.isAvailable = isAvailable;
     }
 
     @Override

@@ -1,0 +1,44 @@
+<div lang="en" xmlns:th="http://www.thymeleaf.org" th:fragment="nav">
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class = "container">
+        <a class="navbar-brand">Car Rental</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item active">
+                    <a class="nav-link" href="index.html" th:href="@{/home}">Home </a>
+                </li>
+
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="car" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Car
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="car">
+                        <li><a class="dropdown-item" href="add-form-car.html" th:href="@{/add/car}">Add car</a></li>
+                        <li><a class="dropdown-item" href="update-car.html" th:href="@{/update/edit-car}">Update car</a></li>
+                        <li><a class="dropdown-item" href="get-car.html" th:href="@{/cars}">Get car</a></li>
+                        <li><a class="dropdown-item" href="delete-car.html" th:href="@{/delete/delete-car}">Delete car</a></li>
+                    </ul>
+                </li>
+
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="promocodes" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Promo codes
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="promocodes">
+                        <li><a class="dropdown-item" href="generate-promotioncode.html" th:href="@{/generate/promotioncode}">Generate promotion code</a></li>
+                        <li><a class="dropdown-item" href="get-promotion-code.html" th:href="@{/promotioncodes}">Get promotion code</a></li>
+                        <li><a class="dropdown-item" href="delete-promotion-code.html" th:href="@{/delete/delete-promotion-code}">Delete promotion code</a></li>
+                    </ul>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link disabled" href="#">Disabled</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+</div>

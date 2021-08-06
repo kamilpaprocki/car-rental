@@ -1,6 +1,6 @@
 package car_rental.api.car;
 
-import car_rental.utils.DTOMapper;
+import car_rental.api.utils.DTOMapper;
 
 public class CarMapper implements DTOMapper<Car, CarDTO> {
     @Override

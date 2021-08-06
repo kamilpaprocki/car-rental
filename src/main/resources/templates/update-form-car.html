@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org">
+<head th:replace="headers::default"></head>
+
+<body>
+<div th:replace="navigation :: nav"></div>
+
+<div class = "container-sm ">
+    <div class ="row">
+            <div class="col-sm-10 mt-5">
+
+            <form method="post" th:action="@{/update/car}" th:object="${carById}">
+
+                <div class = "container-fluid" >
+                    <div class = "model-container">
+                    <div class="mb-3 row">
+                        <label for="brand" class="col-sm-2 col-form-label" >Car id: </label>
+                        <div class="col-sm-6">
+                            <input th:type="text" class="form-control" id="carId" placeholder="brand" name = "id" th:value ="${carById.getId()}" readonly>
+                        </div>
+                    </div>
+                        <div class="mb-3 row">
+                        <label for="brand" class="col-sm-2 col-form-label" >Car brand: </label>
+                        <div class="col-sm-6">
+                            <input th:type="text" class="form-control" id="brand" placeholder="brand" name = "brand" th:value ="${carById.getBrand()}">
+                        </div>
+                    </div>
+                    <div class="mb-3 row">
+                        <label for="model" class="col-sm-2 col-form-label">Car model: </label>
+                        <div class="col-sm-6">
+                            <input th:type="text" class="form-control" id="model" placeholder="model" name = "model" th:value ="${carById.getModel()}">
+                        </div>
+                    </div>
+
+                        <div class="mb-3 row">
+                            <label class="col-sm-2" >Car segment: </label>
+                            <div class="col-sm-6">
+
+                                    <div class="form-check form-check-inline " th:each="carSegment : ${T(car_rental.api.car.CarSegment).values()}">
+                                    <input type="radio" th:field = "*{segment}" th:value="${carSegment}" class = "form-check-input" name = "segment">
+                                    <label class = "col-sm-2 form-check-label" th:for = "${#ids.prev('segment')}" th:text="${carSegment}">carSegment</label>
+                                </div>
+
+                            </div>
+                        </div>
+
+                    <div class="mb-3 row">
+                        <label for="modelYear" class="col-sm-2 col-form-label">Car model year: </label>
+                        <div class="col-sm-6">
+                            <input th:type="number" class="form-control" id="modelYear" placeholder="model year" name = "modelYear" th:value ="${carById.getModelYear()}">
+                        </div>
+                    </div>
+                    <div class="mb-3 row">
+                        <label for="currentOdometer" class="col-sm-2 col-form-label">Current odometer: </label>
+                        <div class="col-sm-6">
+                            <input th:type="number" class="form-control" id="currentOdometer" placeholder="odometer" name = "currentOdometer" th:value ="${carById.getCurrentOdometer()}">
+                        </div>
+                    </div>
+                    <div class="mb-3 row">
+                        <label for="pricePerDay" class="col-sm-2 col-form-label">Rental price per day : </label>
+                        <div class="col-sm-6">
+                            <input th:type="number" class="form-control" id="pricePerDay" placeholder="price" name = "pricePerDay" th:value ="${carById.getPricePerDay()}">
+                        </div>
+                    </div>
+                        <div class="mb-3 row">
+                            <label class="col-sm-2" >Is available? </label>
+                            <div class="col-sm-6">
+
+                                <div class="form-group">
+                                    <input type="radio" class = "form-check-input" id = "available" name = "available" value="1" th:checked="${carById.getAvailable() == true} ? ${true}">
+                                    <label class = "col-sm-2 form-check-label" for = "available" >Yes</label>
+                                    <input type="radio" class = "form-check-input" id = "unavailable" name = "available" value="0" th:checked="${carById.getAvailable() == false}  ? ${true}">
+                                    <label class = "col-sm-2 form-check-label" for = "unavailable" >No</label>
+                                </div>
+
+                            </div>
+                        </div>
+
+                    </div>
+                    </div>
+
+                        <div class = "d-flex flex-row text-center">
+                            <div class="col-sm-1"></div>
+                        <button type="submit" class="col-sm-2 btn btn-success">Submit</button>
+                            <div class="col-sm-1"></div>
+                        <button type="reset" class="col-sm-2 btn btn-danger">Reset</button>
+                    </div>
+
+
+            </form>
+</div>
+    </div>
+</div>
+</body>
+</html>
