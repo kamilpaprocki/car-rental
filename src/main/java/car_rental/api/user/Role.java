@@ -1,6 +1,7 @@
 package car_rental.api.user;
 
 import javax.persistence.*;
+import java.util.Collection;
 import java.util.Objects;
 
 @Entity
@@ -15,6 +16,9 @@ public class Role {
     @Column(name = "role")
     private String role;
 
+    @ManyToMany(mappedBy = "roles")
+    private Collection<UserApp> users;
+
     public Long getId() {
         return id;
     }
@@ -25,6 +29,13 @@ public class Role {
 
     public void setRole(String role) {
         this.role = role;
+    }
+
+    public Role(String role) {
+        this.role = role;
+    }
+
+    public Role() {
     }
 
     @Override

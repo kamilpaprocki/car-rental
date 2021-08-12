@@ -5,6 +5,13 @@
 <body>
 <div th:replace="navigation :: nav"></div>
 
+<div class="container">
+
+<div th:if="${info == 'registered'}">
+    <div class="alert alert-success" >You are successfully registered.</div>
+</div>
+
+</div>
 
 </body>
 </html>

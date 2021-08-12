@@ -27,9 +27,9 @@ public class UserApp {
     private Date registredDate;
 
     @Column(name = "is_active")
-    private boolean is_active;
+    private boolean isActive;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles;
 
@@ -42,7 +42,7 @@ public class UserApp {
         this.email = u.email;
         this.password = u.password;
         this.registredDate = u.registredDate;
-        this.is_active = u.is_active;
+        this.isActive = u.isActive;
         this.roles = u.roles;
     }
 
@@ -82,12 +82,12 @@ public class UserApp {
         this.registredDate = registredDate;
     }
 
-    public boolean isIs_active() {
-        return is_active;
+    public boolean isIsActive() {
+        return isActive;
     }
 
-    public void setIs_active(boolean is_active) {
-        this.is_active = is_active;
+    public void setIsActive(boolean is_active) {
+        this.isActive = is_active;
     }
 
     public Set<Role> getRoles() {
@@ -106,7 +106,7 @@ public class UserApp {
                 ", email='" + email + '\'' +
                 ", password='" + password + '\'' +
                 ", registredDate=" + registredDate +
-                ", is_active=" + is_active +
+                ", is_active=" + isActive +
                 ", roles=" + roles +
                 '}';
     }
@@ -116,11 +116,11 @@ public class UserApp {
         if (this == o) return true;
         if (!(o instanceof UserApp)) return false;
         UserApp userApp = (UserApp) o;
-        return isIs_active() == userApp.isIs_active() && getId().equals(userApp.getId()) && getUsername().equals(userApp.getUsername()) && getEmail().equals(userApp.getEmail()) && getPassword().equals(userApp.getPassword()) && getRegistredDate().equals(userApp.getRegistredDate()) && getRoles().equals(userApp.getRoles());
+        return isIsActive() == userApp.isIsActive() && getId().equals(userApp.getId()) && getUsername().equals(userApp.getUsername()) && getEmail().equals(userApp.getEmail()) && getPassword().equals(userApp.getPassword()) && getRegistredDate().equals(userApp.getRegistredDate()) && getRoles().equals(userApp.getRoles());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getId(), getUsername(), getEmail(), getPassword(), getRegistredDate(), isIs_active(), getRoles());
+        return Objects.hash(getId(), getUsername(), getEmail(), getPassword(), getRegistredDate(), isIsActive(), getRoles());
     }
 }
