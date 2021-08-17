@@ -1,5 +1,7 @@
 package car_rental.api.user;
 
+import car_rental.api.client.Client;
+
 import javax.persistence.*;
 import java.sql.Date;
 import java.util.Objects;
@@ -29,9 +31,12 @@ public class UserApp {
     @Column(name = "is_active")
     private boolean isActive;
 
-    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @ManyToMany(cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
     @JoinTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    private Client client;
 
     public UserApp() {
     }
@@ -96,6 +101,14 @@ public class UserApp {
 
     public void setRoles(Set<Role> roles) {
         this.roles = roles;
+    }
+
+    public Client getClient() {
+        return client;
+    }
+
+    public void setClient(Client client) {
+        this.client = client;
     }
 
     @Override

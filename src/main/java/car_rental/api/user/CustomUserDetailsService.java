@@ -1,5 +1,6 @@
 package car_rental.api.user;
 
+import car_rental.api.client.Client;
 import car_rental.api.exceptions.UserAlreadyExistException;
 import com.google.common.collect.Sets;
 import org.springframework.context.annotation.Bean;
@@ -49,6 +50,11 @@ public class CustomUserDetailsService implements UserDetailsService {
         userApp.setRegistredDate(Date.valueOf(LocalDate.now()));
         userApp.setIsActive(true);
         userApp.setRoles(Sets.newHashSet(roleService.createRoleIfNotFound("ROLE_USER")));
+        return userApp;
+    }
+
+    public UserApp addClientInfo(UserApp userApp, Client client){
+        userApp.setClient(client);
         return userRepository.save(userApp);
     }
 

@@ -40,8 +40,8 @@
                         <div class="mb-2 row  col-sm-6">
                             <label for="confirmPassword" class="col-sm-6 col-form-label fw-bold">Confirm password: </label>
                                 <input th:type="password" class="form-control" id="confirmPassword" placeholder="password" name = "confirmPassword">
-                            <p class="text-danger" th:if="${#fields.hasGlobalErrors()}" th:each="error : ${#fields.errors('global')}" th:text="${error}">Validation error</p>
                         </div>
+                        <p class="text-danger" th:if="${#fields.hasGlobalErrors()}" th:each="error : ${#fields.errors('global')}" th:text="${error}">Validation error</p>
 
 
                             </div>

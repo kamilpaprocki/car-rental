@@ -2,25 +2,45 @@ package car_rental.api.client;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
+
 public class ClientAddressDTO {
 
     @JsonProperty(value = "street")
+    @NotEmpty(message = "This can not be empty.")
+    @NotNull(message = "This can not be null.")
+    @Pattern(regexp = "(\\p{L}|\\d)+([ '-](\\p{L}|\\d)+)*", message = "Not allowed special characters/digits.")
     private String street;
 
     @JsonProperty(value = "street_number")
+    @NotEmpty(message = "This can not be empty.")
+    @NotNull(message = "This can not be null.")
+    @Pattern(regexp = "\\d+[a-zA-Z]?", message = "Not allowed special characters/digits. Street number must be start with number.")
     private String streetNumber;
 
     @JsonProperty(value = "apartment_number")
+    @Pattern(regexp = "(\\d)*|([a-zA-Z])?", message = "Not allowed special characters/digits. Apartment number must be a number or character.")
     private String apartmentNumber;
 
     @JsonProperty(value = "postal_code")
+    @NotEmpty(message = "This can not be empty.")
+    @NotNull(message = "This can not be null.")
+    @Pattern(regexp = "\\d{2}[-]\\d{3}", message = "Wrong input format. Correct format: 11-111")
     private String postalCode;
 
     @JsonProperty(value = "city")
+    @NotEmpty(message = "This can not be empty.")
+    @NotNull(message = "This can not be null.")
+    @Pattern(regexp = "(\\p{L}|\\d)+([ '-]\\p{L}+)*", message = "Not allowed special characters/digits.")
     private String city;
 
     public static ClientAddressDTOBuilder builder() {
         return new ClientAddressDTOBuilder();
+    }
+
+    public ClientAddressDTO() {
     }
 
     private ClientAddressDTO(ClientAddressDTOBuilder b) {
@@ -87,6 +107,26 @@ public class ClientAddressDTO {
 
     public String getCity() {
         return city;
+    }
+
+    public void setStreet(String street) {
+        this.street = street;
+    }
+
+    public void setStreetNumber(String streetNumber) {
+        this.streetNumber = streetNumber;
+    }
+
+    public void setApartmentNumber(String apartmentNumber) {
+        this.apartmentNumber = apartmentNumber;
+    }
+
+    public void setPostalCode(String postalCode) {
+        this.postalCode = postalCode;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
     }
 
     @Override
