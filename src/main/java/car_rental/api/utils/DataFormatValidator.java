@@ -25,7 +25,7 @@ public class DataFormatValidator implements ConstraintValidator<DateFormat, Clie
     public boolean isValid(ClientDTO clientDTO, ConstraintValidatorContext constraintValidatorContext) {
 
         boolean isValid;
-        java.text.DateFormat df = new SimpleDateFormat("dd.MM.yyyy");
+        java.text.DateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
 
         if (clientDTO.getBirthDate().isEmpty()) {
             isValid = false;
@@ -37,8 +37,8 @@ public class DataFormatValidator implements ConstraintValidator<DateFormat, Clie
 
 
         try{
-            df.setLenient(false);
-            Date birthDate = df.parse(clientDTO.getBirthDate());
+            dateFormat.setLenient(false);
+            Date birthDate = dateFormat.parse(clientDTO.getBirthDate());
             Date now = Calendar.getInstance().getTime();
             if (!birthDate.before(now)){
                 isValid = false;
@@ -48,8 +48,8 @@ public class DataFormatValidator implements ConstraintValidator<DateFormat, Clie
                 return isValid;
             }
 
-            LocalDate bD = birthDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-            if(Period.between(bD, LocalDate.now()).getYears() <18 ){
+            LocalDate localBirthDate = birthDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+            if(Period.between(localBirthDate, LocalDate.now()).getYears() <18 ){
                 isValid = false;
                 constraintValidatorContext.disableDefaultConstraintViolation();
                 message = "You must be 18 years old.";

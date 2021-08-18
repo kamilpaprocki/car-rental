@@ -2,6 +2,7 @@ package car_rental.api.user;
 
 import car_rental.api.client.Client;
 import car_rental.api.exceptions.UserAlreadyExistException;
+import car_rental.api.exceptions.WrongArgumentException;
 import com.google.common.collect.Sets;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -59,10 +60,16 @@ public class CustomUserDetailsService implements UserDetailsService {
     }
 
     private boolean usernameExist(String username){
+        if(username.isEmpty()) {
+            throw new WrongArgumentException("Email cannot be empty.");
+        }
         return userRepository.findByUsername(username).isEmpty();
     }
 
     private boolean emailExist(String email){
+        if(email.isEmpty()) {
+            throw new WrongArgumentException("Email cannot be empty.");
+        }
         return userRepository.findByEmail(email).isEmpty();
     }
 
