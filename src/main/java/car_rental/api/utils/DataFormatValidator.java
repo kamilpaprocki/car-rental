@@ -1,6 +1,6 @@
 package car_rental.api.utils;
 
-import car_rental.api.client.ClientDTO;
+import car_rental.api.userDetails.UserDetailsDTO;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
@@ -12,7 +12,7 @@ import java.time.ZoneId;
 import java.util.Calendar;
 import java.util.Date;
 
-public class DataFormatValidator implements ConstraintValidator<DateFormat, ClientDTO> {
+public class DataFormatValidator implements ConstraintValidator<DateFormat, UserDetailsDTO> {
 
     private String message;
 
@@ -22,12 +22,12 @@ public class DataFormatValidator implements ConstraintValidator<DateFormat, Clie
     }
 
     @Override
-    public boolean isValid(ClientDTO clientDTO, ConstraintValidatorContext constraintValidatorContext) {
+    public boolean isValid(UserDetailsDTO userDetailsDTO, ConstraintValidatorContext constraintValidatorContext) {
 
         boolean isValid;
         java.text.DateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
 
-        if (clientDTO.getBirthDate().isEmpty()) {
+        if (userDetailsDTO.getBirthDate().isEmpty()) {
             isValid = false;
             constraintValidatorContext.disableDefaultConstraintViolation();
             message = "This can not be empty.";
@@ -38,7 +38,7 @@ public class DataFormatValidator implements ConstraintValidator<DateFormat, Clie
 
         try{
             dateFormat.setLenient(false);
-            Date birthDate = dateFormat.parse(clientDTO.getBirthDate());
+            Date birthDate = dateFormat.parse(userDetailsDTO.getBirthDate());
             Date now = Calendar.getInstance().getTime();
             if (!birthDate.before(now)){
                 isValid = false;

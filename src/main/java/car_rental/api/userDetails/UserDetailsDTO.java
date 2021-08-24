@@ -1,4 +1,4 @@
-package car_rental.api.client;
+package car_rental.api.userDetails;
 
 import car_rental.api.utils.DateFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -8,7 +8,7 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Pattern;
 
 @DateFormat
-public class ClientDTO {
+public class UserDetailsDTO {
 
     @JsonProperty(value = "name")
     @NotEmpty(message = "This can not be empty.")
@@ -27,7 +27,7 @@ public class ClientDTO {
 
     @JsonProperty(value = "address")
     @Valid
-    private ClientAddressDTO address;
+    private UserDetailsAddressDTO addressDTO;
 
     @JsonProperty(value = "driving_license_number")
     @NotEmpty(message = "This can not be empty.")
@@ -52,14 +52,14 @@ public class ClientDTO {
     @JsonProperty(value = "birth_date")
     private String birthDate;
 
-    public ClientDTO() {
+    public UserDetailsDTO() {
     }
 
-    private ClientDTO(ClientDTOBuilder b) {
+    private UserDetailsDTO(ClientDTOBuilder b) {
         this.name = b.name;
         this.lastName = b.lastName;
         this.nationality = b.nationality;
-        this.address = b.address;
+        this.addressDTO = b.address;
         this.drivingLicenseNumber = b.drivingLicenseNumber;
         this.identityCardNumber = b.identityCardNumber;
         this.peselNumber = b.peselNumber;
@@ -79,8 +79,8 @@ public class ClientDTO {
         return nationality;
     }
 
-    public ClientAddressDTO getAddress() {
-        return address;
+    public UserDetailsAddressDTO getAddressDTO() {
+        return addressDTO;
     }
 
     public String getDrivingLicenseNumber() {
@@ -115,8 +115,8 @@ public class ClientDTO {
         this.nationality = nationality;
     }
 
-    public void setAddress(ClientAddressDTO address) {
-        this.address = address;
+    public void setAddressDTO(UserDetailsAddressDTO addressDTO) {
+        this.addressDTO = addressDTO;
     }
 
     public void setDrivingLicenseNumber(String drivingLicenseNumber) {
@@ -148,7 +148,7 @@ public class ClientDTO {
         private String name;
         private String lastName;
         private String nationality;
-        private ClientAddressDTO address;
+        private UserDetailsAddressDTO address;
         private String drivingLicenseNumber;
         private String identityCardNumber;
         private String peselNumber;
@@ -170,7 +170,7 @@ public class ClientDTO {
             return this;
         }
 
-        public ClientDTOBuilder address(ClientAddressDTO address){
+        public ClientDTOBuilder address(UserDetailsAddressDTO address){
             this.address = address;
             return this;
         }
@@ -200,8 +200,8 @@ public class ClientDTO {
             return this;
         }
 
-        public ClientDTO build(){
-            return new ClientDTO(this);
+        public UserDetailsDTO build(){
+            return new UserDetailsDTO(this);
         }
     }
 
@@ -211,7 +211,7 @@ public class ClientDTO {
                 "name='" + name + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", nationality='" + nationality + '\'' +
-                ", address='" + address + '\'' +
+                ", address='" + addressDTO + '\'' +
                 ", drivingLicenseNumber='" + drivingLicenseNumber + '\'' +
                 ", identityCardNumber='" + identityCardNumber + '\'' +
                 ", peselNumber='" + peselNumber + '\'' +

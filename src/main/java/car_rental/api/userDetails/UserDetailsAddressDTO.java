@@ -1,4 +1,4 @@
-package car_rental.api.client;
+package car_rental.api.userDetails;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -6,7 +6,7 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
-public class ClientAddressDTO {
+public class UserDetailsAddressDTO {
 
     @JsonProperty(value = "street")
     @NotEmpty(message = "This can not be empty.")
@@ -40,10 +40,10 @@ public class ClientAddressDTO {
         return new ClientAddressDTOBuilder();
     }
 
-    public ClientAddressDTO() {
+    public UserDetailsAddressDTO() {
     }
 
-    private ClientAddressDTO(ClientAddressDTOBuilder b) {
+    private UserDetailsAddressDTO(ClientAddressDTOBuilder b) {
         this.street = b.street;
         this.apartmentNumber = b.apartmentNumber;
         this.postalCode = b.postalCode;
@@ -83,8 +83,8 @@ public class ClientAddressDTO {
             return this;
         }
 
-        public ClientAddressDTO build() {
-            return new ClientAddressDTO(this);
+        public UserDetailsAddressDTO build() {
+            return new UserDetailsAddressDTO(this);
 
         }
     }

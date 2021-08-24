@@ -1,11 +1,10 @@
 package car_rental.api.user;
 
-import car_rental.api.client.Client;
+import car_rental.api.userDetails.UserDetails;
 import car_rental.api.exceptions.UserAlreadyExistException;
 import car_rental.api.exceptions.WrongArgumentException;
 import com.google.common.collect.Sets;
 import org.springframework.context.annotation.Bean;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -28,7 +27,7 @@ public class CustomUserDetailsService implements UserDetailsService {
         this.roleService = roleService;
     }
 
-    public UserDetails loadUserByUsername(String username){
+    public org.springframework.security.core.userdetails.UserDetails loadUserByUsername(String username){
         Optional<UserApp> userApp = userRepository.findByUsername(username);
         userApp.orElseThrow(() -> new UsernameNotFoundException("User not found"));
         return userApp.map(CustomUserDetails::new).get();
@@ -54,8 +53,8 @@ public class CustomUserDetailsService implements UserDetailsService {
         return userApp;
     }
 
-    public UserApp addClientInfo(UserApp userApp, Client client){
-        userApp.setClient(client);
+    public UserApp addUserDetails(UserApp userApp, UserDetails userDetails){
+        userApp.setUserDetails(userDetails);
         return userRepository.save(userApp);
     }
 
@@ -77,4 +76,5 @@ public class CustomUserDetailsService implements UserDetailsService {
     private BCryptPasswordEncoder bCryptPasswordEncoder(){
         return new BCryptPasswordEncoder();
     }
+
 }

@@ -1,8 +1,8 @@
 package car_rental.api.user;
 
-import car_rental.api.client.ClientDTO;
-import car_rental.api.client.ClientMapper;
-import car_rental.api.client.ClientService;
+import car_rental.api.userDetails.UserDetailsDTO;
+import car_rental.api.userDetails.UserDetailsMapper;
+import car_rental.api.userDetails.UserDetailsService;
 import car_rental.api.exceptions.UserAlreadyExistException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -20,11 +20,11 @@ import javax.validation.Valid;
 public class UserRegistrationFrontController {
 
     CustomUserDetailsService customUserDetailsService;
-    ClientService clientService;
+    UserDetailsService userDetailsService;
 
-    public UserRegistrationFrontController(CustomUserDetailsService customUserDetailsService, ClientService clientService) {
+    public UserRegistrationFrontController(CustomUserDetailsService customUserDetailsService, UserDetailsService userDetailsService) {
         this.customUserDetailsService = customUserDetailsService;
-        this.clientService = clientService;
+        this.userDetailsService = userDetailsService;
     }
 
     @GetMapping("/registration")
@@ -48,25 +48,25 @@ public String register(Model model){
             bindingResult.addError(new ObjectError("alreadyExist", "There is already an account registered with that email/username"));
             return "registration";
         }
-    return "redirect:/registration-client-info";
+    return "redirect:/registration-user-details";
 }
 
-@GetMapping("/registration-client-info")
-    public String registrationClient(Model model){
-        model.addAttribute("clientDTO", new ClientDTO());
-        return "registration-client-info";
+@GetMapping("/registration-user-details")
+    public String registrationUserDetails(Model model){
+        model.addAttribute("userDetailsDTO", new UserDetailsDTO());
+        return "registration-user-details";
 }
 
-@PostMapping("/registration-client-info")
+@PostMapping("/registration-user-details")
     public String registrationClientInfo(@ModelAttribute("newUser") UserApp userApp,
-                                         @ModelAttribute("clientDTO") @Valid ClientDTO clientDTO,
+                                         @ModelAttribute("userDetailsDTO") @Valid UserDetailsDTO userDetailsDTO,
                                          BindingResult bindingResult){
 
         if (bindingResult.hasErrors() ){
-            return "registration-client-info";
+            return "registration-user-details";
         }
 
-        customUserDetailsService.addClientInfo(userApp, new ClientMapper().reverse(clientDTO));
+        customUserDetailsService.addUserDetails(userApp, new UserDetailsMapper().reverse(userDetailsDTO));
         return "redirect:/home?info=registered";
 }
 

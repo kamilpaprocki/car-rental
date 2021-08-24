@@ -1,13 +1,13 @@
-package car_rental.api.client;
+package car_rental.api.userDetails;
 
 import javax.persistence.*;
 import java.sql.Date;
 import java.util.Objects;
 
 
-@Table(name = "client")
+@Table(name = "details")
 @Entity
-public class Client {
+public class UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,7 +24,7 @@ public class Client {
     private String nationality;
 
     @OneToOne(cascade = CascadeType.ALL)
-    private ClientAddress clientAddress;
+    private UserDetailsAddress userDetailsAddress;
 
     @Column(name = "driving_license_number", nullable = false, length = 13)
     private String drivingLicenseNumber;
@@ -69,12 +69,12 @@ public class Client {
         this.nationality = nationality;
     }
 
-    public ClientAddress getClientAddress() {
-        return clientAddress;
+    public UserDetailsAddress getClientAddress() {
+        return userDetailsAddress;
     }
 
-    public void setAddress(ClientAddress clientAddress) {
-        this.clientAddress = clientAddress;
+    public void setAddress(UserDetailsAddress userDetailsAddress) {
+        this.userDetailsAddress = userDetailsAddress;
     }
 
     public String getDrivingLicenseNumber() {
@@ -120,9 +120,9 @@ public class Client {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Client)) return false;
-        Client client = (Client) o;
-        return getId().equals(client.getId()) && getName().equals(client.getName()) && getLastName().equals(client.getLastName()) && getNationality().equals(client.getNationality()) && getClientAddress().equals(client.getClientAddress()) && getDrivingLicenseNumber().equals(client.getDrivingLicenseNumber()) && getIdentityCardNumber().equals(client.getIdentityCardNumber()) && getPeselNumber().equals(client.getPeselNumber()) && getPhoneNumber().equals(client.getPhoneNumber()) && getBirthDate().equals(client.getBirthDate());
+        if (!(o instanceof UserDetails)) return false;
+        UserDetails userDetails = (UserDetails) o;
+        return getId().equals(userDetails.getId()) && getName().equals(userDetails.getName()) && getLastName().equals(userDetails.getLastName()) && getNationality().equals(userDetails.getNationality()) && getClientAddress().equals(userDetails.getClientAddress()) && getDrivingLicenseNumber().equals(userDetails.getDrivingLicenseNumber()) && getIdentityCardNumber().equals(userDetails.getIdentityCardNumber()) && getPeselNumber().equals(userDetails.getPeselNumber()) && getPhoneNumber().equals(userDetails.getPhoneNumber()) && getBirthDate().equals(userDetails.getBirthDate());
     }
 
     @Override
@@ -137,7 +137,7 @@ public class Client {
                 ", name='" + name + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", nationality='" + nationality + '\'' +
-                ", clientAddress=" + clientAddress +
+                ", clientAddress=" + userDetailsAddress +
                 ", drivingLicenseNumber='" + drivingLicenseNumber + '\'' +
                 ", identityCardNumber='" + identityCardNumber + '\'' +
                 ", peselNumber='" + peselNumber + '\'' +

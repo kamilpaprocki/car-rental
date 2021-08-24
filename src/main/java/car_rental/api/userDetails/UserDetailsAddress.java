@@ -1,11 +1,11 @@
-package car_rental.api.client;
+package car_rental.api.userDetails;
 
 import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
-@Table(name = "address")
-public class ClientAddress {
+@Table(name = "user_details_address")
+public class UserDetailsAddress {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -74,9 +74,9 @@ public class ClientAddress {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof ClientAddress)) return false;
-        ClientAddress clientAddress = (ClientAddress) o;
-        return getId().equals(clientAddress.getId()) && getStreet().equals(clientAddress.getStreet()) && getStreetNumber().equals(clientAddress.getStreetNumber()) && Objects.equals(getApartmentNumber(), clientAddress.getApartmentNumber()) && getPostalCode().equals(clientAddress.getPostalCode()) && getCity().equals(clientAddress.getCity());
+        if (!(o instanceof UserDetailsAddress)) return false;
+        UserDetailsAddress userDetailsAddress = (UserDetailsAddress) o;
+        return getId().equals(userDetailsAddress.getId()) && getStreet().equals(userDetailsAddress.getStreet()) && getStreetNumber().equals(userDetailsAddress.getStreetNumber()) && Objects.equals(getApartmentNumber(), userDetailsAddress.getApartmentNumber()) && getPostalCode().equals(userDetailsAddress.getPostalCode()) && getCity().equals(userDetailsAddress.getCity());
     }
 
     @Override

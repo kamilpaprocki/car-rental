@@ -1,7 +1,7 @@
 package car_rental.api.user;
 
 import car_rental.api.car.CarRepository;
-import car_rental.api.client.ClientRepository;
+import car_rental.api.userDetails.UserDetailsRepository;
 import car_rental.api.promotionCode.PromotionCodeRepository;
 import car_rental.api.rents.RentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +19,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
-@EnableJpaRepositories(basePackageClasses = {UserRepository.class, CarRepository.class, ClientRepository.class, PromotionCodeRepository.class, RentRepository.class})
+@EnableJpaRepositories(basePackageClasses = {UserRepository.class, CarRepository.class, UserDetailsRepository.class, PromotionCodeRepository.class, RentRepository.class})
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Autowired
