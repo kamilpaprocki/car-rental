@@ -8,7 +8,11 @@
 <div class="container">
 
 <div th:if="${info == 'registered'}">
-    <div class="alert alert-success" >You are successfully registered.</div>
+    <div class="alert alert-success fst-italic" >You are successfully registered.</div>
+</div>
+
+<div th:if="${info == 'login'}">
+    <div class="alert alert-success fst-italic" >You are successfully log in.</div>
 </div>
 
 </div>

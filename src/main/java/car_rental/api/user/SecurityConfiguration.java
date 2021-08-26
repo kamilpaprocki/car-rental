@@ -35,42 +35,21 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
      @Override
      protected void configure(HttpSecurity httpSecurity) throws Exception{
         httpSecurity
+                .csrf().disable()
                 .authorizeRequests()
                 .antMatchers("**/api/**").authenticated()
                 .anyRequest().permitAll()
                 .and()
-                .formLogin().permitAll();
-    }
-
-/*    @Override
-    protected void configure(HttpSecurity httpSecurity) throws Exception{
-        httpSecurity
-                .authorizeRequests()
-                .antMatchers("/login", "/register").permitAll()
-                .and()
                 .formLogin()
                 .loginPage("/login")
-                .loginProcessingUrl("/signin")
-                .usernameParameter("username")
-                .passwordParameter("password")
-                .successHandler((req, res, auth) -> {res.sendRedirect("/home");})
-                .failureUrl("login?error='incorrect login or password'")
-                .failureHandler((req, res, auth) -> { }).permitAll()
+                .defaultSuccessUrl("/home?info=login")
+                .failureUrl("/login?info=error")
+                .permitAll()
                 .and()
-                .exceptionHandling( (req) -> {
-                    req.accessDeniedPage("/home?message=Acces denied");
-                })
                 .logout()
-                .logoutUrl("/logout")
-                .logoutSuccessHandler((req, res, auth) -> {
-                    req.getSession().setAttribute("message", "You are logout.");
-                    res.sendRedirect("/home");
-                }).permitAll();
+                .logoutUrl("/logout");
 
-        httpSecurity.headers().frameOptions().disable();
-        httpSecurity.cors().disable();
-        httpSecurity.csrf().disable();
-    }*/
+    }
 
     @Bean
     public PasswordEncoder passwordEncoder(){
