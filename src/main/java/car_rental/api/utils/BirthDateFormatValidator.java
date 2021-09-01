@@ -12,7 +12,7 @@ import java.time.ZoneId;
 import java.util.Calendar;
 import java.util.Date;
 
-public class DataFormatValidator implements ConstraintValidator<DateFormat, UserDetailsDTO> {
+public class BirthDateFormatValidator implements ConstraintValidator<DateFormat, UserDetailsDTO> {
 
     private String message;
 
@@ -30,7 +30,7 @@ public class DataFormatValidator implements ConstraintValidator<DateFormat, User
         if (userDetailsDTO.getBirthDate().isEmpty()) {
             isValid = false;
             constraintValidatorContext.disableDefaultConstraintViolation();
-            message = "This can not be empty.";
+            message = "Birth date can not be empty.";
             constraintValidatorContext.buildConstraintViolationWithTemplate(message).addConstraintViolation();
             return isValid;
         }

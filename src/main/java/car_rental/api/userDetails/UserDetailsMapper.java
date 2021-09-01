@@ -1,13 +1,7 @@
 package car_rental.api.userDetails;
 
-import car_rental.api.exceptions.WrongDataFormatException;
 import car_rental.api.utils.DTOMapper;
-
-import java.sql.Date;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.time.ZoneId;
+import car_rental.api.utils.DateParser;
 
 public class UserDetailsMapper implements DTOMapper<UserDetails, UserDetailsDTO> {
     @Override
@@ -37,13 +31,8 @@ public class UserDetailsMapper implements DTOMapper<UserDetails, UserDetailsDTO>
         userDetails.setIdentityCardNumber(from.getIdentityCardNumber());
         userDetails.setPeselNumber(from.getPeselNumber());
         userDetails.setPhoneNumber(from.getPhoneNumber());
+        userDetails.setBirthDate(new DateParser().parseDate(from.getBirthDate()));
 
-        DateFormat df = new SimpleDateFormat("dd.MM.yyyy");
-        try {
-            userDetails.setBirthDate(Date.valueOf(df.parse(from.getBirthDate()).toInstant().atZone(ZoneId.systemDefault()).toLocalDate()));
-        } catch (ParseException e) {
-            throw new WrongDataFormatException("Wrong date format.");
-        }
         return userDetails;
     }
 }
