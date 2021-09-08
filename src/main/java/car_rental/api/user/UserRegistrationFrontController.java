@@ -29,12 +29,12 @@ public class UserRegistrationFrontController {
 
     @GetMapping("/registration")
 public String register(Model model){
-    model.addAttribute("userDTO", new UserAppDTO());
+    model.addAttribute("userDTO", new UserRegisterDTO());
     return  "registration";
 }
 
 @PostMapping("/registration")
-    public String registration(@Valid @ModelAttribute("userDTO") UserAppDTO userAppDTO,
+    public String registration(@Valid @ModelAttribute("userDTO") UserRegisterDTO userRegisterDTO,
                                BindingResult bindingResult,
                                @ModelAttribute("newUser") UserApp userApp,
                                 Model model){
@@ -42,7 +42,7 @@ public String register(Model model){
         return "registration";
     }
     try {
-        userApp = customUserDetailsService.registerUser(userAppDTO);
+        userApp = customUserDetailsService.registerUser(userRegisterDTO);
         model.addAttribute("newUser", userApp);
     }catch(UserAlreadyExistException uE){
             bindingResult.addError(new ObjectError("alreadyExist", "There is already an account registered with that email/username"));

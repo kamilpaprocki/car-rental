@@ -10,7 +10,7 @@ import javax.validation.constraints.Size;
 import java.util.Objects;
 
 @PasswordMatcher()
-public class UserAppDTO {
+public class UserRegisterDTO {
 
     @JsonProperty("username")
     @NotEmpty(message = "This can not be empty")
@@ -39,7 +39,7 @@ public class UserAppDTO {
         return username;
     }
 
-    public UserAppDTO() {
+    public UserRegisterDTO() {
     }
 
     public String getEmail() {
@@ -70,11 +70,9 @@ public class UserAppDTO {
         this.confirmPassword = confirmPassword;
     }
 
-
-
     @Override
     public String toString() {
-        return "UserAppDTO{" +
+        return "UserRegisterDTO{" +
                 "username='" + username + '\'' +
                 ", email='" + email + '\'' +
                 ", password='" + password + '\'' +
@@ -85,8 +83,8 @@ public class UserAppDTO {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof UserAppDTO)) return false;
-        UserAppDTO that = (UserAppDTO) o;
+        if (!(o instanceof UserRegisterDTO)) return false;
+        UserRegisterDTO that = (UserRegisterDTO) o;
         return getUsername().equals(that.getUsername()) && getEmail().equals(that.getEmail()) && getPassword().equals(that.getPassword()) && getConfirmPassword().equals(that.getConfirmPassword());
     }
 
@@ -95,7 +93,7 @@ public class UserAppDTO {
         return Objects.hash(getUsername(), getEmail(), getPassword(), getConfirmPassword());
     }
 
-private UserAppDTO(UserAppDTOBuilder u){
+private UserRegisterDTO(UserAppDTOBuilder u){
     this.username = u.username;
     this.email = u.email;
     this.password = u.password;
@@ -134,8 +132,8 @@ private UserAppDTO(UserAppDTOBuilder u){
             return this;
         }
 
-        public UserAppDTO build() {
-            return new UserAppDTO(this);
+        public UserRegisterDTO build() {
+            return new UserRegisterDTO(this);
         }
     }
 }

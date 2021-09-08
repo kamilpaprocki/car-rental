@@ -34,19 +34,19 @@ public class CustomUserDetailsService implements UserDetailsService {
     }
 
     @Transactional
-    public UserApp registerUser(UserAppDTO userAppDTO){
-        if (!usernameExist(userAppDTO.getUsername())){
+    public UserApp registerUser(UserRegisterDTO userRegisterDTO){
+        if (!usernameExist(userRegisterDTO.getUsername())){
             throw new UserAlreadyExistException("There is an account with that username");
         }
 
-        if (!emailExist(userAppDTO.getEmail())){
+        if (!emailExist(userRegisterDTO.getEmail())){
             throw new UserAlreadyExistException("There is an account with that email");
         }
 
         UserApp userApp = new UserApp();
-        userApp.setUsername(userAppDTO.getUsername());
-        userApp.setEmail(userAppDTO.getEmail());
-        userApp.setPassword(bCryptPasswordEncoder().encode(userAppDTO.getPassword()));
+        userApp.setUsername(userRegisterDTO.getUsername());
+        userApp.setEmail(userRegisterDTO.getEmail());
+        userApp.setPassword(bCryptPasswordEncoder().encode(userRegisterDTO.getPassword()));
         userApp.setRegistredDate(Date.valueOf(LocalDate.now()));
         userApp.setIsActive(true);
         userApp.setRoles(Sets.newHashSet(roleService.createRoleIfNotFound("ROLE_USER")));
