@@ -93,7 +93,7 @@ public class UserRegisterDTO {
         return Objects.hash(getUsername(), getEmail(), getPassword(), getConfirmPassword());
     }
 
-private UserRegisterDTO(UserAppDTOBuilder u){
+private UserRegisterDTO(UserRegDTOBuilder u){
     this.username = u.username;
     this.email = u.email;
     this.password = u.password;
@@ -101,33 +101,33 @@ private UserRegisterDTO(UserAppDTOBuilder u){
 }
 
 
-    public static final class UserAppDTOBuilder {
+    public static final class UserRegDTOBuilder {
         private String username;
         private String email;
         private String password;
 
         private String confirmPassword;
 
-        public static UserAppDTOBuilder userAppDTO() {
-            return new UserAppDTOBuilder();
+        public static UserRegDTOBuilder userRegDTO() {
+            return new UserRegDTOBuilder();
         }
 
-        public UserAppDTOBuilder username(String username) {
+        public UserRegDTOBuilder username(String username) {
             this.username = username;
             return this;
         }
 
-        public UserAppDTOBuilder email(String email) {
+        public UserRegDTOBuilder email(String email) {
             this.email = email;
             return this;
         }
 
-        public UserAppDTOBuilder password(String password) {
+        public UserRegDTOBuilder password(String password) {
             this.password = password;
             return this;
         }
 
-        public UserAppDTOBuilder confirmPassword(String confirmPassword) {
+        public UserRegDTOBuilder confirmPassword(String confirmPassword) {
             this.confirmPassword = confirmPassword;
             return this;
         }

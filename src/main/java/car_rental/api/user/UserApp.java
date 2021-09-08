@@ -50,10 +50,19 @@ public class UserApp {
         this.registredDate = u.registredDate;
         this.isActive = u.isActive;
         this.roles = u.roles;
+        this.userDetails = u.userDetails;
     }
 
     public Long getId() {
         return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public void setActive(boolean active) {
+        isActive = active;
     }
 
     public String getUsername() {
@@ -88,7 +97,7 @@ public class UserApp {
         this.registredDate = registredDate;
     }
 
-    public boolean isIsActive() {
+    public boolean isActive() {
         return isActive;
     }
 
