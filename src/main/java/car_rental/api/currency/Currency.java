@@ -1,4 +1,4 @@
-package car_rental.api.rents;
+package car_rental.api.currency;
 
 public enum Currency {
 
@@ -6,7 +6,7 @@ public enum Currency {
     EUR("EUR"),
     USD("USD");
 
-    private String name;
+    private final String name;
 
     Currency(String name) {
         this.name = name;

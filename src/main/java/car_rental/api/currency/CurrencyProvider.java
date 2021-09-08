@@ -1,21 +1,22 @@
-package car_rental.api.utils;
+package car_rental.api.currency;
 
-import car_rental.api.exceptions.WrongArgumentException;
-import car_rental.api.rents.Currency;
+import car_rental.api.exceptions.ParseException;
+import org.springframework.stereotype.Component;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 
-public class CurrencyConverter {
+@Component
+public class CurrencyProvider {
 
-    private final String api = "https://api.nbp.pl/api/exchangerates/rates/a/";
+    private final String apiURL = "https://api.nbp.pl/api/exchangerates/rates/a/";
 
     public float getExchangeRate(Currency currency){
         float exchangeRate;
         try {
-            URL url = new URL(api+currency.getName());
+            URL url = new URL(apiURL +currency.getName());
             BufferedReader reader = new BufferedReader(new InputStreamReader(url.openStream()));
             String content = reader.readLine();
             reader.close();
@@ -23,10 +24,9 @@ public class CurrencyConverter {
             int end = begin + 6;
             exchangeRate = Float.parseFloat(content.substring(begin, end));
         } catch (IOException e) {
-            throw new WrongArgumentException("Can not get current exchange rate.");
+            throw new ParseException("Cannot get current exchange rate. Cannot parse String to float");
         }
     return exchangeRate;
     }
-
 
 }
