@@ -4,12 +4,16 @@ import car_rental.api.car.CarDTO;
 import car_rental.api.promotionCode.PromotionCodeDTO;
 import car_rental.api.user.UserAppDTO;
 import car_rental.api.utils.DateFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.validation.Valid;
 
 @DateFormat
 public class RentDTO {
+
+    @JsonIgnore
+    private String id;
 
     @JsonProperty(value = "user")
     private UserAppDTO userApp;
@@ -32,6 +36,7 @@ public class RentDTO {
     @Valid
     private String returnDate;
 
+    @JsonProperty(value = "rental_days")
     private String rentalDays;
 
     @JsonProperty(value = "return_address")
@@ -53,6 +58,14 @@ public class RentDTO {
     private String isFinished;
 
     public RentDTO() {
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public void setUserApp(UserAppDTO userApp) {
@@ -112,6 +125,7 @@ public class RentDTO {
     }
 
     private RentDTO(RentDTOBuilder b){
+        this.id = b.id;
         this.userApp = b.userApp;
         this.promotionCode = b.promotionCode;
         this.rentalDays = b.rentalDays;
@@ -128,6 +142,7 @@ public class RentDTO {
     }
 
     public static final class RentDTOBuilder {
+        String id;
         private UserAppDTO userApp;
         private CarDTO car;
         private String rentDate;
@@ -141,6 +156,11 @@ public class RentDTO {
         private PromotionCodeDTO promotionCode;
         private String paymentMethod;
         private String isFinished;
+
+        public RentDTOBuilder id(String id){
+            this.id = id;
+            return this;
+        }
 
         public RentDTOBuilder userApp(UserAppDTO userApp) {
             this.userApp = userApp;
@@ -212,6 +232,8 @@ public class RentDTO {
         }
     }
 
+
+
     public UserAppDTO getUserApp() {
         return userApp;
     }
@@ -264,11 +286,11 @@ public class RentDTO {
         return returnDate;
     }
 
-
     @Override
     public String toString() {
         return "RentDTO{" +
-                "userApp='" + userApp + '\'' +
+                "id='" + id + '\'' +
+                ", userApp=" + userApp +
                 ", car=" + car +
                 ", rentDate='" + rentDate + '\'' +
                 ", rentAddress=" + rentAddress +

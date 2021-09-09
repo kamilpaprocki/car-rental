@@ -43,7 +43,9 @@ public class PromotionCodeMapper implements DTOMapper<PromotionCode, PromotionCo
         DateParser dateParser = new DateParser();
         promotionCode.setId(Long.parseLong(from.getId()));
         promotionCode.setPromotionCode(from.getPromotionCodeDTO());
-        promotionCode.setUsedDate(dateParser.parseDate(from.getUsedDate()));
+        if (from.getUsedDate() != null) {
+            promotionCode.setUsedDate(dateParser.parseDate(from.getUsedDate()));
+        }
         promotionCode.setGenerateDate(dateParser.parseDate(from.getUsedDate()));
         promotionCode.setExpDate(dateParser.parseDate(from.getUsedDate()));
         promotionCode.setDiscount(new BigDecimal(from.getDiscount()));
