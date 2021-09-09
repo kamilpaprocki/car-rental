@@ -1,13 +1,13 @@
 package car_rental.api.rents;
 
-import car_rental.api.promotionCode.PromotionCode;
 import car_rental.api.car.Car;
-import car_rental.api.client.Client;
-import org.hibernate.annotations.*;
+import car_rental.api.promotionCode.PromotionCode;
+import car_rental.api.user.UserApp;
+import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.Formula;
+
 import javax.persistence.*;
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.Table;
 import java.math.BigDecimal;
 import java.sql.Date;
 import java.util.Objects;
@@ -24,11 +24,11 @@ public class Rent {
     private Long id;
 
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
-    @PrimaryKeyJoinColumn(name = "client_id")
-    private Client client;
+    @PrimaryKeyJoinColumn(name = "id")
+    private UserApp userApp;
 
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
-    @PrimaryKeyJoinColumn(name = "car_id")
+    @PrimaryKeyJoinColumn(name = "id")
     private Car car;
 
     @Column(name = "rent_date", nullable = false)
@@ -59,7 +59,7 @@ public class Rent {
     @ColumnDefault("0")
     private long odomoterDistance;
 
-    @PrimaryKeyJoinColumn(name = "promotion_code_id")
+    @PrimaryKeyJoinColumn(name = "id")
     @OneToOne(cascade = {CascadeType.MERGE}, orphanRemoval = true)
     private PromotionCode promotionCode;
 
@@ -79,12 +79,12 @@ public class Rent {
         this.id = id;
     }
 
-    public Client getClient() {
-        return client;
+    public UserApp getUserApp() {
+        return userApp;
     }
 
-    public void setClient(Client client) {
-        this.client = client;
+    public void setUserApp(UserApp userApp) {
+        this.userApp = userApp;
     }
 
     public Car getCar() {
@@ -187,7 +187,7 @@ public class Rent {
     public String toString() {
         return "Rent{" +
                 "id=" + id +
-                ", client=" + client +
+                ", userApp=" + userApp +
                 ", car=" + car +
                 ", rentDate=" + rentDate +
                 ", rentAddress=" + rentAddress +
@@ -208,11 +208,11 @@ public class Rent {
         if (this == o) return true;
         if (!(o instanceof Rent)) return false;
         Rent rent = (Rent) o;
-        return getRentalDays() == rent.getRentalDays() && getOdomoterDistance() == rent.getOdomoterDistance() && getId().equals(rent.getId()) && getClient().equals(rent.getClient()) && getCar().equals(rent.getCar()) && getRentDate().equals(rent.getRentDate()) && getRentAddress().equals(rent.getRentAddress()) && getPlannedReturnDate().equals(rent.getPlannedReturnDate()) && Objects.equals(getReturnDate(), rent.getReturnDate()) && getReturnAddress().equals(rent.getReturnAddress()) && Objects.equals(getRentalCost(), rent.getRentalCost()) && Objects.equals(getPromotionCode(), rent.getPromotionCode()) && getPaymentMethod() == rent.getPaymentMethod() && isFinished.equals(rent.isFinished);
+        return getRentalDays() == rent.getRentalDays() && getOdomoterDistance() == rent.getOdomoterDistance() && Objects.equals(getId(), rent.getId()) && getUserApp().equals(rent.getUserApp()) && getCar().equals(rent.getCar()) && getRentDate().equals(rent.getRentDate()) && getRentAddress().equals(rent.getRentAddress()) && getPlannedReturnDate().equals(rent.getPlannedReturnDate()) && getReturnDate().equals(rent.getReturnDate()) && getReturnAddress().equals(rent.getReturnAddress()) && Objects.equals(getRentalCost(), rent.getRentalCost()) && Objects.equals(getPromotionCode(), rent.getPromotionCode()) && getPaymentMethod() == rent.getPaymentMethod() && Objects.equals(isFinished, rent.isFinished);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getId(), getClient(), getCar(), getRentDate(), getRentAddress(), getPlannedReturnDate(), getReturnDate(), getRentalDays(), getReturnAddress(), getRentalCost(), getOdomoterDistance(), getPromotionCode(), getPaymentMethod(), isFinished);
+        return Objects.hash(getId(), getUserApp(), getCar(), getRentDate(), getRentAddress(), getPlannedReturnDate(), getReturnDate(), getRentalDays(), getReturnAddress(), getRentalCost(), getOdomoterDistance(), getPromotionCode(), getPaymentMethod(), isFinished);
     }
 }

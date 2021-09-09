@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org">
+<head th:replace="headers::default"></head>
+
+<body>
+
+        <div  th:text="${rentalCost} + ' [PLN]'" th:fragment="currency-pln(rentalCost)" ></div>
+        <div  th:text="${rentalCost} + ' [USD]'" th:fragment="currency-usd(rentalCost)"></div>
+        <div  th:text="${rentalCost} + ' [EUR]'" th:fragment="currency-eur(rentalCost)"></div>
+
+</body>
+</html>

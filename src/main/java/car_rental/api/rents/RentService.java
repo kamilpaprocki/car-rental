@@ -1,9 +1,22 @@
 package car_rental.api.rents;
 
+import car_rental.api.car.Car;
+import car_rental.api.car.CarDTO;
+import car_rental.api.car.CarMapper;
+import car_rental.api.exceptions.WrongDataFormatException;
+import car_rental.api.promotionCode.PromotionCode;
+import car_rental.api.promotionCode.PromotionCodeDTO;
+import car_rental.api.promotionCode.PromotionCodeMapper;
 import car_rental.api.promotionCode.PromotionCodeService;
+import car_rental.api.user.UserApp;
+import car_rental.api.user.UserAppDTO;
+import car_rental.api.user.UserAppMapper;
+import car_rental.api.utils.DateParser;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.sql.Date;
 import java.util.List;
 
@@ -68,4 +81,48 @@ public class RentService {
         return rentRepository.deleteRentById(id);
     }
 
+    public long getRentalDays(Date rentDay, Date returnDate){
+
+        if ((rentDay.compareTo(returnDate)) > 0){
+          throw new WrongDataFormatException("Rent day can not be after return date");
+       }
+
+       if (rentDay.compareTo(returnDate) == 0){
+           return 1;
+       }
+
+       return (returnDate.getTime()-rentDay.getTime())/(1000*60*60*24);
+    }
+
+    public RentDTO addPromotionCode(RentDTO rentDTO, PromotionCodeDTO promotionCodeDTO){
+
+        promotionCodeService.usePromotionCode(promotionCodeDTO.getPromotionCodeDTO());
+        PromotionCode promotionCode = promotionCodeService.getPromotionCodeByCode(promotionCodeDTO.getPromotionCodeDTO());
+        promotionCodeDTO = new PromotionCodeMapper().map(promotionCode);
+        rentDTO.setPromotionCode(promotionCodeDTO);
+        BigDecimal discount = new BigDecimal(promotionCodeDTO.getDiscount());
+        BigDecimal rentalCost = new BigDecimal(rentDTO.getRentalCost());
+        rentalCost = (rentalCost.multiply(BigDecimal.valueOf(100).subtract(discount))).divide(BigDecimal.valueOf(100)).setScale(2, RoundingMode.CEILING);
+        rentDTO.setRentalCost(rentalCost.toString());
+        return rentDTO;
+    }
+
+    public RentDTO addUserAndCar(RentDTO rentDTO, UserApp userApp, Car car){
+        UserAppDTO userAppDTO = new UserAppMapper().map(userApp);
+        rentDTO.setUserApp(userAppDTO);
+        CarDTO carDTO = new CarMapper().map(car);
+        rentDTO.setCar(carDTO);
+        return rentDTO;
+    }
+
+    public RentDTO addRentDetails(RentDTO rentDTO){
+        DateParser dateParser = new DateParser();
+        long rentalDays = getRentalDays(dateParser.parseDate(rentDTO.getRentDate()), dateParser.parseDate(rentDTO.getPlannedReturnDate()));
+        rentDTO.setRentalDays(String.valueOf(rentalDays));
+
+        String pricePerDay = rentDTO.getCar().getPricePerDay();
+        BigDecimal rentalCost = new BigDecimal(pricePerDay).multiply(BigDecimal.valueOf(rentalDays));
+        rentDTO.setRentalCost(rentalCost.toString());
+        return rentDTO;
+    }
 }

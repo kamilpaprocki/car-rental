@@ -10,6 +10,21 @@ public class PromotionCodeMapper implements DTOMapper<PromotionCode, PromotionCo
 
     @Override
     public PromotionCodeDTO map(PromotionCode from) {
+
+        if (from.getUsedDate() != null){
+            return PromotionCodeDTO.builder()
+                    .id(from.getId().toString())
+                    .promotionCode(from.getPromotionCode())
+                    .generateDate(from.getGenerateDate().toString())
+                    .expDate(from.getExpDate().toString())
+                    .discount(from.getDiscount().toString())
+                    .isMultipleUse((String.valueOf(from.isMultipleUse())))
+                    .usedDate(from.getUsedDate().toString())
+                    .availableUse(String.valueOf(from.getAvailableUse()))
+                    .isActive(String.valueOf(from.isActive()))
+                    .build();
+        }
+
         return PromotionCodeDTO.builder()
                 .id(from.getId().toString())
                 .promotionCode(from.getPromotionCode())

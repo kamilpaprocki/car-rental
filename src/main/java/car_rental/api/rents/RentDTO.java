@@ -1,40 +1,50 @@
 package car_rental.api.rents;
 
+import car_rental.api.car.CarDTO;
+import car_rental.api.promotionCode.PromotionCodeDTO;
+import car_rental.api.user.UserAppDTO;
+import car_rental.api.utils.DateFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import javax.validation.Valid;
+
+@DateFormat
 public class RentDTO {
 
-    @JsonProperty(value = "client")
-    private String client;
+    @JsonProperty(value = "user")
+    private UserAppDTO userApp;
 
     @JsonProperty(value = "car")
-    private String car;
+    private CarDTO car;
 
     @JsonProperty(value = "rent_date")
+    @Valid
     private String rentDate;
 
     @JsonProperty(value = "rent_address")
-    private String rentAddress;
+    @Valid
+    private AddressDTO rentAddress;
 
     @JsonProperty(value = "planned_return_date")
     private String plannedReturnDate;
 
     @JsonProperty(value = "return_date")
+    @Valid
     private String returnDate;
 
     private String rentalDays;
 
     @JsonProperty(value = "return_address")
-    private String returnAddress;
+    private AddressDTO returnAddress;
 
     @JsonProperty(value = "rental_cost")
     private String rentalCost;
 
     @JsonProperty(value = "odometer_distance")
-    private String odomoterDistance;
+    private String odometerDistance;
 
     @JsonProperty(value = "promotion_code_id")
-    private String promotionCode;
+    private PromotionCodeDTO promotionCode;
 
     @JsonProperty(value = "payment_method")
     private String paymentMethod;
@@ -42,46 +52,102 @@ public class RentDTO {
     @JsonProperty(value = "is_finished")
     private String isFinished;
 
+    public RentDTO() {
+    }
+
+    public void setUserApp(UserAppDTO userApp) {
+        this.userApp = userApp;
+    }
+
+    public void setCar(CarDTO car) {
+        this.car = car;
+    }
+
+    public void setRentDate(String rentDate) {
+        this.rentDate = rentDate;
+    }
+
+    public void setRentAddress(AddressDTO rentAddress) {
+        this.rentAddress = rentAddress;
+    }
+
+    public void setPlannedReturnDate(String plannedReturnDate) {
+        this.plannedReturnDate = plannedReturnDate;
+    }
+
+    public void setReturnDate(String returnDate) {
+        this.returnDate = returnDate;
+    }
+
+    public void setRentalDays(String rentalDays) {
+        this.rentalDays = rentalDays;
+    }
+
+    public void setReturnAddress(AddressDTO returnAddress) {
+        this.returnAddress = returnAddress;
+    }
+
+    public void setRentalCost(String rentalCost) {
+        this.rentalCost = rentalCost;
+    }
+
+    public void setOdometerDistance(String odometerDistance) {
+        this.odometerDistance = odometerDistance;
+    }
+
+    public void setPromotionCode(PromotionCodeDTO promotionCode) {
+        this.promotionCode = promotionCode;
+    }
+
+    public void setPaymentMethod(String paymentMethod) {
+        this.paymentMethod = paymentMethod;
+    }
+
+    public void setIsFinished(String isFinished) {
+        this.isFinished = isFinished;
+    }
+
     public static RentDTOBuilder builder() {
         return new RentDTOBuilder();
     }
 
     private RentDTO(RentDTOBuilder b){
-        this.client = b.client;
+        this.userApp = b.userApp;
         this.promotionCode = b.promotionCode;
         this.rentalDays = b.rentalDays;
         this.rentalCost = b.rentalCost;
         this.rentAddress = b.rentAddress;
         this.plannedReturnDate = b.plannedReturnDate;
-        this.odomoterDistance = b.odomoterDistance;
+        this.odometerDistance = b.odometerDistance;
         this.paymentMethod = b.paymentMethod;
         this.isFinished = b.isFinished;
         this.rentDate = b.rentDate;
         this.returnAddress = b.returnAddress;
+        this.returnDate = b.returnDate;
         this.car = b.car;
     }
 
     public static final class RentDTOBuilder {
-        private String client;
-        private String car;
+        private UserAppDTO userApp;
+        private CarDTO car;
         private String rentDate;
-        private String rentAddress;
+        private AddressDTO rentAddress;
         private String plannedReturnDate;
         private String rentalDays;
-        private String returnAddress;
+        private AddressDTO returnAddress;
         private String returnDate;
         private String rentalCost;
-        private String odomoterDistance;
-        private String promotionCode;
+        private String odometerDistance;
+        private PromotionCodeDTO promotionCode;
         private String paymentMethod;
         private String isFinished;
 
-        public RentDTOBuilder client(String client) {
-            this.client = client;
+        public RentDTOBuilder userApp(UserAppDTO userApp) {
+            this.userApp = userApp;
             return this;
         }
 
-        public RentDTOBuilder car(String car) {
+        public RentDTOBuilder car(CarDTO car) {
             this.car = car;
             return this;
         }
@@ -91,7 +157,7 @@ public class RentDTO {
             return this;
         }
 
-        public RentDTOBuilder rentAddress(String rentAddress) {
+        public RentDTOBuilder rentAddress(AddressDTO rentAddress) {
             this.rentAddress = rentAddress;
             return this;
         }
@@ -106,7 +172,7 @@ public class RentDTO {
             return this;
         }
 
-        public RentDTOBuilder returnAddress(String returnAddress) {
+        public RentDTOBuilder returnAddress(AddressDTO returnAddress) {
             this.returnAddress = returnAddress;
             return this;
         }
@@ -121,12 +187,12 @@ public class RentDTO {
             return this;
         }
 
-        public RentDTOBuilder odomoterDistance(String odomoterDistance) {
-            this.odomoterDistance = odomoterDistance;
+        public RentDTOBuilder odometerDistance(String odometerDistance) {
+            this.odometerDistance = odometerDistance;
             return this;
         }
 
-        public RentDTOBuilder promotionCode(String promotionCode) {
+        public RentDTOBuilder promotionCode(PromotionCodeDTO promotionCode) {
             this.promotionCode = promotionCode;
             return this;
         }
@@ -146,11 +212,11 @@ public class RentDTO {
         }
     }
 
-    public String getClient() {
-        return client;
+    public UserAppDTO getUserApp() {
+        return userApp;
     }
 
-    public String getCar() {
+    public CarDTO getCar() {
         return car;
     }
 
@@ -158,7 +224,7 @@ public class RentDTO {
         return rentDate;
     }
 
-    public String getRentAddress() {
+    public AddressDTO getRentAddress() {
         return rentAddress;
     }
 
@@ -170,7 +236,7 @@ public class RentDTO {
         return rentalDays;
     }
 
-    public String getReturnAddress() {
+    public AddressDTO getReturnAddress() {
         return returnAddress;
     }
 
@@ -178,11 +244,11 @@ public class RentDTO {
         return rentalCost;
     }
 
-    public String getOdomoterDistance() {
-        return odomoterDistance;
+    public String getOdometerDistance() {
+        return odometerDistance;
     }
 
-    public String getPromotionCode() {
+    public PromotionCodeDTO getPromotionCode() {
         return promotionCode;
     }
 
@@ -198,20 +264,21 @@ public class RentDTO {
         return returnDate;
     }
 
+
     @Override
     public String toString() {
         return "RentDTO{" +
-                "client='" + client + '\'' +
-                ", car='" + car + '\'' +
+                "userApp='" + userApp + '\'' +
+                ", car=" + car +
                 ", rentDate='" + rentDate + '\'' +
-                ", rentAddress='" + rentAddress + '\'' +
+                ", rentAddress=" + rentAddress +
                 ", plannedReturnDate='" + plannedReturnDate + '\'' +
                 ", returnDate='" + returnDate + '\'' +
                 ", rentalDays='" + rentalDays + '\'' +
-                ", returnAddress='" + returnAddress + '\'' +
+                ", returnAddress=" + returnAddress +
                 ", rentalCost='" + rentalCost + '\'' +
-                ", odomoterDistance='" + odomoterDistance + '\'' +
-                ", promotionCode='" + promotionCode + '\'' +
+                ", odometerDistance='" + odometerDistance + '\'' +
+                ", promotionCode=" + promotionCode +
                 ", paymentMethod='" + paymentMethod + '\'' +
                 ", isFinished='" + isFinished + '\'' +
                 '}';

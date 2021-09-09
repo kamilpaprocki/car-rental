@@ -112,10 +112,6 @@ public class UserAppDTO {
         private UserAppDTOBuilder() {
         }
 
-        public static UserAppDTOBuilder anUserAppDTO() {
-            return new UserAppDTOBuilder();
-        }
-
         public UserAppDTOBuilder id(String id) {
             this.id = id;
             return this;
@@ -157,7 +153,7 @@ public class UserAppDTO {
         }
 
         public UserAppDTO build() {
-            return new UserAppDTO();
+            return new UserAppDTO(this);
         }
     }
 

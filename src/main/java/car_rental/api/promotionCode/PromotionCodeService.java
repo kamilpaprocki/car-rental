@@ -86,5 +86,13 @@ public class PromotionCodeService {
         return promotionCodeRepository.save(pC);
     }
 
+    public boolean isCorrectAndAvailablePromotionCode(String promotionCode){
+        PromotionCode pC = getPromotionCodeByCode(promotionCode);
+        if (pC == null){
+            return false;
+        }
+        return pC.isActive();
+    }
+
 
 }
