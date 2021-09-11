@@ -1,5 +1,6 @@
 package car_rental.api.userDetails;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.validation.constraints.NotEmpty;
@@ -7,6 +8,9 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
 public class UserDetailsAddressDTO {
+
+    @JsonIgnore
+    private String id;
 
     @JsonProperty(value = "street")
     @NotEmpty(message = "This can not be empty.")
@@ -44,6 +48,7 @@ public class UserDetailsAddressDTO {
     }
 
     private UserDetailsAddressDTO(ClientAddressDTOBuilder b) {
+        this.id = b.id;
         this.street = b.street;
         this.apartmentNumber = b.apartmentNumber;
         this.postalCode = b.postalCode;
@@ -52,11 +57,17 @@ public class UserDetailsAddressDTO {
     }
 
     public static final class ClientAddressDTOBuilder {
+        private String id;
         private String street;
         private String streetNumber;
         private String apartmentNumber;
         private String postalCode;
         private String city;
+
+        public ClientAddressDTOBuilder id(String id){
+            this.id = id;
+            return this;
+        }
 
         public ClientAddressDTOBuilder street(String street) {
             this.street = street;
@@ -87,6 +98,14 @@ public class UserDetailsAddressDTO {
             return new UserDetailsAddressDTO(this);
 
         }
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getStreet() {
@@ -131,6 +150,13 @@ public class UserDetailsAddressDTO {
 
     @Override
     public String toString() {
-        return String.join("; ", street, streetNumber, apartmentNumber, postalCode, city);
+        return "UserDetailsAddressDTO{" +
+                "id='" + id + '\'' +
+                ", street='" + street + '\'' +
+                ", streetNumber='" + streetNumber + '\'' +
+                ", apartmentNumber='" + apartmentNumber + '\'' +
+                ", postalCode='" + postalCode + '\'' +
+                ", city='" + city + '\'' +
+                '}';
     }
 }

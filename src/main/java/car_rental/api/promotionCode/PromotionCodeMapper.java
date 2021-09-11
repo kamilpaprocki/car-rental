@@ -18,10 +18,10 @@ public class PromotionCodeMapper implements DTOMapper<PromotionCode, PromotionCo
                     .generateDate(from.getGenerateDate().toString())
                     .expDate(from.getExpDate().toString())
                     .discount(from.getDiscount().toString())
-                    .isMultipleUse((String.valueOf(from.isMultipleUse())))
+                    .isMultipleUse(String.valueOf(from.isMultipleUse()))
                     .usedDate(from.getUsedDate().toString())
                     .availableUse(String.valueOf(from.getAvailableUse()))
-                    .isActive(String.valueOf(from.isActive()))
+                    .isActive(from.isActive().toString())
                     .build();
         }
 
@@ -31,9 +31,9 @@ public class PromotionCodeMapper implements DTOMapper<PromotionCode, PromotionCo
                 .generateDate(from.getGenerateDate().toString())
                 .expDate(from.getExpDate().toString())
                 .discount(from.getDiscount().toString())
-                .isMultipleUse((String.valueOf(from.isMultipleUse())))
+                .isMultipleUse(String.valueOf(from.isMultipleUse()))
                 .availableUse(String.valueOf(from.getAvailableUse()))
-                .isActive(String.valueOf(from.isActive()))
+                .isActive(from.isActive().toString())
                 .build();
     }
 
@@ -41,15 +41,17 @@ public class PromotionCodeMapper implements DTOMapper<PromotionCode, PromotionCo
     public PromotionCode reverse(PromotionCodeDTO from) {
         PromotionCode promotionCode = new PromotionCode();
         DateParser dateParser = new DateParser();
-        promotionCode.setId(Long.parseLong(from.getId()));
+        if(from.getId() != null){
+            promotionCode.setId(Long.parseLong(from.getId()));
+        }
         promotionCode.setPromotionCode(from.getPromotionCodeDTO());
         if (from.getUsedDate() != null) {
             promotionCode.setUsedDate(dateParser.parseDate(from.getUsedDate()));
         }
-        promotionCode.setGenerateDate(dateParser.parseDate(from.getUsedDate()));
-        promotionCode.setExpDate(dateParser.parseDate(from.getUsedDate()));
+        promotionCode.setGenerateDate(dateParser.parseDate(from.getGenerateDate()));
+        promotionCode.setExpDate(dateParser.parseDate(from.getExpDate()));
         promotionCode.setDiscount(new BigDecimal(from.getDiscount()));
-        promotionCode.setMultipleUse(Boolean.getBoolean(from.getIsMultipleUse()));
+        promotionCode.setMultipleUse(Boolean.parseBoolean(from.getIsMultipleUse()));
         promotionCode.setAvailableUse(Integer.parseInt(from.getAvailableUse()));
         return promotionCode;
     }

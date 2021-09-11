@@ -45,6 +45,10 @@ public class UserDetails {
         return id;
     }
 
+    public void setId(Long id) {
+        this.id = id;
+    }
+
     public String getName() {
         return name;
     }
@@ -73,7 +77,7 @@ public class UserDetails {
         return userDetailsAddress;
     }
 
-    public void setAddress(UserDetailsAddress userDetailsAddress) {
+    public void setUserDetailsAddress(UserDetailsAddress userDetailsAddress) {
         this.userDetailsAddress = userDetailsAddress;
     }
 

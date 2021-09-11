@@ -26,7 +26,8 @@ public class CarDTO {
     @JsonProperty(value = "price_per_day")
     private String pricePerDay;
 
-    private boolean isAvailable;
+    @JsonProperty(value = "is_available")
+    private String isAvailable;
 
     private CarDTO(CarDTOBuilder b) {
         this.id = b.id;
@@ -51,7 +52,7 @@ public class CarDTO {
         private String modelYear;
         private String currentOdometer;
         private String pricePerDay;
-        private boolean isAvailable;
+        private String isAvailable;
 
         public CarDTOBuilder id(String id){
             this.id = id;
@@ -88,7 +89,7 @@ public class CarDTO {
             return this;
         }
 
-        public CarDTOBuilder available(boolean isAvailable){
+        public CarDTOBuilder available(String isAvailable){
             this.isAvailable = isAvailable;
             return this;
         }
@@ -126,7 +127,7 @@ public class CarDTO {
         return pricePerDay;
     }
 
-    public boolean isAvailable() {
+    public String isAvailable() {
         return isAvailable;
     }
 

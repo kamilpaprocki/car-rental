@@ -8,6 +8,7 @@ public class UserDetailsMapper implements DTOMapper<UserDetails, UserDetailsDTO>
     public UserDetailsDTO map(UserDetails from) {
 
         return UserDetailsDTO.builder()
+                .id(from.getId().toString())
                 .name(from.getName())
                 .lastName(from.getLastName())
                 .nationality(from.getNationality())
@@ -23,10 +24,13 @@ public class UserDetailsMapper implements DTOMapper<UserDetails, UserDetailsDTO>
     @Override
     public UserDetails reverse(UserDetailsDTO from) {
         UserDetails userDetails = new UserDetails();
+        if (from.getId() != null){
+            userDetails.setId(Long.parseLong(from.getId()));
+        }
         userDetails.setName(from.getName());
         userDetails.setLastName(from.getLastName());
         userDetails.setNationality(from.getNationality());
-        userDetails.setAddress(new UserDetailsAddressMapper().reverse(from.getAddressDTO()));
+        userDetails.setUserDetailsAddress(new UserDetailsAddressMapper().reverse(from.getAddressDTO()));
         userDetails.setDrivingLicenseNumber(from.getDrivingLicenseNumber());
         userDetails.setIdentityCardNumber(from.getIdentityCardNumber());
         userDetails.setPeselNumber(from.getPeselNumber());

@@ -1,6 +1,7 @@
 package car_rental.api.userDetails;
 
 import car_rental.api.utils.DateFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.validation.Valid;
@@ -9,6 +10,9 @@ import javax.validation.constraints.Pattern;
 
 @DateFormat
 public class UserDetailsDTO {
+
+    @JsonIgnore
+    private String id;
 
     @JsonProperty(value = "name")
     @NotEmpty(message = "This can not be empty.")
@@ -56,6 +60,7 @@ public class UserDetailsDTO {
     }
 
     private UserDetailsDTO(ClientDTOBuilder b) {
+        this.id = b.id;
         this.name = b.name;
         this.lastName = b.lastName;
         this.nationality = b.nationality;
@@ -65,6 +70,14 @@ public class UserDetailsDTO {
         this.peselNumber = b.peselNumber;
         this.phoneNumber = b.phoneNumber;
         this.birthDate = b.birthDate;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getName() {
@@ -145,6 +158,7 @@ public class UserDetailsDTO {
 
     public static class ClientDTOBuilder {
 
+        private String id;
         private String name;
         private String lastName;
         private String nationality;
@@ -154,6 +168,11 @@ public class UserDetailsDTO {
         private String peselNumber;
         private String phoneNumber;
         private String birthDate;
+
+        public ClientDTOBuilder id(String id){
+            this.id = id;
+            return this;
+        }
 
         public ClientDTOBuilder name(String name){
             this.name = name;
@@ -207,16 +226,17 @@ public class UserDetailsDTO {
 
     @Override
     public String toString() {
-        return "ClientDTO{" +
-                "name='" + name + '\'' +
+        return "UserDetailsDTO{" +
+                "id='" + id + '\'' +
+                ", name='" + name + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", nationality='" + nationality + '\'' +
-                ", address='" + addressDTO + '\'' +
+                ", addressDTO=" + addressDTO +
                 ", drivingLicenseNumber='" + drivingLicenseNumber + '\'' +
                 ", identityCardNumber='" + identityCardNumber + '\'' +
                 ", peselNumber='" + peselNumber + '\'' +
                 ", phoneNumber='" + phoneNumber + '\'' +
-                ", birthDate=" + birthDate +
+                ", birthDate='" + birthDate + '\'' +
                 '}';
     }
 }

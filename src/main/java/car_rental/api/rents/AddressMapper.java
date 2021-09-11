@@ -18,7 +18,11 @@ public class AddressMapper implements DTOMapper<Address, AddressDTO> {
     @Override
     public RentAddress reverse(AddressDTO from) {
         RentAddress address = new RentAddress();
-        address.setId(Long.parseLong(from.getId()));
+
+        if(from.getId() != null){
+            address.setId(Long.parseLong(from.getId()));
+        }
+
         address.setStreet(from.getStreet());
         address.setStreetNumber(from.getStreetNumber());
         address.setPostalCode(from.getPostalCode());
@@ -28,7 +32,10 @@ public class AddressMapper implements DTOMapper<Address, AddressDTO> {
 
     public ReturnAddress reverseToReturnAddress(AddressDTO from) {
         ReturnAddress address = new ReturnAddress();
-        address.setId(Long.parseLong(from.getId()));
+
+        if(from.getId() != null){
+            address.setId(Long.parseLong(from.getId()));
+        }
         address.setStreet(from.getStreet());
         address.setStreetNumber(from.getStreetNumber());
         address.setPostalCode(from.getPostalCode());

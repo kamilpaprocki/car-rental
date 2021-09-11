@@ -9,10 +9,11 @@ public class UserAppMapper implements DTOMapper<UserApp, UserAppDTO> {
     public UserAppDTO map(UserApp from) {
         return UserAppDTO.builder()
                 .id(from.getId().toString())
+                .email(from.getEmail())
                 .username(from.getUsername())
                 .password(from.getPassword())
                 .registeredDate(from.getRegistredDate().toString())
-                .isActive(Boolean.toString(from.isActive()))
+                .isActive(String.valueOf(from.isActive()))
                 .roles(from.getRoles())
                 .userDetailsDTO(new UserDetailsMapper().map(from.getUserDetails()))
                 .build();
@@ -21,12 +22,14 @@ public class UserAppMapper implements DTOMapper<UserApp, UserAppDTO> {
     @Override
     public UserApp reverse(UserAppDTO from) {
         UserApp userApp = new UserApp();
+        if (from.getId() != null){
         userApp.setId(Long.parseLong(from.getId()));
+        }
         userApp.setUsername(from.getUsername());
         userApp.setEmail(from.getEmail());
         userApp.setPassword(from.getPassword());
         userApp.setRegistredDate(new DateParser().parseDate(from.getRegisteredDate()));
-        userApp.setIsActive(Boolean.getBoolean(from.getIsActive()));
+        userApp.setIsActive(Boolean.parseBoolean(from.getIsActive()));
         userApp.setRoles(from.getRoles());
         userApp.setUserDetails(new UserDetailsMapper().reverse(from.getUserDetailsDTO()));
 

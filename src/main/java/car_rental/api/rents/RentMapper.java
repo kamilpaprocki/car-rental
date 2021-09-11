@@ -8,17 +8,16 @@ import car_rental.api.utils.DateParser;
 
 import java.math.BigDecimal;
 
-public class RentDTOMapper implements DTOMapper<Rent, RentDTO> {
+public class RentMapper implements DTOMapper<Rent, RentDTO> {
 
     @Override
     public RentDTO map(Rent from) {
 
-        if (from.getRentDate() != null) {
+        if (from.getPromotionCode() != null) {
             return RentDTO.builder()
                     .id(from.getId().toString())
                     .userApp(new UserAppMapper().map(from.getUserApp()))
                     .car(new CarMapper().map(from.getCar()))
-                    .rentDate(from.getRentDate().toString())
                     .rentAddress(new AddressMapper().map(from.getRentAddress()))
                     .plannedReturnDate(from.getPlannedReturnDate().toString())
                     .rentalDays(String.valueOf(from.getRentalDays()))
@@ -26,11 +25,11 @@ public class RentDTOMapper implements DTOMapper<Rent, RentDTO> {
                     .returnDate(from.getReturnDate().toString())
                     .rentalCost(from.getRentalCost().toString())
                     .odometerDistance(String.valueOf(from.getOdometerDistance()))
-                    .promotionCode(new PromotionCodeMapper().map(from.getPromotionCode()))
                     .paymentMethod(from.getPaymentMethod().toString())
                     .isFinished(from.isFinished().toString())
                     .build();
         }
+
         return RentDTO.builder()
                 .id(from.getId().toString())
                 .userApp(new UserAppMapper().map(from.getUserApp()))
@@ -53,7 +52,9 @@ public class RentDTOMapper implements DTOMapper<Rent, RentDTO> {
         Rent rent = new Rent();
         DateParser dateParser = new DateParser();
 
-        rent.setId(Long.parseLong(from.getId()));
+        if(rent.getId() != null) {
+            rent.setId(Long.parseLong(from.getId()));
+        }
         rent.setUserApp(new UserAppMapper().reverse(from.getUserApp()));
         rent.setCar(new CarMapper().reverse(from.getCar()));
         rent.setRentDate(dateParser.parseDate(from.getRentDate()));
@@ -65,11 +66,16 @@ public class RentDTOMapper implements DTOMapper<Rent, RentDTO> {
             rent.setReturnDate(dateParser.parseDate(from.getReturnDate()));
         }
         rent.setRentalCost(new BigDecimal(from.getRentalCost()));
-        rent.setOdometerDistance(Long.parseLong(from.getOdometerDistance()));
-        rent.setPromotionCode(new PromotionCodeMapper().reverse(from.getPromotionCode()));
+        if (from.getOdometerDistance() != null) {
+            rent.setOdometerDistance(Long.parseLong(from.getOdometerDistance()));
+        }
+        if (from.getPromotionCode() != null){
+            rent.setPromotionCode(new PromotionCodeMapper().reverse(from.getPromotionCode()));
+        }
         rent.setPaymentMethod(PaymentMethod.valueOf(from.getPaymentMethod()));
-        rent.setFinished(Boolean.getBoolean(from.getIsFinished()));
-
+        if(from.getIsFinished() != null) {
+            rent.setFinished(Boolean.parseBoolean(from.getIsFinished()));
+        }
         return rent;
     }
 }
