@@ -64,8 +64,11 @@ public class RentFrontController {
     @PostMapping("/add/rent/summary")
     public String summary(@ModelAttribute("rentDTO") RentDTO rentDTO){
 
-        System.out.println(rentDTO.toString());
-        return "redirect:/home";
+       // rentService.addRent(rentDTO);
+        Rent rent = rentService.addRent(rentDTO);
+        System.out.println(rent.toString());
+
+        return "redirect:/home?info=rented";
     }
 
     @PostMapping(value = "/usepromotioncode")

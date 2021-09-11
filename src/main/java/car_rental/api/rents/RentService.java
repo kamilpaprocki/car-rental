@@ -3,6 +3,7 @@ package car_rental.api.rents;
 import car_rental.api.car.Car;
 import car_rental.api.car.CarDTO;
 import car_rental.api.car.CarMapper;
+import car_rental.api.car.CarService;
 import car_rental.api.exceptions.WrongDataFormatException;
 import car_rental.api.promotionCode.PromotionCode;
 import car_rental.api.promotionCode.PromotionCodeDTO;
@@ -25,10 +26,12 @@ public class RentService {
 
     private final RentRepository rentRepository;
     private final PromotionCodeService promotionCodeService;
+    private final CarService carService;
 
-    public RentService(RentRepository rentRepository, PromotionCodeService promotionCodeService) {
+    public RentService(RentRepository rentRepository, PromotionCodeService promotionCodeService, CarService carService) {
         this.rentRepository = rentRepository;
         this.promotionCodeService = promotionCodeService;
+        this.carService = carService;
     }
 
     public Rent createRent(Rent rent, String promotionCode){
@@ -124,5 +127,13 @@ public class RentService {
         BigDecimal rentalCost = new BigDecimal(pricePerDay).multiply(BigDecimal.valueOf(rentalDays));
         rentDTO.setRentalCost(rentalCost.toString());
         return rentDTO;
+    }
+
+    public Rent addRent(RentDTO rentDTO){
+        Car car = new CarMapper().reverse(rentDTO.getCar());
+        car.setAvailable(false);
+        carService.createOrUpdateCar(car);
+        Rent rent = new RentMapper().reverse(rentDTO);
+        return rentRepository.save(rent);
     }
 }

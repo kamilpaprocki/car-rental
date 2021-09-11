@@ -5,7 +5,6 @@ import car_rental.api.promotionCode.PromotionCode;
 import car_rental.api.user.UserApp;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
-import org.hibernate.annotations.Formula;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -23,11 +22,11 @@ public class Rent {
     @Column(name = "id")
     private Long id;
 
-    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToOne(cascade = CascadeType.MERGE, orphanRemoval = true)
     @PrimaryKeyJoinColumn(name = "id")
     private UserApp userApp;
 
-    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToOne(cascade = CascadeType.MERGE, orphanRemoval = true)
     @PrimaryKeyJoinColumn(name = "id")
     private Car car;
 
@@ -44,7 +43,7 @@ public class Rent {
     @Column(name = "return_date")
     private Date returnDate;
 
-    @Formula(value = "DATEDIFF(planned_return_date, rent_date)")
+    @Column(name = "rental_days")
     private long rentalDays;
 
    @OneToOne(cascade = CascadeType.ALL)
@@ -196,7 +195,7 @@ public class Rent {
                 ", rentalDays=" + rentalDays +
                 ", returnAddress=" + returnAddress +
                 ", rentalCost=" + rentalCost +
-                ", odomoterDistance=" + odometerDistance +
+                ", odometerDistance=" + odometerDistance +
                 ", promotionCode=" + promotionCode +
                 ", paymentMethod=" + paymentMethod +
                 ", isFinished=" + isFinished +
