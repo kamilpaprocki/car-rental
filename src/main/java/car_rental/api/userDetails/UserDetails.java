@@ -11,7 +11,7 @@ public class UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
+    @Column(name = "user_details_id")
     private Long id;
 
     @Column(name = "name", nullable = false)
@@ -24,6 +24,7 @@ public class UserDetails {
     private String nationality;
 
     @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "user_details_address_id")
     private UserDetailsAddress userDetailsAddress;
 
     @Column(name = "driving_license_number", nullable = false, length = 13)

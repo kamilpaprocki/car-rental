@@ -9,7 +9,7 @@ public class UserDetailsAddress {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
+    @Column(name = "user_details_address_id")
     private Long id;
 
     @Column(name = "street", nullable = false)

@@ -13,7 +13,7 @@ public class UserApp {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
+    @Column(name = "user_id")
     private Long id;
 
     @Column(name = "login", nullable = false)
@@ -36,7 +36,7 @@ public class UserApp {
     private Set<Role> roles;
 
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @PrimaryKeyJoinColumn(name = "id")
+    @JoinColumn(name = "user_details_id")
     private UserDetails userDetails;
 
     public UserApp() {

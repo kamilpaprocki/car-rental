@@ -19,15 +19,15 @@ public class Rent {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
+    @Column(name = "rent_id")
     private Long id;
 
     @OneToOne(cascade = CascadeType.MERGE, orphanRemoval = true)
-    @PrimaryKeyJoinColumn(name = "id")
+    @JoinColumn(name = "user_id")
     private UserApp userApp;
 
     @OneToOne(cascade = CascadeType.MERGE, orphanRemoval = true)
-    @PrimaryKeyJoinColumn(name = "id")
+    @JoinColumn(name = "car_id")
     private Car car;
 
     @Column(name = "rent_date", nullable = false)
@@ -58,7 +58,7 @@ public class Rent {
     @ColumnDefault("0")
     private long odometerDistance;
 
-    @PrimaryKeyJoinColumn(name = "id")
+    @JoinColumn(name = "promotion_code_id")
     @OneToOne(cascade = {CascadeType.MERGE}, orphanRemoval = true)
     private PromotionCode promotionCode;
 
