@@ -28,7 +28,7 @@ public class UserAppMapper implements DTOMapper<UserApp, UserAppDTO> {
         userApp.setUsername(from.getUsername());
         userApp.setEmail(from.getEmail());
         userApp.setPassword(from.getPassword());
-        userApp.setRegistredDate(new DateParser().parseDate(from.getRegisteredDate()));
+        userApp.setRegistredDate(new DateParser().parseStringToDate(from.getRegisteredDate()));
         userApp.setIsActive(Boolean.parseBoolean(from.getIsActive()));
         userApp.setRoles(from.getRoles());
         userApp.setUserDetails(new UserDetailsMapper().reverse(from.getUserDetailsDTO()));

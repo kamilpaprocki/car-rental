@@ -51,6 +51,9 @@ public class RentDTO {
     @JsonProperty(value = "promotion_code_id")
     private PromotionCodeDTO promotionCode;
 
+    @JsonProperty(value = "currency")
+    private String currency;
+
     @JsonProperty(value = "payment_method")
     private String paymentMethod;
 
@@ -112,6 +115,14 @@ public class RentDTO {
         this.promotionCode = promotionCode;
     }
 
+    public String getCurrency() {
+        return currency;
+    }
+
+    public void setCurrency(String currency) {
+        this.currency = currency;
+    }
+
     public void setPaymentMethod(String paymentMethod) {
         this.paymentMethod = paymentMethod;
     }
@@ -139,6 +150,7 @@ public class RentDTO {
         this.returnAddress = b.returnAddress;
         this.returnDate = b.returnDate;
         this.car = b.car;
+        this.currency = b.currency;
     }
 
     public static final class RentDTOBuilder {
@@ -154,6 +166,7 @@ public class RentDTO {
         private String rentalCost;
         private String odometerDistance;
         private PromotionCodeDTO promotionCode;
+        private String currency;
         private String paymentMethod;
         private String isFinished;
 
@@ -198,7 +211,9 @@ public class RentDTO {
         }
 
         public RentDTOBuilder returnDate(String returnDate) {
-            this.returnDate = returnDate;
+            if(returnDate != null) {
+                this.returnDate = returnDate;
+            }
             return this;
         }
 
@@ -215,6 +230,11 @@ public class RentDTO {
         public RentDTOBuilder promotionCode(PromotionCodeDTO promotionCode) {
             this.promotionCode = promotionCode;
             return this;
+        }
+
+        public RentDTOBuilder currency(String currency){
+            this.currency = currency;
+            return  this;
         }
 
         public RentDTOBuilder paymentMethod(String paymentMethod) {
@@ -301,6 +321,7 @@ public class RentDTO {
                 ", rentalCost='" + rentalCost + '\'' +
                 ", odometerDistance='" + odometerDistance + '\'' +
                 ", promotionCode=" + promotionCode +
+                ", currency='" + currency + '\'' +
                 ", paymentMethod='" + paymentMethod + '\'' +
                 ", isFinished='" + isFinished + '\'' +
                 '}';

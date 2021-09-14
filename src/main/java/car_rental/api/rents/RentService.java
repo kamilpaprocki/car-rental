@@ -20,6 +20,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.sql.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class RentService {
@@ -34,7 +35,7 @@ public class RentService {
         this.carService = carService;
     }
 
-    public Rent createRent(Rent rent, String promotionCode){
+    public Rent createOrUpdateRent(Rent rent, String promotionCode){
         rent.setPromotionCode(promotionCodeService.usePromotionCode(promotionCode));
        rent.setRentalCost(rent.getRentalCost()
                 .subtract(
@@ -43,7 +44,7 @@ public class RentService {
         return rentRepository.save(rent);
     }
 
-    public Rent createRent(Rent rent){
+    public Rent createOrUpdateRent(Rent rent){
         return rentRepository.save(rent);
     }
 
@@ -118,14 +119,14 @@ public class RentService {
         return rentDTO;
     }
 
-    public RentDTO addRentDetails(RentDTO rentDTO){
+    public RentDTO addOrUpdateRentDetails(RentDTO rentDTO){
         DateParser dateParser = new DateParser();
-        long rentalDays = getRentalDays(dateParser.parseDate(rentDTO.getRentDate()), dateParser.parseDate(rentDTO.getPlannedReturnDate()));
+        long rentalDays = getRentalDays(dateParser.parseStringToDate(rentDTO.getRentDate()), dateParser.parseStringToDate(rentDTO.getPlannedReturnDate()));
         rentDTO.setRentalDays(String.valueOf(rentalDays));
 
         String pricePerDay = rentDTO.getCar().getPricePerDay();
         BigDecimal rentalCost = new BigDecimal(pricePerDay).multiply(BigDecimal.valueOf(rentalDays));
-        rentDTO.setRentalCost(rentalCost.toString());
+        rentDTO.setRentalCost(String.valueOf(rentalCost));
         return rentDTO;
     }
 
@@ -135,5 +136,24 @@ public class RentService {
         carService.createOrUpdateCar(car);
         Rent rent = new RentMapper().reverse(rentDTO);
         return rentRepository.save(rent);
+    }
+
+    public List<RentDTO> getRentByUserApp(UserApp userApp){
+        List<Rent> rent = rentRepository.getRentByUserApp(userApp).orElse(null);
+        if (rent == null){
+            throw new WrongRentException("There is no active rent");
+        }
+        return rent.stream().map(new RentMapper() :: map).collect(Collectors.toList());
+    }
+
+    public RentDTO updatePlannedReturnDate(RentDTO rentDTO){
+        rentDTO = addOrUpdateRentDetails(rentDTO);
+        if (rentDTO.getPromotionCode() != null){
+            BigDecimal discount = new BigDecimal(rentDTO.getPromotionCode().getDiscount());
+            BigDecimal rentalCost = new BigDecimal(rentDTO.getRentalCost());
+            rentalCost = (rentalCost.multiply(BigDecimal.valueOf(100).subtract(discount))).divide(BigDecimal.valueOf(100)).setScale(2, RoundingMode.CEILING);
+            rentDTO.setRentalCost(String.valueOf(rentalCost));
+        }
+        return rentDTO;
     }
 }

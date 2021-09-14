@@ -33,7 +33,7 @@ public class PromotionCodeMapper implements DTOMapper<PromotionCode, PromotionCo
                 .discount(from.getDiscount().toString())
                 .isMultipleUse(String.valueOf(from.isMultipleUse()))
                 .availableUse(String.valueOf(from.getAvailableUse()))
-                .isActive(from.isActive().toString())
+                .isActive(String.valueOf(from.isActive()))
                 .build();
     }
 
@@ -46,10 +46,10 @@ public class PromotionCodeMapper implements DTOMapper<PromotionCode, PromotionCo
         }
         promotionCode.setPromotionCode(from.getPromotionCodeDTO());
         if (from.getUsedDate() != null) {
-            promotionCode.setUsedDate(dateParser.parseDate(from.getUsedDate()));
+            promotionCode.setUsedDate(dateParser.parseStringToDate(from.getUsedDate()));
         }
-        promotionCode.setGenerateDate(dateParser.parseDate(from.getGenerateDate()));
-        promotionCode.setExpDate(dateParser.parseDate(from.getExpDate()));
+        promotionCode.setGenerateDate(dateParser.parseStringToDate(from.getGenerateDate()));
+        promotionCode.setExpDate(dateParser.parseStringToDate(from.getExpDate()));
         promotionCode.setDiscount(new BigDecimal(from.getDiscount()));
         promotionCode.setMultipleUse(Boolean.parseBoolean(from.getIsMultipleUse()));
         promotionCode.setAvailableUse(Integer.parseInt(from.getAvailableUse()));

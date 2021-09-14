@@ -6,6 +6,7 @@ import car_rental.api.car.CarMapper;
 import car_rental.api.car.CarService;
 import car_rental.api.promotionCode.PromotionCodeDTO;
 import car_rental.api.user.UserApp;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -19,7 +20,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Controller
-@SessionAttributes("rentDTO")
+@SessionAttributes({"rentDTO", "activeRentDTO"})
 public class RentFrontController {
 
     private final RentService rentService;
@@ -30,6 +31,7 @@ public class RentFrontController {
         this.carService = carService;
     }
 
+    @PreAuthorize("isAuthenticated()")
     @GetMapping("/rent")
       public String rentForm(Model model){
         List<Car> cars = carService.getAvailableCar();
@@ -54,7 +56,7 @@ public class RentFrontController {
             return "rent-details";
         }
 
-        rentDTO = rentService.addRentDetails(rentDTO);
+        rentDTO = rentService.addOrUpdateRentDetails(rentDTO);
         model.addAttribute("rentDTO", rentDTO);
         model.addAttribute("promotionCodeDTO", new PromotionCodeDTO());
         
@@ -63,11 +65,7 @@ public class RentFrontController {
 
     @PostMapping("/add/rent/summary")
     public String summary(@ModelAttribute("rentDTO") RentDTO rentDTO){
-
-       // rentService.addRent(rentDTO);
-        Rent rent = rentService.addRent(rentDTO);
-        System.out.println(rent.toString());
-
+        rentService.addRent(rentDTO);
         return "redirect:/home?info=rented";
     }
 
@@ -89,5 +87,39 @@ public class RentFrontController {
     @ModelAttribute("rentDTO")
     public RentDTO newRentDTO(){
         return new RentDTO();
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping(value = "/extend/rent")
+    public String getExtendRent(Model model){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserApp userApp = (UserApp)(authentication.getPrincipal());
+        List<RentDTO> rentDTO = rentService.getRentByUserApp(userApp);
+        model.addAttribute("rents", rentDTO);
+        return "get-rent";
+    }
+
+    @GetMapping("/extend/rent/update")
+    public String extendRent(Model model, @RequestParam String rentId){
+        Rent rent = rentService.getRentById(Long.parseLong(rentId));
+        RentDTO rentDTO = new RentMapper().map(rent);
+        model.addAttribute("activeRentDTO", rentDTO);
+
+        return "extend-rent";
+    }
+
+    @PostMapping("/extend/rent")
+    public String updateRent(@ModelAttribute("activeRentDTO") @Valid RentDTO rentDTO, BindingResult bindingResult, Model model){
+        if (bindingResult.hasErrors()){
+            return "extend-rent";
+        }
+        model.addAttribute("activeRentDTO", rentService.updatePlannedReturnDate(rentDTO));
+        return "extend-rent-summary";
+    }
+
+    @PostMapping("/update/extend/rent")
+    public String saveUpdatedRent(@ModelAttribute("activeRentDTO") RentDTO rentDTO){
+        rentService.createOrUpdateRent(new RentMapper().reverse(rentDTO));
+        return "redirect:/home?info=extended";
     }
 }

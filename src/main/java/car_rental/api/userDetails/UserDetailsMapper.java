@@ -35,7 +35,7 @@ public class UserDetailsMapper implements DTOMapper<UserDetails, UserDetailsDTO>
         userDetails.setIdentityCardNumber(from.getIdentityCardNumber());
         userDetails.setPeselNumber(from.getPeselNumber());
         userDetails.setPhoneNumber(from.getPhoneNumber());
-        userDetails.setBirthDate(new DateParser().parseDate(from.getBirthDate()));
+        userDetails.setBirthDate(new DateParser().parseStringToDate(from.getBirthDate()));
 
         return userDetails;
     }

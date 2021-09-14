@@ -1,6 +1,7 @@
 package car_rental.api.rents;
 
 import car_rental.api.car.Car;
+import car_rental.api.currency.Currency;
 import car_rental.api.promotionCode.PromotionCode;
 import car_rental.api.user.UserApp;
 import org.hibernate.annotations.ColumnDefault;
@@ -33,7 +34,7 @@ public class Rent {
     @Column(name = "rent_date", nullable = false)
     private Date rentDate;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = {CascadeType.MERGE, CascadeType.ALL})
     @JoinColumn(name = "rent_address")
     private RentAddress rentAddress;
 
@@ -46,8 +47,8 @@ public class Rent {
     @Column(name = "rental_days")
     private long rentalDays;
 
-   @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "return_adress", nullable = false)
+   @OneToOne(cascade = {CascadeType.MERGE, CascadeType.ALL})
+    @JoinColumn(name = "return_adress")
     private ReturnAddress returnAddress;
 
     @Column(name = "rental_cost")
@@ -61,6 +62,10 @@ public class Rent {
     @JoinColumn(name = "promotion_code_id")
     @OneToOne(cascade = {CascadeType.MERGE}, orphanRemoval = true)
     private PromotionCode promotionCode;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "currency", nullable = false)
+    private Currency currency;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "payment_method", nullable = false)
@@ -174,6 +179,14 @@ public class Rent {
         this.paymentMethod = paymentMethod;
     }
 
+    public Currency getCurrency() {
+        return currency;
+    }
+
+    public void setCurrency(Currency currency) {
+        this.currency = currency;
+    }
+
     public Boolean isFinished() {
         return isFinished;
     }
@@ -197,6 +210,7 @@ public class Rent {
                 ", rentalCost=" + rentalCost +
                 ", odometerDistance=" + odometerDistance +
                 ", promotionCode=" + promotionCode +
+                ", currency=" + currency +
                 ", paymentMethod=" + paymentMethod +
                 ", isFinished=" + isFinished +
                 '}';
