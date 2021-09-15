@@ -6,8 +6,8 @@ import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
+import java.time.LocalDate;
+import java.time.ZoneId;
 
 public class RentDateFormatValidator implements ConstraintValidator<DateFormat, RentDTO> {
 
@@ -42,9 +42,10 @@ public class RentDateFormatValidator implements ConstraintValidator<DateFormat, 
 
         try{
             dateFormat.setLenient(false);
-            Date rentDate = dateFormat.parse(rentDTO.getRentDate());
-            Date now = Calendar.getInstance().getTime();
-            if (rentDate.before(now)){
+            LocalDate rentDate = dateFormat.parse(rentDTO.getRentDate()).toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+            LocalDate now = LocalDate.now();
+
+            if (rentDate.compareTo(now) < 0){
                 isValid = false;
                 constraintValidatorContext.disableDefaultConstraintViolation();
                 message = "Rent date can not to be before actual date.";
@@ -52,8 +53,8 @@ public class RentDateFormatValidator implements ConstraintValidator<DateFormat, 
                 return isValid;
             }
 
-            Date returnDate = dateFormat.parse(rentDTO.getPlannedReturnDate());
-            if (returnDate.before(now)){
+            LocalDate returnDate = dateFormat.parse(rentDTO.getPlannedReturnDate()).toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+            if (returnDate.compareTo(now) < 0){
                 isValid = false;
                 constraintValidatorContext.disableDefaultConstraintViolation();
                 message = "Return date can not to be before actual date.";
@@ -61,7 +62,7 @@ public class RentDateFormatValidator implements ConstraintValidator<DateFormat, 
                 return isValid;
             }
 
-            if (returnDate.before(rentDate)){
+            if (returnDate.compareTo(rentDate) < 0){
                 isValid = false;
                 constraintValidatorContext.disableDefaultConstraintViolation();
                 message = "Return date can not to be before rent date.";
