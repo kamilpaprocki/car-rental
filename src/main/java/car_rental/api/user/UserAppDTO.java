@@ -13,6 +13,7 @@ public class UserAppDTO {
     private String password;
     private String registeredDate;
     private String isActive;
+    private String hasActiveRent;
     private Set<Role> roles;
     private UserDetailsDTO userDetailsDTO;
 
@@ -23,6 +24,7 @@ public class UserAppDTO {
         this.password = u.password;
         this.registeredDate = u.registeredDate;
         this.isActive = u.isActive;
+        this.hasActiveRent = u.hasActiveRent;
         this.roles = u.roles;
         this.userDetailsDTO = u.userDetailsDTO;
     }
@@ -94,6 +96,14 @@ public class UserAppDTO {
         this.userDetailsDTO = userDetailsDTO;
     }
 
+    public String getHasActiveRent() {
+        return hasActiveRent;
+    }
+
+    public void setHasActiveRent(String hasActiveRent) {
+        this.hasActiveRent = hasActiveRent;
+    }
+
     public static UserAppDTOBuilder builder(){
         return new UserAppDTOBuilder();
     }
@@ -106,6 +116,7 @@ public class UserAppDTO {
         private String password;
         private String registeredDate;
         private String isActive;
+        private String hasActiveRent;
         private Set<Role> roles;
         private UserDetailsDTO userDetailsDTO;
 
@@ -142,6 +153,11 @@ public class UserAppDTO {
             return this;
         }
 
+        public UserAppDTOBuilder hasActiveRent(String hasActiveRent){
+            this.hasActiveRent = hasActiveRent;
+            return this;
+        }
+
         public UserAppDTOBuilder roles(Set<Role> roles) {
             this.roles = roles;
             return this;
@@ -166,6 +182,7 @@ public class UserAppDTO {
                 ", password='" + password + '\'' +
                 ", registeredDate='" + registeredDate + '\'' +
                 ", isActive='" + isActive + '\'' +
+                ", hasActiveRent='" + hasActiveRent + '\'' +
                 ", roles=" + roles +
                 ", userDetailsDTO=" + userDetailsDTO +
                 '}';

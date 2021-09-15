@@ -31,6 +31,9 @@ public class UserApp {
     @Column(name = "is_active")
     private boolean isActive;
 
+    @Column(name = "has_active_rent")
+    private boolean hasActiveRent;
+
     @ManyToMany(cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
     @JoinTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles;
@@ -49,6 +52,7 @@ public class UserApp {
         this.password = u.password;
         this.registredDate = u.registredDate;
         this.isActive = u.isActive;
+        this.hasActiveRent = u.hasActiveRent;
         this.roles = u.roles;
         this.userDetails = u.userDetails;
     }
@@ -121,6 +125,14 @@ public class UserApp {
         this.userDetails = userDetails;
     }
 
+    public boolean isHasActiveRent() {
+        return hasActiveRent;
+    }
+
+    public void setHasActiveRent(boolean hasActiveRent) {
+        this.hasActiveRent = hasActiveRent;
+    }
+
     @Override
     public String toString() {
         return "UserApp{" +
@@ -130,8 +142,9 @@ public class UserApp {
                 ", password='" + password + '\'' +
                 ", registredDate=" + registredDate +
                 ", isActive=" + isActive +
+                ", hasActiveRent=" + hasActiveRent +
                 ", roles=" + roles +
-                ", client=" + userDetails +
+                ", userDetails=" + userDetails +
                 '}';
     }
 

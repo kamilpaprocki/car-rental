@@ -14,6 +14,7 @@ public class UserAppMapper implements DTOMapper<UserApp, UserAppDTO> {
                 .password(from.getPassword())
                 .registeredDate(from.getRegistredDate().toString())
                 .isActive(String.valueOf(from.isActive()))
+                .hasActiveRent(String.valueOf(from.isHasActiveRent()))
                 .roles(from.getRoles())
                 .userDetailsDTO(new UserDetailsMapper().map(from.getUserDetails()))
                 .build();
@@ -30,6 +31,7 @@ public class UserAppMapper implements DTOMapper<UserApp, UserAppDTO> {
         userApp.setPassword(from.getPassword());
         userApp.setRegistredDate(new DateParser().parseStringToDate(from.getRegisteredDate()));
         userApp.setIsActive(Boolean.parseBoolean(from.getIsActive()));
+        userApp.setHasActiveRent(Boolean.parseBoolean(from.getHasActiveRent()));
         userApp.setRoles(from.getRoles());
         userApp.setUserDetails(new UserDetailsMapper().reverse(from.getUserDetailsDTO()));
 
