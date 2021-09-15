@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org">
+<head th:replace="headers::default"></head>
+
+
+<body>
+
+
+<div th:replace="navigation :: nav"></div>
+
+<div class = "container-sm">
+    <div class ="row">
+        <div class="col-sm-10 mt-5">
+
+            <form method="post" th:action="@{/finish/rent/update}" th:object="${finishRentDTO}" name="form">
+
+                <div class = "container-fluid" >
+                    <div class = "model-container">
+                        <div class="mb-2 row col-sm-6">
+                            <label class="col-sm-6 col-form-label fw-bold" >Rent date: </label>
+                            <div readonly="" class="alert alert-primary" role="alert" th:text="${finishRentDTO.rentDate}" th:if="${finishRentDTO.rentDate}"></div>
+                        </div>
+
+                    </div>
+
+                    <div class = "model-container">
+                        <div class="mb-2 row col-sm-6">
+                            <label class="col-sm-6 col-form-label fw-bold" >Currently planned return date: </label>
+                            <div readonly="" class="alert alert-primary" role="alert" th:text="${finishRentDTO.plannedReturnDate}" th:if="${finishRentDTO.plannedReturnDate}"></div>
+                        </div>
+                    </div>
+
+                    <div class="mb-2 row  col-sm-6" th:object="${odometerWrapper}">
+                        <label for="currentOdometer" class="col-sm-6 col-form-label fw-bold">Car current odometer: </label>
+                        <input th:type="number" class="form-control" id="currentOdometer" placeholder="odometer"  name = "currentOdometer" >
+                      <!--  <p th:each="error : ${#fields.errors('${odometerWrapper.currentOdometer}')}"
+                           th:text="${error}" class="text-danger fst-italic">Validation error</p>-->
+                        <p class="text-danger fst-italic" th:if="${#fields.hasGlobalErrors()}"
+                           th:each="error : ${#fields.errors('global')}" th:text="${error}">Validation error</p>
+                    </div>
+
+                    <div class="mb-2 row  col-sm-6">
+                        <button style="margin-left: auto; margin-right: auto" type="submit" class="col-sm-2 btn btn-info fst-italic">Summary</button>
+
+                    </div>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

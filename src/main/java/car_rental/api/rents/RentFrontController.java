@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Controller
-@SessionAttributes({"rentDTO", "activeRentDTO"})
+@SessionAttributes({"rentDTO", "activeRentDTO", "finishRentDTO", "odometerWrapper"})
 public class RentFrontController {
 
     private final RentService rentService;
@@ -104,7 +104,6 @@ public class RentFrontController {
         Rent rent = rentService.getRentById(Long.parseLong(rentId));
         RentDTO rentDTO = new RentMapper().map(rent);
         model.addAttribute("activeRentDTO", rentDTO);
-
         return "extend-rent";
     }
 
@@ -121,5 +120,30 @@ public class RentFrontController {
     public String saveUpdatedRent(@ModelAttribute("activeRentDTO") RentDTO rentDTO){
         rentService.createOrUpdateRent(new RentMapper().reverse(rentDTO));
         return "redirect:/home?info=extended";
+    }
+
+    @GetMapping("/finish/rent")
+    public String getActiveRents(Model model){
+        model.addAttribute("rents", rentService.getActiveRents());
+        return "get-rents-to-finish";
+    }
+
+    @GetMapping("/finish/rent/update")
+    public String getFinishRentForm(@RequestParam String rentId, Model model){
+        RentDTO finishRentDTO = new RentMapper().map(rentService.getRentById(Long.parseLong(rentId)));
+        model.addAttribute("finishRentDTO", finishRentDTO);
+        model.addAttribute("odometerWrapper", rentService.getCarLastOdometer(finishRentDTO));
+    return "finish-rent";
+    }
+
+    @PostMapping("/finish/rent/update")
+    public String finishRent(@ModelAttribute("odometerWrapper") @Valid  CarReturnOdometerWrapper carReturnOdometerWrapper, BindingResult bindingResult
+            , @ModelAttribute("finishRentDTO") RentDTO rentDTO){
+        if (bindingResult.hasErrors()){
+            return "finish-rent";
+        }
+      rentService.finishRent(rentDTO, carReturnOdometerWrapper);
+        return "redirect:/home?info=finished";
+
     }
 }

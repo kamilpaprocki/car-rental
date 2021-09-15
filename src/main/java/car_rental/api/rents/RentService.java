@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.sql.Date;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -155,5 +156,54 @@ public class RentService {
             rentDTO.setRentalCost(String.valueOf(rentalCost));
         }
         return rentDTO;
+    }
+
+    public List<RentDTO> getActiveRents(){
+        List<Rent> rents = rentRepository.getActiveRents().orElse(null);
+        if (rents == null){
+            throw new WrongRentException("There are no active rents");
+        }
+       return rents.stream().map(new RentMapper() :: map).collect(Collectors.toList());
+
+    }
+
+    public CarReturnOdometerWrapper getCarLastOdometer(RentDTO rentDTO){
+        CarReturnOdometerWrapper carReturnOdometerWrapper = new CarReturnOdometerWrapper();
+        carReturnOdometerWrapper.setLastOdometer(rentDTO.getCar().getCurrentOdometer());
+        return carReturnOdometerWrapper;
+    }
+
+    public Rent finishRent(RentDTO rentDTO, CarReturnOdometerWrapper carReturnOdometerWrapper){
+
+        if (carReturnOdometerWrapper.getCurrentOdometer() == null){
+            throw new WrongRentException("This cannot be a null.");
+        }
+
+        if (carReturnOdometerWrapper.getLastOdometer() == null){
+            carReturnOdometerWrapper.setCurrentOdometer(rentDTO.getCar().getCurrentOdometer());
+        }
+
+        if (!rentDTO.getPlannedReturnDate().equals(String.valueOf(Date.valueOf(LocalDate.now())))){
+            rentDTO.setPlannedReturnDate(Date.valueOf(LocalDate.now()).toString());
+            rentDTO = updatePlannedReturnDate(rentDTO);
+        }
+
+        Rent rent = new RentMapper().reverse(rentDTO);
+
+        if (rent.getRentDate().after(Date.valueOf(LocalDate.now()))){
+            throw new WrongDataFormatException("Return date cannot be before rent date.");
+        }
+
+        long lastOdometer = Long.parseLong(carReturnOdometerWrapper.getLastOdometer());
+        long currentOdometer = Long.parseLong(carReturnOdometerWrapper.getCurrentOdometer());
+        long distance = currentOdometer - lastOdometer;
+        rent.setOdometerDistance(distance);
+        rent.setFinished(true);
+        rent.setReturnDate(Date.valueOf(LocalDate.now()));
+        rent.getCar().setAvailable(true);
+        rent.getCar().setCurrentOdometer(currentOdometer);
+        rent.getUserApp().setHasActiveRent(false);
+        return rentRepository.save(rent);
+
     }
 }
