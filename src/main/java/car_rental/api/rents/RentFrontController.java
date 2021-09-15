@@ -34,6 +34,11 @@ public class RentFrontController {
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/rent")
       public String rentForm(Model model){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (((UserApp)(authentication.getPrincipal())).isHasActiveRent()) {
+            return "redirect:/home?info=multiplerents";
+        }
+
         List<Car> cars = carService.getAvailableCar();
         List<CarDTO> carDTOs = cars.stream().map(new CarMapper() :: map).collect(Collectors.toList());
        model.addAttribute("cars", carDTOs);

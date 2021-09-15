@@ -9,6 +9,7 @@ import car_rental.api.promotionCode.PromotionCode;
 import car_rental.api.promotionCode.PromotionCodeDTO;
 import car_rental.api.promotionCode.PromotionCodeMapper;
 import car_rental.api.promotionCode.PromotionCodeService;
+import car_rental.api.user.CustomUserDetailsService;
 import car_rental.api.user.UserApp;
 import car_rental.api.user.UserAppDTO;
 import car_rental.api.user.UserAppMapper;
@@ -29,11 +30,13 @@ public class RentService {
     private final RentRepository rentRepository;
     private final PromotionCodeService promotionCodeService;
     private final CarService carService;
+    private final CustomUserDetailsService customUserDetailsService;
 
-    public RentService(RentRepository rentRepository, PromotionCodeService promotionCodeService, CarService carService) {
+    public RentService(RentRepository rentRepository, PromotionCodeService promotionCodeService, CarService carService, CustomUserDetailsService customUserDetailsService) {
         this.rentRepository = rentRepository;
         this.promotionCodeService = promotionCodeService;
         this.carService = carService;
+        this.customUserDetailsService = customUserDetailsService;
     }
 
     public Rent createOrUpdateRent(Rent rent, String promotionCode){
@@ -132,10 +135,11 @@ public class RentService {
     }
 
     public Rent addRent(RentDTO rentDTO){
-        Car car = new CarMapper().reverse(rentDTO.getCar());
-        car.setAvailable(false);
-        carService.createOrUpdateCar(car);
         Rent rent = new RentMapper().reverse(rentDTO);
+        rent.getCar().setAvailable(false);
+        carService.createOrUpdateCar(rent.getCar());
+        rent.getUserApp().setHasActiveRent(true);
+        customUserDetailsService.updateUser(rent.getUserApp());
         return rentRepository.save(rent);
     }
 

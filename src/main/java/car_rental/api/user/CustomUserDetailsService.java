@@ -72,6 +72,10 @@ public class CustomUserDetailsService implements UserDetailsService {
         return userRepository.findByEmail(email).isEmpty();
     }
 
+    public UserApp updateUser(UserApp userApp){
+        return userRepository.save(userApp);
+    }
+
     @Bean
     private BCryptPasswordEncoder bCryptPasswordEncoder(){
         return new BCryptPasswordEncoder();

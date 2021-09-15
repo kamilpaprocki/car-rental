@@ -27,6 +27,10 @@
     <div class="alert alert-success fst-italic" >You are successfully finished rent.</div>
 </div>
 
+<div th:if="${info == 'multiplerents'}">
+    <div class="alert alert-warning fst-italic" >You cannot rent another car. You have active rent.</div>
+</div>
+
 </div>
 
 </body>
