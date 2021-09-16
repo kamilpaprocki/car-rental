@@ -91,6 +91,12 @@ public class PromotionCodeService {
         if (pC == null){
             return false;
         }
+        if(pC.getExpDate().before(Date.valueOf(LocalDate.now()))){
+            pC.setUsedDate(pC.getExpDate());
+            pC.setActive(false);
+            promotionCodeRepository.save(pC);
+        }
+
         return pC.isActive();
     }
 
