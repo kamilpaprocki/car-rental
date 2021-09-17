@@ -33,8 +33,6 @@
                     <div class="mb-2 row  col-sm-6" th:object="${odometerWrapper}">
                         <label for="currentOdometer" class="col-sm-6 col-form-label fw-bold">Car current odometer: </label>
                         <input th:type="number" class="form-control" id="currentOdometer" placeholder="odometer"  name = "currentOdometer" >
-                      <!--  <p th:each="error : ${#fields.errors('${odometerWrapper.currentOdometer}')}"
-                           th:text="${error}" class="text-danger fst-italic">Validation error</p>-->
                         <p class="text-danger fst-italic" th:if="${#fields.hasGlobalErrors()}"
                            th:each="error : ${#fields.errors('global')}" th:text="${error}">Validation error</p>
                     </div>

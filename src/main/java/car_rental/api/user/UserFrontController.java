@@ -1,5 +1,7 @@
 package car_rental.api.user;
 
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,6 +27,14 @@ public class UserFrontController {
     public String setRole(@RequestParam(value = "roles", required = false) String[] strings, UserSetRolesWrapper userSetRolesWrapper){
         customUserDetailsService.setRoles(userSetRolesWrapper, strings);
         return "redirect:/home";
+    }
+
+    @GetMapping("/info/user")
+    public String getUserInfo(Model model){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserApp userApp = (UserApp)(authentication.getPrincipal());
+        model.addAttribute("user", userApp);
+        return "user-details";
     }
 
 }

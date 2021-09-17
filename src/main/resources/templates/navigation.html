@@ -68,6 +68,9 @@
                     <a class="nav-link" th:href="@{/login}">Login</a>
                 </li>
                 <li th:if="${#authorization.expression('isAuthenticated()')}"  class="nav-item ">
+                    <a class="nav-link" th:href="@{/info/user}">Edit profile</a>
+                </li>
+                <li th:if="${#authorization.expression('isAuthenticated()')}"  class="nav-item ">
                     <a class="nav-link" th:href="@{/logout}">Log out</a>
                 </li>
                 <li th:if="${#authorization.expression('isAuthenticated()')}"  class="nav-item">
