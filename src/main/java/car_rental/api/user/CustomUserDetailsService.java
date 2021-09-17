@@ -1,8 +1,8 @@
 package car_rental.api.user;
 
-import car_rental.api.userDetails.UserDetails;
 import car_rental.api.exceptions.UserAlreadyExistException;
 import car_rental.api.exceptions.WrongArgumentException;
+import car_rental.api.userDetails.UserDetails;
 import com.google.common.collect.Sets;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Date;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -76,9 +77,42 @@ public class CustomUserDetailsService implements UserDetailsService {
         return userRepository.save(userApp);
     }
 
+    public List<UserApp> getActiveUsers(){
+        return userRepository.getActiveUsers().orElse(null);
+    }
+
+    public UserSetRolesWrapper getUserById(long id){
+        UserApp userApp = userRepository.getUserAppByById(id).orElse(null);
+        UserSetRolesWrapper user = null;
+        if (userApp != null) {
+            user = new UserSetRolesMapper().map(userApp);
+        }
+        return user ;
+    }
+
+    public UserApp setRoles(UserSetRolesWrapper userSetRolesWrapper, String[] roles){
+        if (userSetRolesWrapper == null){
+            throw new UsernameNotFoundException("There is no user");
+        }
+
+        UserApp userApp = userRepository.getUserAppByById(Long.parseLong(userSetRolesWrapper.getId())).orElseThrow();
+        userApp.getRoles().clear();
+        userApp.getRoles().add(roleService.createRoleIfNotFound("ROLE_USER"));
+        if (roles != null) {
+            for (String role : roles) {
+                userApp.getRoles().add(roleService.createRoleIfNotFound(role));
+            }
+        }
+        return userRepository.save(userApp);
+
+    }
+
+
     @Bean
     private BCryptPasswordEncoder bCryptPasswordEncoder(){
         return new BCryptPasswordEncoder();
     }
+
+
 
 }
