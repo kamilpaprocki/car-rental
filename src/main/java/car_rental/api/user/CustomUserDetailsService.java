@@ -3,6 +3,7 @@ package car_rental.api.user;
 import car_rental.api.exceptions.UserAlreadyExistException;
 import car_rental.api.exceptions.WrongArgumentException;
 import car_rental.api.userDetails.UserDetails;
+import car_rental.api.utils.ChangePasswordWrapper;
 import com.google.common.collect.Sets;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -105,6 +106,15 @@ public class CustomUserDetailsService implements UserDetailsService {
         }
         return userRepository.save(userApp);
 
+    }
+
+    public UserApp changePassword(Long id, ChangePasswordWrapper changePasswordWrapper){
+        UserApp userApp = userRepository.getUserAppByById(id).orElse(null);
+        if (userApp == null){
+            throw new UsernameNotFoundException("THere is no user with id: " + id);
+            }
+        userApp.setPassword(bCryptPasswordEncoder().encode(changePasswordWrapper.getPassword()));
+        return userRepository.save(userApp);
     }
 
 
