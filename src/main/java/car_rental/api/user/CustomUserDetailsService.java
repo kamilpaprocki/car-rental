@@ -117,6 +117,17 @@ public class CustomUserDetailsService implements UserDetailsService {
         return userRepository.save(userApp);
     }
 
+    public UserApp changeEmail(Long id, String email){
+        UserApp userApp = userRepository.getUserAppByById(id).orElse(null);
+        if (userApp == null){
+            throw new UsernameNotFoundException("There is no user with id: " + id);
+        }
+        if (!emailExist(email)){
+            throw new UserAlreadyExistException("There is user with this email");
+        }
+        userApp.setEmail(email);
+        return userRepository.save(userApp);
+    }
 
     @Bean
     private BCryptPasswordEncoder bCryptPasswordEncoder(){

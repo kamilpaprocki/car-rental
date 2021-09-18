@@ -1,11 +1,14 @@
 package car_rental.api.user;
 
+import car_rental.api.exceptions.UserAlreadyExistException;
 import car_rental.api.utils.ChangePasswordWrapper;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -16,7 +19,7 @@ import javax.validation.Valid;
 @Controller
 public class UserFrontController {
 
-    CustomUserDetailsService customUserDetailsService;
+    private final CustomUserDetailsService customUserDetailsService;
 
     public UserFrontController(CustomUserDetailsService customUserDetailsService) {
         this.customUserDetailsService = customUserDetailsService;
@@ -44,12 +47,14 @@ public class UserFrontController {
     }
 
     @GetMapping("/change/password")
+    @PreAuthorize("isAuthenticated()")
     public String getChangePasswordForm(Model model){
         model.addAttribute("changePasswordWrapper",new ChangePasswordWrapper());
         return "change-password";
     }
 
     @PostMapping("/change/password")
+    @PreAuthorize("isAuthenticated()")
     public String changePassword(@ModelAttribute("changePasswordWrapper") @Valid ChangePasswordWrapper changePasswordWrapper, BindingResult bindingResult){
         if (bindingResult.hasErrors()){
             return "change-password";
@@ -57,6 +62,32 @@ public class UserFrontController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         UserApp userApp = (UserApp)(authentication.getPrincipal());
         customUserDetailsService.changePassword(userApp.getId(), changePasswordWrapper);
+        return "redirect:/info/user?info=changed";
+    }
+
+    @GetMapping("/change/email")
+    @PreAuthorize("isAuthenticated()")
+    public String getChangeEmailForm(Model model){
+        model.addAttribute("email", new ChangeEmailWrapper());
+        return "change-email";
+    }
+
+    @PostMapping("/change/email")
+    @PreAuthorize("isAuthenticated()")
+    public String changeEmail(@ModelAttribute("email") @Valid ChangeEmailWrapper changeEmailWrapper, BindingResult bindingResult){
+        if (bindingResult.hasErrors()){
+            return "change-email";
+        }
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserApp userApp = (UserApp)(authentication.getPrincipal());
+
+       try{
+           customUserDetailsService.changeEmail(userApp.getId(), changeEmailWrapper.getEmail());
+        }catch (UserAlreadyExistException e){
+           bindingResult.addError(new ObjectError("alreadyExist", "There is already an account registered with that email/username"));
+           return "change-email";
+       }
         return "redirect:/info/user?info=changed";
     }
 
