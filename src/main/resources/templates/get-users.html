@@ -13,22 +13,22 @@
             <table class="table table-striped table-hover" xmlns:th="https://www.thymeleaf.org">
                 <thead>
                 <tr>
+                    <th scope="col"></th>
                     <th scope="col">Username</th>
                     <th scope="col">Email</th>
                     <th scope="col">Role</th>
-                    <th scope="col"></th>
                 </tr>
                 </thead>
                 <tbody>
                 <tr th:each = "u : ${users}">
+                    <td >
+                        <input type="hidden" name = "userId" th:value = "${u.getId()}"/>
+                        <a th:href = "@{/api/v1/user/(id=${u.getId()})}" class = "btn btn-outline-warning btn-sm fst-italic" >SET ROLE</a>
+                    </td>
                     <td th:text = "${u.username}"></td>
                     <td th:text = "${u.email}"></td>
                     <td th:each=" r : ${u.roles}">
                     <span th:text = "${r.getRole()}"></span>
-                    </td>
-                    <td >
-                        <input type="hidden" name = "userId" th:value = "${u.getId()}"/>
-                        <a th:href = "@{/api/v1/user/(id=${u.getId()})}" class = "btn btn-outline-warning btn-sm fst-italic" >SET ROLE</a>
                     </td>
                 </tr>
                 </tbody>
@@ -52,8 +52,7 @@
                     <input th:type ="email" readonly class="form-control" id="email" placeholder="email" name = "email">
                 </div>
                 <div class="form-group">
-                    <label for="id" class="col-form-label fw-bold" >E-mail: </label>
-                    <input th:type ="email" readonly class="form-control" id="id" placeholder="email" name = "id">
+                    <input hidden th:type ="email" readonly class="form-control" id="id" placeholder="email" name = "id">
                 </div>
                 <div class="form-group">
                     <label for="username" class="col-form-label fw-bold">Username: </label>
