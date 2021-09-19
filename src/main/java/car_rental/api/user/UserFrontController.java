@@ -1,6 +1,7 @@
 package car_rental.api.user;
 
 import car_rental.api.exceptions.UserAlreadyExistException;
+import car_rental.api.userDetails.UserDetailsDTO;
 import car_rental.api.utils.ChangePasswordWrapper;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
@@ -88,6 +89,26 @@ public class UserFrontController {
            bindingResult.addError(new ObjectError("alreadyExist", "There is already an account registered with that email/username"));
            return "change-email";
        }
+        return "redirect:/info/user?info=changed";
+    }
+
+    @GetMapping("/change/details")
+    public String getChangeDetails(Model model, @RequestParam(required = false) String id){
+        model.addAttribute("userDetailsId", id);
+        model.addAttribute("userDetails", new UserDetailsDTO());
+        return "change-details";
+    }
+
+    @PostMapping("/change/details")
+    public String changeDetails(@ModelAttribute("userDetails") @Valid UserDetailsDTO userDetailsDTO, BindingResult bindingResult, Model model){
+        if (bindingResult.hasErrors()){
+            model.addAttribute("userDetailsId", userDetailsDTO.getId());
+            return "change-details";
+        }
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserApp userApp = (UserApp)(authentication.getPrincipal());
+        customUserDetailsService.updateUserDetails(userApp.getId(), userDetailsDTO);
         return "redirect:/info/user?info=changed";
     }
 

@@ -2,6 +2,7 @@ package car_rental.api.userDetails;
 
 
 import org.springframework.stereotype.Service;
+
 import javax.transaction.Transactional;
 import java.util.List;
 
@@ -22,8 +23,12 @@ public class UserDetailsService {
         return userDetailsRepository.findAll();
     }
 
-    public UserDetails getUserDetailsById(long id){
-        return userDetailsRepository.findById(id).orElse(null);
+    public UserDetailsDTO getUserDetailsDTOById(long id){
+        UserDetails userDetails = userDetailsRepository.findById(id).orElse(null);
+        if (userDetails == null){
+            return null;
+        }
+        return new UserDetailsMapper().map(userDetails);
     }
 
     @Transactional

@@ -1,7 +1,6 @@
 package car_rental.api.userDetails;
 
 import car_rental.api.utils.DateFormat;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.validation.Valid;
@@ -11,7 +10,7 @@ import javax.validation.constraints.Pattern;
 @DateFormat
 public class UserDetailsDTO {
 
-    @JsonIgnore
+    @JsonProperty(value = "id")
     private String id;
 
     @JsonProperty(value = "name")
@@ -19,7 +18,7 @@ public class UserDetailsDTO {
     @Pattern(regexp = "\\p{L}+(\\p{L}+)*", message = "Not allowed special characters/digits.")
     private String name;
 
-    @JsonProperty(value = "last_name")
+    @JsonProperty(value = "lastName")
     @NotEmpty(message = "This can not be empty.")
     @Pattern(regexp = "\\p{L}+([ '-]\\p{L}+)*", message = "Not allowed special characters/digits.")
     private String lastName;
@@ -33,27 +32,27 @@ public class UserDetailsDTO {
     @Valid
     private UserDetailsAddressDTO addressDTO;
 
-    @JsonProperty(value = "driving_license_number")
+    @JsonProperty(value = "drivingLicenseNumber")
     @NotEmpty(message = "This can not be empty.")
     @Pattern(regexp = "\\d{5}[/]\\d{2}[/]\\d{4}", message = "Wrong input format. Correct format: 11111/11/1111")
     private String drivingLicenseNumber;
 
-    @JsonProperty(value = "identity_card_number")
+    @JsonProperty(value = "identityCardNumber")
     @NotEmpty(message = "This can not be empty.")
    @Pattern(regexp = "[A-Z]{3}\\d{6}", message = "Wrong input format. Correct format: AAA111111")
     private String identityCardNumber;
 
-    @JsonProperty(value = "pesel_number")
+    @JsonProperty(value = "peselNumber")
     @NotEmpty(message = "This can not be empty.")
     @Pattern(regexp = "\\d{11}", message = "Not allowed characters. Correct pesel format is 11 digits.")
     private String peselNumber;
 
-    @JsonProperty(value = "phone_number")
+    @JsonProperty(value = "phoneNumber")
     @NotEmpty(message = "This can not be empty.")
     @Pattern(regexp = "\\d{9}", message = "Not allowed characters. Correct phone number format is 9 digits.")
     private String phoneNumber;
 
-    @JsonProperty(value = "birth_date")
+    @JsonProperty(value = "birthDate")
     private String birthDate;
 
     public UserDetailsDTO() {

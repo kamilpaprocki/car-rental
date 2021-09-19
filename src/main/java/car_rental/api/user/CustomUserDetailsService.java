@@ -3,6 +3,8 @@ package car_rental.api.user;
 import car_rental.api.exceptions.UserAlreadyExistException;
 import car_rental.api.exceptions.WrongArgumentException;
 import car_rental.api.userDetails.UserDetails;
+import car_rental.api.userDetails.UserDetailsDTO;
+import car_rental.api.userDetails.UserDetailsMapper;
 import car_rental.api.utils.ChangePasswordWrapper;
 import com.google.common.collect.Sets;
 import org.springframework.context.annotation.Bean;
@@ -108,24 +110,33 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     }
 
-    public UserApp changePassword(Long id, ChangePasswordWrapper changePasswordWrapper){
-        UserApp userApp = userRepository.getUserAppByById(id).orElse(null);
+    public UserApp changePassword(Long userId, ChangePasswordWrapper changePasswordWrapper){
+        UserApp userApp = userRepository.getUserAppByById(userId).orElse(null);
         if (userApp == null){
-            throw new UsernameNotFoundException("THere is no user with id: " + id);
+            throw new UsernameNotFoundException("THere is no user with id: " + userId);
             }
         userApp.setPassword(bCryptPasswordEncoder().encode(changePasswordWrapper.getPassword()));
         return userRepository.save(userApp);
     }
 
-    public UserApp changeEmail(Long id, String email){
-        UserApp userApp = userRepository.getUserAppByById(id).orElse(null);
+    public UserApp changeEmail(Long userId, String email){
+        UserApp userApp = userRepository.getUserAppByById(userId).orElse(null);
         if (userApp == null){
-            throw new UsernameNotFoundException("There is no user with id: " + id);
+            throw new UsernameNotFoundException("There is no user with id: " + userId);
         }
         if (!emailExist(email)){
             throw new UserAlreadyExistException("There is user with this email");
         }
         userApp.setEmail(email);
+        return userRepository.save(userApp);
+    }
+
+    public UserApp updateUserDetails(Long userId, UserDetailsDTO userDetailsDTO){
+        UserApp userApp = userRepository.getUserAppByById(userId).orElse(null);
+        if (userApp == null){
+            throw new UsernameNotFoundException("There is no user with id: " + userId);
+        }
+        userApp.setUserDetails(new UserDetailsMapper().reverse(userDetailsDTO));
         return userRepository.save(userApp);
     }
 

@@ -25,7 +25,7 @@ public class UserDetailsRestController {
         return new ResponseEntity<>(userDetailsService.createOrUpdateUserDetails(userDetails), HttpStatus.CREATED);
     }
 
-    @GetMapping("/users/details")
+    @GetMapping("/users/details/all")
     public ResponseEntity<List<UserDetails>> getAllUserDetails(){
         List<UserDetails> userDetails = userDetailsService.getAllUserDetails();
         if(userDetails.isEmpty()){
@@ -33,14 +33,14 @@ public class UserDetailsRestController {
         }
             return new ResponseEntity<>(userDetails, HttpStatus.OK);
     }
-
-    @GetMapping("/users/details/{id}")
-    public ResponseEntity<UserDetails> getUserDetailsById(@RequestParam long id){
-        UserDetails userDetails = userDetailsService.getUserDetailsById(id);
-        if (userDetails == null){
+    @ResponseBody
+    @GetMapping("/users/details")
+    public ResponseEntity<UserDetailsDTO> getUserDetailsById(@RequestParam long id){
+        UserDetailsDTO userDetailsDTO = userDetailsService.getUserDetailsDTOById(id);
+        if (userDetailsDTO == null){
             throw new UserDetailsNotFoundException("There is no user details with id: " + id);
         }
-        return new ResponseEntity<>(userDetails, HttpStatus.OK);
+        return new ResponseEntity<>(userDetailsDTO, HttpStatus.OK);
     }
 
     @DeleteMapping("/users/details/{id}/delete")

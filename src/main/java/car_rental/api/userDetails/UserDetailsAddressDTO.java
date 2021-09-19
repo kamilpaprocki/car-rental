@@ -1,6 +1,5 @@
 package car_rental.api.userDetails;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.validation.constraints.NotEmpty;
@@ -9,7 +8,7 @@ import javax.validation.constraints.Pattern;
 
 public class UserDetailsAddressDTO {
 
-    @JsonIgnore
+    @JsonProperty(value = "id")
     private String id;
 
     @JsonProperty(value = "street")
@@ -18,17 +17,17 @@ public class UserDetailsAddressDTO {
     @Pattern(regexp = "(\\p{L}|\\d)+([ '-](\\p{L}|\\d)+)*", message = "Not allowed special characters/digits.")
     private String street;
 
-    @JsonProperty(value = "street_number")
+    @JsonProperty(value = "streetNumber")
     @NotEmpty(message = "This can not be empty.")
     @NotNull(message = "This can not be null.")
     @Pattern(regexp = "\\d+[a-zA-Z]?", message = "Not allowed special characters/digits. Street number must be start with number.")
     private String streetNumber;
 
-    @JsonProperty(value = "apartment_number")
+    @JsonProperty(value = "apartmentNumber")
     @Pattern(regexp = "(\\d)*|([a-zA-Z])?", message = "Not allowed special characters/digits. Apartment number must be a number or character.")
     private String apartmentNumber;
 
-    @JsonProperty(value = "postal_code")
+    @JsonProperty(value = "postalCode")
     @NotEmpty(message = "This can not be empty.")
     @NotNull(message = "This can not be null.")
     @Pattern(regexp = "\\d{2}[-]\\d{3}", message = "Wrong input format. Correct format: 11-111")
