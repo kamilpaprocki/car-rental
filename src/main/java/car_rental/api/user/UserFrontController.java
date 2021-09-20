@@ -43,6 +43,9 @@ public class UserFrontController {
     public String getUserInfo(Model model, @RequestParam(required = false) String info){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         UserApp userApp = (UserApp)(authentication.getPrincipal());
+        if (userApp.getUserDetails() == null){
+            return "redirect:/registration-user-details?info=empty";
+        }
         model.addAttribute("user", userApp);
         model.addAttribute("info", info);
         return "user-details";

@@ -23,7 +23,6 @@ import java.util.stream.Collectors;
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
 
-
     private final UserRepository userRepository;
     private final RoleService roleService;
 
@@ -39,7 +38,7 @@ public class CustomUserDetailsService implements UserDetailsService {
     }
 
     @Transactional
-    public UserAppDTO registerUser(UserRegisterDTO userRegisterDTO){
+    public UserApp registerUser(UserRegisterDTO userRegisterDTO){
         if (!usernameExist(userRegisterDTO.getUsername())){
             throw new UserAlreadyExistException("There is an account with that username");
         }
@@ -54,14 +53,17 @@ public class CustomUserDetailsService implements UserDetailsService {
         userApp.setPassword(bCryptPasswordEncoder().encode(userRegisterDTO.getPassword()));
         userApp.setRegisteredDate(Date.valueOf(LocalDate.now()));
         userApp.setIsActive(true);
-        userApp.setRoles(Sets.newHashSet(roleService.createRoleIfNotFound("ROLE_USER")));
-        return new UserAppMapper().mapToDTO(userApp);
+        return userRepository.save(userApp);
     }
 
-    public UserApp addUserDetails(UserAppDTO userApp, UserDetailsDTO userDetails){
-        System.out.println(userDetails.toString());
-        userApp.setUserDetailsDTO(userDetails);
-        return userRepository.save(new UserAppMapper().mapToDAO(userApp));
+    public UserApp addUserDetails(long userId, UserDetailsDTO userDetailsDTO){
+        UserApp userApp = userRepository.getUserAppByById(userId).orElse(null);
+        if (userApp == null){
+            throw new UsernameNotFoundException("THere is no user with id: " + userId);
+        }
+        userApp.setUserDetails(new UserDetailsMapper().mapToDAO(userDetailsDTO));
+        userApp.setRoles(Sets.newHashSet(roleService.createRoleIfNotFound("ROLE_USER")));
+        return userRepository.save(userApp);
     }
 
     private boolean usernameExist(String username){
