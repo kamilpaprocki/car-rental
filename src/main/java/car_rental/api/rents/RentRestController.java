@@ -23,9 +23,9 @@ public class RentRestController {
     public ResponseEntity<Rent> createRent(@RequestBody Rent rent, @RequestParam(required = false) String promotionCode){
         try{
         if (promotionCode == null){
-            return new ResponseEntity<>(rentService.createRent(rent), HttpStatus.CREATED);
+            return new ResponseEntity<>(rentService.createOrUpdateRent(rent), HttpStatus.CREATED);
         }
-        return new ResponseEntity<>(rentService.createRent(rent, promotionCode), HttpStatus.CREATED);
+        return new ResponseEntity<>(rentService.createOrUpdateRent(rent, promotionCode), HttpStatus.CREATED);
     }catch(WrongPromotionCodeException e){
             throw new BadRequestException(e.getMessage());
         }

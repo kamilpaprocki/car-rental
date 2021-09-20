@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org">
+<head th:replace="headers::head"></head>
+
+<body>
+<div th:replace="navigation :: nav"></div>
+
+<div class = "container-sm">
+    <div class ="row">
+        <div class="col-sm-10 mt-5">
+
+            <form method="post" th:action="@{/add/rent/summary}" th:object="${rentDTO}" name="form">
+
+                <div class = "container-fluid" >
+                    <div class = "model-container">
+                        <div class="mb-2 row col-sm-6">
+                            <label class="col-sm-6 col-form-label fw-bold" >Rent date: </label>
+                            <div class="alert alert-primary" role="alert" th:text="${rentDTO.rentDate}" th:if="${rentDTO.rentDate}"></div>
+                        </div>
+
+                    </div>
+
+                    <div class = "model-container">
+                        <div class="mb-2 row col-sm-6">
+                            <label class="col-sm-6 col-form-label fw-bold" >Planned return date: </label>
+                            <div class="alert alert-primary" role="alert" th:text="${rentDTO.plannedReturnDate}" th:if="${rentDTO.plannedReturnDate}"></div>
+                        </div>
+
+                    </div>
+
+                    <div class = "model-container">
+                        <div class="mb-2 row col-sm-6">
+                            <label class="col-sm-6 col-form-label fw-bold" >Rental days: </label>
+                            <div class="alert alert-secondary" role="alert" th:text="${rentDTO.rentalDays}" th:if="${rentDTO.rentalDays}"></div>
+                        </div>
+
+                    </div>
+
+                    <div class = "model-container">
+                        <div class="mb-2 row col-sm-6">
+                            <label class="col-sm-6 col-form-label fw-bold" >Rental cost [PLN]: </label>
+                            <div class="alert alert-warning" role="alert" th:text="${rentDTO.rentalCost}" th:if="${rentDTO.rentalCost}"></div>
+                        </div>
+
+                    </div>
+
+                    <div class="mb-2 row  col-sm-6" th:object="${promotionCodeDTO}">
+                        <label for="promotionCodeDTO.promotionCodeDTO" class="col-sm-6 col-form-label fw-bold">Promotion code: </label>
+                        <input th:type="text" class="form-control" id="promotionCodeDTO.promotionCodeDTO" placeholder="promotion code"  name = "promotionCodeDTO.promotionCodeDTO" th:field="${promotionCodeDTO.promotionCodeDTO}">
+                        <p th:each="error : ${#fields.errors('${promotionCodeDTO.promotionCodeDTO}')}"
+                           th:text="${error}" class="text-danger fst-italic">Validation error</p>
+                        <p class="text-danger fst-italic" th:if="${#fields.hasGlobalErrors()}" th:each="error : ${#fields.errors('global')}" th:text="${error}">Validation error</p>
+                        <button style="margin-left: auto; margin-right: auto" type="submit" class="col-sm-2 btn btn-outline-warning fst-italic" value="use" th:formaction="'/usepromotioncode'">Use</button>
+                    </div>
+
+                    <div class = "model-container" >
+                        <div class="mb-2 row col-sm-6">
+                            <label class="col-sm-6 col-form-label fw-bold" >Rental cost: </label>
+                            <div class="alert alert-secondary" role="alert" id = "replace_div" th:text="${rentDTO.rentalCost}" ></div>
+                        </div>
+
+                    </div>
+
+                    <div class="mb-2 row  col-sm-6" style = "padding-top: 10px">
+                        <label class="col-sm-6 col-form-label fw-bold" >Currency: </label>
+                        <div class="col-sm-6">
+                            <select name="currency" id = "selection">
+                                <option th:each="currency : ${T(car_rental.api.currency.Currency).values()}"
+                                        th:value="${currency}" th:text="${currency.getName()}" ></option>
+                            </select>
+                    </div>
+                        </div>
+
+                    <div class="mb-2 row  col-sm-6" style = "padding-top: 10px">
+                        <label class="col-sm-6 col-form-label fw-bold" >Payment method: </label>
+                        <div class="col-sm-6">
+                            <select name="paymentMethod">
+                                <option th:each="paymentMethod : ${T(car_rental.api.rents.PaymentMethod).values()}"
+                                        th:value="${paymentMethod}" th:text="${paymentMethod.getName()}"></option>
+                            </select>
+                    </div>
+                        </div>
+
+                    <div class="mb-2 row  col-sm-6">
+                        <button style="margin-left: auto; margin-right: auto" type="submit" class="col-sm-2 btn btn-info fst-italic">Rent</button>
+
+                    </div>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+
+<script type = "text/javascript">
+    const inputValue = [[${rentDTO.rentalCost}]];
+
+</script>
+
+<script type="text/javascript" th:src="@{/js/getRentalCost.js}" th:inline="javascript"></script>
+
+</body>
+</html>

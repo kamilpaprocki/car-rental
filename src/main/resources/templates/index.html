@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="https://www.thymeleaf.org">
-<head th:replace="headers::default"></head>
+<head th:replace="headers::head"></head>
 
 <body>
 <div th:replace="navigation :: nav"></div>
@@ -13,6 +13,22 @@
 
 <div th:if="${info == 'login'}">
     <div class="alert alert-success fst-italic" >You are successfully log in.</div>
+</div>
+
+<div th:if="${info == 'rented'}">
+    <div class="alert alert-success fst-italic" >You are successfully rented car.</div>
+</div>
+
+<div th:if="${info == 'extended'}">
+    <div class="alert alert-success fst-italic" >You are successfully rented car.</div>
+</div>
+
+<div th:if="${info == 'finished'}">
+    <div class="alert alert-success fst-italic" >You are successfully finished rent.</div>
+</div>
+
+<div th:if="${info == 'multiplerents'}">
+    <div class="alert alert-warning fst-italic" >You cannot rent another car. You have active rent.</div>
 </div>
 
 </div>

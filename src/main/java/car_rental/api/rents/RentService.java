@@ -1,24 +1,45 @@
 package car_rental.api.rents;
 
+import car_rental.api.car.Car;
+import car_rental.api.car.CarDTO;
+import car_rental.api.car.CarMapper;
+import car_rental.api.car.CarService;
+import car_rental.api.exceptions.WrongDataFormatException;
+import car_rental.api.promotionCode.PromotionCode;
+import car_rental.api.promotionCode.PromotionCodeDTO;
+import car_rental.api.promotionCode.PromotionCodeMapper;
 import car_rental.api.promotionCode.PromotionCodeService;
+import car_rental.api.user.CustomUserDetailsService;
+import car_rental.api.user.UserApp;
+import car_rental.api.user.UserAppDTO;
+import car_rental.api.user.UserAppMapper;
+import car_rental.api.utils.DateParser;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.sql.Date;
+import java.time.LocalDate;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class RentService {
 
     private final RentRepository rentRepository;
     private final PromotionCodeService promotionCodeService;
+    private final CarService carService;
+    private final CustomUserDetailsService customUserDetailsService;
 
-    public RentService(RentRepository rentRepository, PromotionCodeService promotionCodeService) {
+    public RentService(RentRepository rentRepository, PromotionCodeService promotionCodeService, CarService carService, CustomUserDetailsService customUserDetailsService) {
         this.rentRepository = rentRepository;
         this.promotionCodeService = promotionCodeService;
+        this.carService = carService;
+        this.customUserDetailsService = customUserDetailsService;
     }
 
-    public Rent createRent(Rent rent, String promotionCode){
+    public Rent createOrUpdateRent(Rent rent, String promotionCode){
         rent.setPromotionCode(promotionCodeService.usePromotionCode(promotionCode));
        rent.setRentalCost(rent.getRentalCost()
                 .subtract(
@@ -27,7 +48,7 @@ public class RentService {
         return rentRepository.save(rent);
     }
 
-    public Rent createRent(Rent rent){
+    public Rent createOrUpdateRent(Rent rent){
         return rentRepository.save(rent);
     }
 
@@ -68,4 +89,125 @@ public class RentService {
         return rentRepository.deleteRentById(id);
     }
 
+    public long getRentalDays(Date rentDay, Date returnDate){
+
+        if ((rentDay.compareTo(returnDate)) > 0){
+          throw new WrongDataFormatException("Rent day can not be after return date");
+       }
+
+       if (rentDay.compareTo(returnDate) == 0){
+           return 1;
+       }
+
+       return (returnDate.getTime()-rentDay.getTime())/(1000*60*60*24);
+    }
+
+    public RentDTO addPromotionCode(RentDTO rentDTO, PromotionCodeDTO promotionCodeDTO){
+
+        promotionCodeService.usePromotionCode(promotionCodeDTO.getPromotionCodeDTO());
+        PromotionCode promotionCode = promotionCodeService.getPromotionCodeByCode(promotionCodeDTO.getPromotionCodeDTO());
+        promotionCodeDTO = new PromotionCodeMapper().map(promotionCode);
+        rentDTO.setPromotionCode(promotionCodeDTO);
+        BigDecimal discount = new BigDecimal(promotionCodeDTO.getDiscount());
+        BigDecimal rentalCost = new BigDecimal(rentDTO.getRentalCost());
+        rentalCost = (rentalCost.multiply(BigDecimal.valueOf(100).subtract(discount))).divide(BigDecimal.valueOf(100)).setScale(2, RoundingMode.CEILING);
+        rentDTO.setRentalCost(rentalCost.toString());
+        return rentDTO;
+    }
+
+    public RentDTO addUserAndCar(RentDTO rentDTO, UserApp userApp, Car car){
+        UserAppDTO userAppDTO = new UserAppMapper().map(userApp);
+        rentDTO.setUserApp(userAppDTO);
+        CarDTO carDTO = new CarMapper().map(car);
+        rentDTO.setCar(carDTO);
+        return rentDTO;
+    }
+
+    public RentDTO addOrUpdateRentDetails(RentDTO rentDTO){
+        DateParser dateParser = new DateParser();
+        long rentalDays = getRentalDays(dateParser.parseStringToDate(rentDTO.getRentDate()), dateParser.parseStringToDate(rentDTO.getPlannedReturnDate()));
+        rentDTO.setRentalDays(String.valueOf(rentalDays));
+
+        String pricePerDay = rentDTO.getCar().getPricePerDay();
+        BigDecimal rentalCost = new BigDecimal(pricePerDay).multiply(BigDecimal.valueOf(rentalDays));
+        rentDTO.setRentalCost(String.valueOf(rentalCost));
+        return rentDTO;
+    }
+
+    public Rent addRent(RentDTO rentDTO){
+        Rent rent = new RentMapper().reverse(rentDTO);
+        rent.getCar().setAvailable(false);
+        carService.createOrUpdateCar(rent.getCar());
+        rent.getUserApp().setHasActiveRent(true);
+        customUserDetailsService.updateUser(rent.getUserApp());
+        return rentRepository.save(rent);
+    }
+
+    public List<RentDTO> getRentByUserApp(UserApp userApp){
+        List<Rent> rent = rentRepository.getRentByUserApp(userApp).orElse(null);
+        if (rent == null){
+            throw new WrongRentException("There is no active rent");
+        }
+        return rent.stream().map(new RentMapper() :: map).collect(Collectors.toList());
+    }
+
+    public RentDTO updatePlannedReturnDate(RentDTO rentDTO){
+        rentDTO = addOrUpdateRentDetails(rentDTO);
+        if (rentDTO.getPromotionCode() != null){
+            BigDecimal discount = new BigDecimal(rentDTO.getPromotionCode().getDiscount());
+            BigDecimal rentalCost = new BigDecimal(rentDTO.getRentalCost());
+            rentalCost = (rentalCost.multiply(BigDecimal.valueOf(100).subtract(discount))).divide(BigDecimal.valueOf(100)).setScale(2, RoundingMode.CEILING);
+            rentDTO.setRentalCost(String.valueOf(rentalCost));
+        }
+        return rentDTO;
+    }
+
+    public List<RentDTO> getActiveRents(){
+        List<Rent> rents = rentRepository.getActiveRents().orElse(null);
+        if (rents == null){
+            throw new WrongRentException("There are no active rents");
+        }
+       return rents.stream().map(new RentMapper() :: map).collect(Collectors.toList());
+
+    }
+
+    public CarReturnOdometerWrapper getCarLastOdometer(RentDTO rentDTO){
+        CarReturnOdometerWrapper carReturnOdometerWrapper = new CarReturnOdometerWrapper();
+        carReturnOdometerWrapper.setLastOdometer(rentDTO.getCar().getCurrentOdometer());
+        return carReturnOdometerWrapper;
+    }
+
+    public Rent finishRent(RentDTO rentDTO, CarReturnOdometerWrapper carReturnOdometerWrapper){
+
+        if (carReturnOdometerWrapper.getCurrentOdometer() == null){
+            throw new WrongRentException("This cannot be a null.");
+        }
+
+        if (carReturnOdometerWrapper.getLastOdometer() == null){
+            carReturnOdometerWrapper.setCurrentOdometer(rentDTO.getCar().getCurrentOdometer());
+        }
+
+        if (!rentDTO.getPlannedReturnDate().equals(String.valueOf(Date.valueOf(LocalDate.now())))){
+            rentDTO.setPlannedReturnDate(Date.valueOf(LocalDate.now()).toString());
+            rentDTO = updatePlannedReturnDate(rentDTO);
+        }
+
+        Rent rent = new RentMapper().reverse(rentDTO);
+
+        if (rent.getRentDate().after(Date.valueOf(LocalDate.now()))){
+            throw new WrongDataFormatException("Return date cannot be before rent date.");
+        }
+
+        long lastOdometer = Long.parseLong(carReturnOdometerWrapper.getLastOdometer());
+        long currentOdometer = Long.parseLong(carReturnOdometerWrapper.getCurrentOdometer());
+        long distance = currentOdometer - lastOdometer;
+        rent.setOdometerDistance(distance);
+        rent.setFinished(true);
+        rent.setReturnDate(Date.valueOf(LocalDate.now()));
+        rent.getCar().setAvailable(true);
+        rent.getCar().setCurrentOdometer(currentOdometer);
+        rent.getUserApp().setHasActiveRent(false);
+        return rentRepository.save(rent);
+
+    }
 }

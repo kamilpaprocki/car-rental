@@ -32,6 +32,10 @@ public abstract class Address {
         return id;
     }
 
+    public void setId(Long id) {
+        this.id = id;
+    }
+
     public String getStreet() {
         return street;
     }

@@ -14,7 +14,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 @Target({TYPE, ANNOTATION_TYPE})
 @Retention(RUNTIME)
-@Constraint(validatedBy = DataFormatValidator.class)
+@Constraint(validatedBy = {BirthDateFormatValidator.class, RentDateFormatValidator.class})
 @Documented
 public @interface DateFormat {
     String message() default "Wrong data format. Correct format: dd.MM.yyyy";

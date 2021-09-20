@@ -37,8 +37,8 @@ public class RestExceptionsHandler extends ResponseEntityExceptionHandler {
         return handleExceptionInternal(e, body, new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
     }
 
-    @ExceptionHandler(value = ClientNotFoundException.class)
-    protected ResponseEntity<Object> handleClientNotFoundException(RuntimeException e, WebRequest request){
+    @ExceptionHandler(value = UserDetailsNotFoundException.class)
+    protected ResponseEntity<Object> handleUserDetailsNotFoundException(RuntimeException e, WebRequest request){
         ExceptionBody body = ExceptionBody
                 .builder()
                 .message(e.getMessage())

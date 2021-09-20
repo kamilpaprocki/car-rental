@@ -35,8 +35,25 @@
                         <li><a class="dropdown-item" href="delete-promotion-code.html" th:href="@{/delete/delete-promotion-code}">Delete promotion code</a></li>
                     </ul>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link disabled" href="#">Disabled</a>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="rent" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Rent
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="rent">
+                        <li><a class="dropdown-item" href="rent-form.html" th:href="@{/rent}">Rent a car</a></li>
+                        <li><a class="dropdown-item" href="get-rent.html" th:href="@{/extend/rent}">Extend rent</a></li>
+                        <li><a class="dropdown-item" href="get-rent.html" th:href="@{/finish/rent}">Finish rent</a></li>
+                    </ul>
+
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="user" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        User
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="rent">
+                        <li><a class="dropdown-item" href="get-users.html" th:href="@{/user}">Set role</a></li>
+                    </ul>
+
                 </li>
             </ul>
 
@@ -47,6 +64,9 @@
                 </li>
                 <li th:if="${#authorization.expression('!isAuthenticated()')}"  class="nav-item">
                     <a class="nav-link" th:href="@{/login}">Login</a>
+                </li>
+                <li th:if="${#authorization.expression('isAuthenticated()')}"  class="nav-item ">
+                    <a class="nav-link" th:href="@{/info/user}">Edit profile</a>
                 </li>
                 <li th:if="${#authorization.expression('isAuthenticated()')}"  class="nav-item ">
                     <a class="nav-link" th:href="@{/logout}">Log out</a>

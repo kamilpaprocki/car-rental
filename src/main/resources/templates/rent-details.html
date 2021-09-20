@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org">
+<head th:replace="headers::head"></head>
+
+<body>
+<div th:replace="navigation :: nav"></div>
+
+<div class = "container-sm">
+    <div class ="row">
+        <div class="col-sm-10 mt-5">
+
+            <form method="post" th:action="@{/add/rent/details}" th:object="${rentDTO}  ">
+
+                <div class = "container-fluid" >
+                    <div class = "model-container">
+                        <div class="mb-2 row col-sm-6">
+                            <label for="rentDate" class="col-sm-6 col-form-label fw-bold" >Rent date: </label>
+                            <input th:type ="text" class="form-control" id="rentDate" placeholder="dd.MM.yyyy" th:field = "${rentDTO.rentDate}" name = "rentDate">
+                            <p th:each="error : ${#fields.errors('${rentDTO.rentDate}')}"
+                               th:text="${error}" class="text-danger">Validation error</p>
+                        </div>
+
+                        <div class="mb-2 row  col-sm-6">
+                            <label for="rentStreet" class="col-sm-6 col-form-label fw-bold">Rent street name: </label>
+                            <input th:type="text" class="form-control" id="rentStreet" placeholder="street" th:field = "${rentDTO.rentAddress.street}" name = "rentStreet" >
+                            <p th:each="error : ${#fields.errors('${rentDTO.rentAddress.street}')}"
+                               th:text="${error}" class="text-danger fst-italic">Validation error</p>
+                        </div>
+
+                        <div class="mb-2 row  col-sm-6">
+                            <label for="rentStreetNumber" class="col-sm-6 col-form-label fw-bold">Rent street number: </label>
+                            <input th:type="text" class="form-control" id="rentStreetNumber" placeholder="street number" th:field = "${rentDTO.rentAddress.streetNumber}" name = "rentStreetNumber">
+                            <p th:each="error : ${#fields.errors('${rentDTO.rentAddress.streetNumber}')}"
+                               th:text="${error}" class="text-danger fst-italic">Validation error</p>
+                        </div>
+
+                        <div class="mb-2 row  col-sm-6">
+                            <label for="rentPostalCode" class="col-sm-6 col-form-label fw-bold">Rent postal code: </label>
+                            <input th:type="text" class="form-control" id="rentPostalCode" placeholder="NN-NNN" th:field = "${rentDTO.rentAddress.postalCode}" name = "rentPostalCode">
+                            <p th:each="error : ${#fields.errors('${rentDTO.rentAddress.postalCode}')}"
+                               th:text="${error}" class="text-danger fst-italic">Validation error</p>
+                        </div>
+
+                        <div class="mb-2 row  col-sm-6">
+                            <label for="rentCity" class="col-sm-6 col-form-label fw-bold">Rent city: </label>
+                            <input th:type="text" class="form-control" id="rentCity" placeholder="city" th:field = "${rentDTO.rentAddress.city}" name = "rentCity">
+                            <p th:each="error : ${#fields.errors('${rentDTO.rentAddress.city}')}"
+                               th:text="${error}" class="text-danger fst-italic">Validation error</p>
+                        </div>
+
+                        <div class="mb-2 row  col-sm-6">
+                            <label for="plannedReturnDate" class="col-sm-6 col-form-label fw-bold">Planned return date: </label>
+                            <input th:type="text" class="form-control" id="plannedReturnDate" placeholder="dd.MM.yyyy" th:field = "${rentDTO.plannedReturnDate}" name = "plannedReturnDate">
+                            <p th:each="error : ${#fields.errors('${rentDTO.plannedReturnDate}')}"
+                               th:text="${error}" class="text-danger">Validation error</p>
+                        </div>
+
+                        <div class="mb-2 row  col-sm-6">
+                            <label for="returnStreet" class="col-sm-6 col-form-label fw-bold">Return street name: </label>
+                            <input th:type="text" class="form-control" id="returnStreet" placeholder="street" th:field = "${rentDTO.returnAddress.street}" name = "returnStreet" >
+                            <p th:each="error : ${#fields.errors('${rentDTO.returnAddress.street}')}"
+                               th:text="${error}" class="text-danger fst-italic">Validation error</p>
+                        </div>
+
+                        <div class="mb-2 row  col-sm-6">
+                            <label for="returnStreetNumber" class="col-sm-6 col-form-label fw-bold">Return street number: </label>
+                            <input th:type="text" class="form-control" id="returnStreetNumber" placeholder="street number" th:field = "${rentDTO.returnAddress.streetNumber}" name = "returnStreetNumber">
+                            <p th:each="error : ${#fields.errors('${rentDTO.returnAddress.streetNumber}')}"
+                               th:text="${error}" class="text-danger fst-italic">Validation error</p>
+                        </div>
+
+                        <div class="mb-2 row  col-sm-6">
+                            <label for="returnPostalCode" class="col-sm-6 col-form-label fw-bold">Return postal code: </label>
+                            <input th:type="text" class="form-control" id="returnPostalCode" placeholder="NN-NNN" th:field = "${rentDTO.returnAddress.postalCode}" name = "returnPostalCode">
+                            <p th:each="error : ${#fields.errors('${rentDTO.returnAddress.postalCode}')}"
+                               th:text="${error}" class="text-danger fst-italic">Validation error</p>
+                        </div>
+
+                        <div class="mb-2 row  col-sm-6">
+                            <label for="returnCity" class="col-sm-6 col-form-label fw-bold">Return city: </label>
+                            <input th:type="text" class="form-control" id="returnCity" placeholder="city" th:field = "${rentDTO.returnAddress.city}" name = "returnCity">
+                            <p th:each="error : ${#fields.errors('${rentDTO.returnAddress.city}')}"
+                               th:text="${error}" class="text-danger fst-italic">Validation error</p>
+                        </div>
+
+                        <p class="text-danger" th:if="${#fields.hasGlobalErrors()}" th:each="error : ${#fields.errors('global')}" th:text="${error}">Validation error</p>
+
+                    </div>
+
+
+                    <div class = "d-flex flex-row text-center">
+                        <button type="submit" class="col-sm-2 btn btn-info fst-italic">Rent</button>
+                        <div class="col-sm-1"></div>
+                        <button type="reset" class="col-sm-2 btn btn-danger fst-italic">Reset</button>
+                    </div>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+</html>

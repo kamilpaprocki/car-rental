@@ -1,13 +1,13 @@
 package car_rental.api.rents;
 
-import car_rental.api.promotionCode.PromotionCode;
 import car_rental.api.car.Car;
-import car_rental.api.client.Client;
-import org.hibernate.annotations.*;
+import car_rental.api.currency.Currency;
+import car_rental.api.promotionCode.PromotionCode;
+import car_rental.api.user.UserApp;
+import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.DynamicInsert;
+
 import javax.persistence.*;
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.Table;
 import java.math.BigDecimal;
 import java.sql.Date;
 import java.util.Objects;
@@ -20,21 +20,21 @@ public class Rent {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
+    @Column(name = "rent_id")
     private Long id;
 
-    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
-    @PrimaryKeyJoinColumn(name = "client_id")
-    private Client client;
+    @OneToOne(cascade = CascadeType.MERGE, orphanRemoval = true)
+    @JoinColumn(name = "user_id")
+    private UserApp userApp;
 
-    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
-    @PrimaryKeyJoinColumn(name = "car_id")
+    @OneToOne(cascade = CascadeType.MERGE, orphanRemoval = true)
+    @JoinColumn(name = "car_id")
     private Car car;
 
     @Column(name = "rent_date", nullable = false)
     private Date rentDate;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = {CascadeType.MERGE, CascadeType.ALL})
     @JoinColumn(name = "rent_address")
     private RentAddress rentAddress;
 
@@ -44,11 +44,11 @@ public class Rent {
     @Column(name = "return_date")
     private Date returnDate;
 
-    @Formula(value = "DATEDIFF(planned_return_date, rent_date)")
+    @Column(name = "rental_days")
     private long rentalDays;
 
-   @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "return_adress", nullable = false)
+   @OneToOne(cascade = {CascadeType.MERGE, CascadeType.ALL})
+    @JoinColumn(name = "return_adress")
     private ReturnAddress returnAddress;
 
     @Column(name = "rental_cost")
@@ -57,11 +57,15 @@ public class Rent {
 
     @Column(name = "odometer_distance")
     @ColumnDefault("0")
-    private long odomoterDistance;
+    private long odometerDistance;
 
-    @PrimaryKeyJoinColumn(name = "promotion_code_id")
+    @JoinColumn(name = "promotion_code_id")
     @OneToOne(cascade = {CascadeType.MERGE}, orphanRemoval = true)
     private PromotionCode promotionCode;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "currency", nullable = false)
+    private Currency currency;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "payment_method", nullable = false)
@@ -79,12 +83,12 @@ public class Rent {
         this.id = id;
     }
 
-    public Client getClient() {
-        return client;
+    public UserApp getUserApp() {
+        return userApp;
     }
 
-    public void setClient(Client client) {
-        this.client = client;
+    public void setUserApp(UserApp userApp) {
+        this.userApp = userApp;
     }
 
     public Car getCar() {
@@ -151,12 +155,12 @@ public class Rent {
         this.rentalCost = rentalCost;
     }
 
-    public long getOdomoterDistance() {
-        return odomoterDistance;
+    public long getOdometerDistance() {
+        return odometerDistance;
     }
 
-    public void setOdomoterDistance(long odomoterDistance) {
-        this.odomoterDistance = odomoterDistance;
+    public void setOdometerDistance(long odomoterDistance) {
+        this.odometerDistance = odomoterDistance;
     }
 
     public PromotionCode getPromotionCode() {
@@ -175,6 +179,14 @@ public class Rent {
         this.paymentMethod = paymentMethod;
     }
 
+    public Currency getCurrency() {
+        return currency;
+    }
+
+    public void setCurrency(Currency currency) {
+        this.currency = currency;
+    }
+
     public Boolean isFinished() {
         return isFinished;
     }
@@ -187,7 +199,7 @@ public class Rent {
     public String toString() {
         return "Rent{" +
                 "id=" + id +
-                ", client=" + client +
+                ", userApp=" + userApp +
                 ", car=" + car +
                 ", rentDate=" + rentDate +
                 ", rentAddress=" + rentAddress +
@@ -196,8 +208,9 @@ public class Rent {
                 ", rentalDays=" + rentalDays +
                 ", returnAddress=" + returnAddress +
                 ", rentalCost=" + rentalCost +
-                ", odomoterDistance=" + odomoterDistance +
+                ", odometerDistance=" + odometerDistance +
                 ", promotionCode=" + promotionCode +
+                ", currency=" + currency +
                 ", paymentMethod=" + paymentMethod +
                 ", isFinished=" + isFinished +
                 '}';
@@ -208,11 +221,11 @@ public class Rent {
         if (this == o) return true;
         if (!(o instanceof Rent)) return false;
         Rent rent = (Rent) o;
-        return getRentalDays() == rent.getRentalDays() && getOdomoterDistance() == rent.getOdomoterDistance() && getId().equals(rent.getId()) && getClient().equals(rent.getClient()) && getCar().equals(rent.getCar()) && getRentDate().equals(rent.getRentDate()) && getRentAddress().equals(rent.getRentAddress()) && getPlannedReturnDate().equals(rent.getPlannedReturnDate()) && Objects.equals(getReturnDate(), rent.getReturnDate()) && getReturnAddress().equals(rent.getReturnAddress()) && Objects.equals(getRentalCost(), rent.getRentalCost()) && Objects.equals(getPromotionCode(), rent.getPromotionCode()) && getPaymentMethod() == rent.getPaymentMethod() && isFinished.equals(rent.isFinished);
+        return getRentalDays() == rent.getRentalDays() && getOdometerDistance() == rent.getOdometerDistance() && Objects.equals(getId(), rent.getId()) && getUserApp().equals(rent.getUserApp()) && getCar().equals(rent.getCar()) && getRentDate().equals(rent.getRentDate()) && getRentAddress().equals(rent.getRentAddress()) && getPlannedReturnDate().equals(rent.getPlannedReturnDate()) && getReturnDate().equals(rent.getReturnDate()) && getReturnAddress().equals(rent.getReturnAddress()) && Objects.equals(getRentalCost(), rent.getRentalCost()) && Objects.equals(getPromotionCode(), rent.getPromotionCode()) && getPaymentMethod() == rent.getPaymentMethod() && Objects.equals(isFinished, rent.isFinished);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getId(), getClient(), getCar(), getRentDate(), getRentAddress(), getPlannedReturnDate(), getReturnDate(), getRentalDays(), getReturnAddress(), getRentalCost(), getOdomoterDistance(), getPromotionCode(), getPaymentMethod(), isFinished);
+        return Objects.hash(getId(), getUserApp(), getCar(), getRentDate(), getRentAddress(), getPlannedReturnDate(), getReturnDate(), getRentalDays(), getReturnAddress(), getRentalCost(), getOdometerDistance(), getPromotionCode(), getPaymentMethod(), isFinished);
     }
 }

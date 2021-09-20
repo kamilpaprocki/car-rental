@@ -86,5 +86,19 @@ public class PromotionCodeService {
         return promotionCodeRepository.save(pC);
     }
 
+    public boolean isCorrectAndAvailablePromotionCode(String promotionCode){
+        PromotionCode pC = getPromotionCodeByCode(promotionCode);
+        if (pC == null){
+            return false;
+        }
+        if(pC.getExpDate().before(Date.valueOf(LocalDate.now()))){
+            pC.setUsedDate(pC.getExpDate());
+            pC.setActive(false);
+            promotionCodeRepository.save(pC);
+        }
+
+        return pC.isActive();
+    }
+
 
 }
