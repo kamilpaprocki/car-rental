@@ -16,13 +16,17 @@
                     <div class="mb-3 row">
                         <label for="brand" class="col-sm-2 col-form-label">Car brand: </label>
                         <div class="col-sm-6">
-                            <input th:type="text" class="form-control" id="brand" placeholder="brand" name = "brand">
+                            <input th:type="text" class="form-control" id="brand" placeholder="brand" name = "brand" th:field = "${car.brand}">
+                            <p th:each="error : ${#fields.errors('${car.brand}')}"
+                               th:text="${error}" class="text-danger fst-italic">Validation error</p>
                         </div>
                     </div>
                     <div class="mb-3 row">
                         <label for="model" class="col-sm-2 col-form-label">Car model: </label>
                         <div class="col-sm-6">
-                            <input th:type="text" class="form-control" id="model" placeholder="model" name = "model">
+                            <input th:type="text" class="form-control" id="model" placeholder="model" name = "model" th:field = "${car.model}">
+                            <p th:each="error : ${#fields.errors('${car.model}')}"
+                               th:text="${error}" class="text-danger fst-italic">Validation error</p>
                         </div>
                     </div>
 
@@ -34,26 +38,33 @@
                                     <input type="radio" th:field = "*{segment}" th:value="${carSegment}" class = "form-check-input" name = "segment">
                                     <label class = "col-sm-2 form-check-label" th:for = "${#ids.prev('segment')}" th:text="${carSegment}">carSegment</label>
                                 </div>
-
+                                <p th:each="error : ${#fields.errors('${car.segment}')}"
+                                   th:text="${error}" class="text-danger fst-italic">Validation error</p>
                             </div>
                         </div>
 
                     <div class="mb-3 row">
                         <label for="modelYear" class="col-sm-2 col-form-label">Car model year: </label>
                         <div class="col-sm-6">
-                            <input th:type="number" class="form-control" id="modelYear" placeholder="model year" name = "modelYear">
+                            <input th:type="number" class="form-control" id="modelYear" placeholder="model year" name = "modelYear" th:field = "${car.modelYear}">
+                            <p th:each="error : ${#fields.errors('${car.modelYear}')}"
+                               th:text="${error}" class="text-danger fst-italic">Validation error</p>
                         </div>
                     </div>
                     <div class="mb-3 row">
                         <label for="currentOdometer" class="col-sm-2 col-form-label">Current odometer: </label>
                         <div class="col-sm-6">
-                            <input th:type="number" class="form-control" id="currentOdometer" placeholder="odometer" name = "currentOdometer">
+                            <input th:type="number" class="form-control" id="currentOdometer" placeholder="odometer" name = "currentOdometer" th:field = "${car.currentOdometer}">
+                            <p th:each="error : ${#fields.errors('${car.currentOdometer}')}"
+                               th:text="${error}" class="text-danger fst-italic">Validation error</p>
                         </div>
                     </div>
                     <div class="mb-3 row">
                         <label for="pricePerDay" class="col-sm-2 col-form-label">Rental price per day : </label>
                         <div class="col-sm-6">
-                            <input th:type="number" class="form-control" id="pricePerDay" placeholder="price" name = "pricePerDay">
+                            <input th:type="number" class="form-control" id="pricePerDay" placeholder="price" name = "pricePerDay" th:field = "${car.pricePerDay}">
+                            <p th:each="error : ${#fields.errors('${car.pricePerDay}')}"
+                               th:text="${error}" class="text-danger fst-italic">Validation error</p>
                         </div>
                     </div>
 
@@ -66,6 +77,8 @@
                                     <label class = "col-sm-2 form-check-label" for = "available" >Yes</label>
                                     <input type="radio" id = "unavailable" name = "isAvailable" value="0" th:field = "*{available}">
                                     <label class = "col-sm-2 form-check-label" for = "unavailable" >No</label>
+                                    <p th:each="error : ${#fields.errors('${car.isAvailable}')}"
+                                       th:text="${error}" class="text-danger fst-italic">Validation error</p>
                                 </div>
 
                             </div>

@@ -72,4 +72,16 @@ public class RestExceptionsHandler extends ResponseEntityExceptionHandler {
                 .build();
         return handleExceptionInternal(e, body, new HttpHeaders(), HttpStatus.NOT_FOUND, request);
     }
+
+    @ExceptionHandler(value = WrongArgumentException.class)
+    protected ResponseEntity<Object> handleWrongArgumentException(RuntimeException e, WebRequest request){
+        ExceptionBody body = ExceptionBody
+                .builder()
+                .message(e.getMessage())
+                .status(404)
+                .path(request.getDescription(true))
+                .timestamp(new Date().toString())
+                .build();
+        return handleExceptionInternal(e, body, new HttpHeaders(), HttpStatus.NOT_FOUND, request);
+    }
 }
