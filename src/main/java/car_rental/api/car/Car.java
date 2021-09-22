@@ -137,7 +137,7 @@ public class Car {
                 '}';
     }
 
-    private Car(CarBuilder c){
+    public Car(CarBuilder c){
         this.id = c.id;
         this.brand = c.brand;
         this.model = c.model;
@@ -146,6 +146,10 @@ public class Car {
         this.currentOdometer = c.currentOdometer;
         this.pricePerDay = c.pricePerDay;
         this.isAvailable = c.isAvailable;
+    }
+
+    public static CarBuilder builder() {
+        return new CarBuilder();
     }
 
     public static final class CarBuilder {
@@ -157,10 +161,6 @@ public class Car {
         private long currentOdometer;
         private BigDecimal pricePerDay;
         private Boolean isAvailable;
-
-        public static CarBuilder builder() {
-            return new CarBuilder();
-        }
 
         public CarBuilder id(String id) {
             if (id == null){

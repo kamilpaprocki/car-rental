@@ -7,21 +7,24 @@ import java.math.BigDecimal;
 public class CarMapper implements DTOMapper<Car, CarDTO> {
     @Override
     public CarDTO mapToDTO(Car from) {
+        if (from == null){
+            return null;
+        }
         return CarDTO.builder()
-                .id(from.getId().toString())
+                .id(String.valueOf(from.getId()))
                 .brand(from.getBrand())
                 .model(from.getModel())
                 .segment(from.getSegment().toString())
                 .modelYear(String.valueOf(from.getModelYear()))
                 .currentOdometer(String.valueOf(from.getCurrentOdometer()))
-                .pricePerDay(from.getPricePerDay().toString())
+                .pricePerDay(String.valueOf(from.getPricePerDay()))
                 .available(from.getAvailable())
                 .build();
     }
 
     @Override
     public Car mapToDAO(CarDTO from) {
-       return Car.CarBuilder.builder()
+       return Car.builder()
                .id(from.getId())
                .brand(from.getBrand())
                .model(from.getModel())

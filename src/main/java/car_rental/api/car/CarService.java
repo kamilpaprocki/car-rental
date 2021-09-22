@@ -1,6 +1,5 @@
 package car_rental.api.car;
 
-import car_rental.api.exceptions.CarNotFoundException;
 import car_rental.api.exceptions.WrongArgumentException;
 import org.springframework.stereotype.Service;
 
@@ -26,11 +25,7 @@ public CarDTO getCarById(Long carId){
         if (carId == null){
             throw new WrongArgumentException("Car id cannot be a null");
         }
-        Car car = carRepository.findById(carId).orElse(null);
-        if (car == null){
-            throw new CarNotFoundException("There is no car with id: " + carId);
-        }
-        return new CarMapper().mapToDTO(car);
+        return new CarMapper().mapToDTO(carRepository.findById(carId).orElse(null));
 }
 
 public Car createOrUpdateCar(CarDTO carDTO){
@@ -46,19 +41,12 @@ public int deleteCarById(Long carId){
 }
 
 public List<CarDTO> getAvailableCar() {
-    List<Car> cars = carRepository.getAvailableCars().orElse(null);
-    if (cars == null) {
-        throw new CarNotFoundException("There is no car available");
-    }
+    List<Car> cars = carRepository.getAvailableCars().orElseThrow(null);
     return cars.stream().map(new CarMapper()::mapToDTO).collect(Collectors.toList());
 }
 
-
 public List<CarDTO> getUnavailableCars(){
-    List<Car> cars = carRepository.getUnavailableCars().orElse(null);
-    if (cars == null) {
-        throw new CarNotFoundException("There is no car unavailable");
-    }
+    List<Car> cars = carRepository.getUnavailableCars().orElseThrow(null);
     return cars.stream().map(new CarMapper()::mapToDTO).collect(Collectors.toList());
 }
 

@@ -1,5 +1,6 @@
 package car_rental.api.car;
 
+import car_rental.api.exceptions.CarNotFoundException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -9,6 +10,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @Controller
 public class CarFrontController {
@@ -21,24 +23,39 @@ private final CarService carService;
 
     @GetMapping("/car")
     public String carPage(Model model,
-                          @RequestParam(required = false) Long carId,
-                          @RequestParam(required = false) String cars){
+                          @RequestParam(required = false) String cars,
+                          @RequestParam(required = false) Long carId
+                          ){
 
-        if ("carId".equals(cars)){
-/*            if (carId == null){
-                throw new WrongArgumentException("Car id cannot be empty");
-            }*/
-            model.addAttribute("carById", carService.getCarById(carId));
+        if ("carById".equals(cars)){
+            CarDTO carDTO = carService.getCarById(carId);
+            if (carDTO == null){
+                throw new CarNotFoundException("There is no car with id: " + carId);
+            }
+            model.addAttribute("carById", carDTO);
         }
         if ("allCars".equals(cars)){
-            model.addAttribute("allCars", carService.getAllCars());
+            List<CarDTO> availableCarDTOList = carService.getAllCars();
+            if (availableCarDTOList.isEmpty()){
+                throw new CarNotFoundException("There is no car");
+            }
+            model.addAttribute("allCars", availableCarDTOList);
         }
         if ("availableCars".equals(cars)){
-            model.addAttribute("availableCars", carService.getAvailableCar());
+            List<CarDTO> availableCarDTOList = carService.getAvailableCar();
+            if (availableCarDTOList.isEmpty()){
+                throw new CarNotFoundException("There is no available cars");
+            }
+            model.addAttribute("availableCars", availableCarDTOList);
         }
         if ("unavailableCars".equals(cars)){
-            model.addAttribute("unavailableCars", carService.getUnavailableCars());
+            List<CarDTO> availableCarDTOList = carService.getUnavailableCars();
+            if (availableCarDTOList.isEmpty()){
+                throw new CarNotFoundException("There is no unavailable cars");
+            }
+            model.addAttribute("unavailableCars", availableCarDTOList);
         }
+
         return "cars";
     }
 
@@ -64,7 +81,11 @@ private final CarService carService;
 
     @GetMapping("/update/car")
     public String getUpdateCarPage(@RequestParam(required = false) Long carId, Model model){
-        model.addAttribute("updateCar", carService.getCarById(carId));
+        CarDTO carDTO = carService.getCarById(carId);
+        if (carDTO == null){
+            throw new CarNotFoundException("There is no car with id: " + carId);
+        }
+        model.addAttribute("updateCar", carDTO);
         return "update-form-car";
     }
 

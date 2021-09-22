@@ -48,7 +48,7 @@ public class CarRestController {
     }
 
     @GetMapping("/cars/car")
-    public ResponseEntity<CarDTO> getCarById(@RequestParam long id){
+    public ResponseEntity<CarDTO> getCarById(@RequestParam Long id){
         CarDTO car = carService.getCarById(id);
         if (car == null){
             throw new CarNotFoundException("There is no car with id: " + id);
@@ -65,7 +65,7 @@ public class CarRestController {
     }
 
     @DeleteMapping("/cars/delete")
-    public ResponseEntity<Car> deleteCarById(@RequestParam long id){
+    public ResponseEntity<Car> deleteCarById(@RequestParam Long id){
         if (carService.deleteCarById(id) > 0){
             return new ResponseEntity<>(HttpStatus.OK);
         }

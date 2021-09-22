@@ -14,7 +14,10 @@ import java.util.List;
 
 public class DateParser {
 
-    public Date parseStringToDate(String dateFrom) {
+    public Date parseStringToDateDAO(String dateFrom) {
+        if (dateFrom == null){
+            return null;
+        }
 
         List<String> patterns = Arrays.asList("dd.MM.yyyy", "yyyy-MM-dd");
         DateFormat dateFormat;
@@ -33,7 +36,7 @@ public class DateParser {
 
     }
 
-    public String parseDateToString(Date date){
+    public String parseDateToStringDTO(Date date){
         if (date == null){
             return null;
         }
