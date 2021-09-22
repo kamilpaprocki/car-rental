@@ -20,17 +20,17 @@ public class PromotionCodeRestController {
     }
 
     @PostMapping("/promotioncodes")
-    public ResponseEntity<PromotionCode> createPromotionCode(@RequestParam BigDecimal discount, @RequestParam int activeDays, @RequestParam boolean isMultipleUse){
+    public ResponseEntity<PromotionCodeDTO> createPromotionCode(@RequestParam BigDecimal discount, @RequestParam int activeDays, @RequestParam boolean isMultipleUse){
         try{
-            return new ResponseEntity<>(promotionCodeService.createPromotionCode(discount, activeDays, isMultipleUse), HttpStatus.CREATED);
+            return new ResponseEntity<>(promotionCodeService.getGeneratedPromotionCode(promotionCodeService.createPromotionCode(discount, activeDays, isMultipleUse)), HttpStatus.CREATED);
         }catch(WrongPromotionCodeException e){
             throw new BadRequestException(e.getMessage());
         }
     }
 
     @GetMapping("/promotioncodes/")
-    public ResponseEntity<List<PromotionCode>> getAllPromotionCodes(@RequestParam(required = false) String promotionCodeStatus){
-        List<PromotionCode> promotionCodes;
+    public ResponseEntity<List<PromotionCodeDTO>> getAllPromotionCodes(@RequestParam(required = false) String promotionCodeStatus){
+        List<PromotionCodeDTO> promotionCodes;
         if (promotionCodeStatus == null){
             promotionCodes = promotionCodeService.getAllPromotionCodes();
             if (promotionCodes.isEmpty()){
@@ -55,18 +55,17 @@ public class PromotionCodeRestController {
         throw new BadRequestException("Wrong input parameter. Input promotion code status: " + promotionCodeStatus);
     }
 
-    @GetMapping("/promotioncodes/{id}")
-    public ResponseEntity<PromotionCode> getPromotionCodeById(@PathVariable Long id){
-        PromotionCode promotionCode = promotionCodeService.getPromotionCodeById(id);
+    @GetMapping("/promotioncodes/code")
+    public ResponseEntity<PromotionCodeDTO> getPromotionCodeById(@RequestParam Long id){
+        PromotionCodeDTO promotionCode = promotionCodeService.getPromotionCodeById(id);
         if (promotionCode == null){
             throw new PromotionCodeNotFoundException("There is no promotion code with id: " + id);
         }
         return new ResponseEntity<>(promotionCode, HttpStatus.OK);
     }
-
     @GetMapping("/promotioncodes/code/{promotioncode}")
-    public ResponseEntity<PromotionCode> getPromotionCodeByCode(@PathVariable String promotioncode){
-        PromotionCode pC = promotionCodeService.getPromotionCodeByCode(promotioncode);
+    public ResponseEntity<PromotionCodeDTO> getPromotionCodeByCode(@PathVariable String promotioncode){
+        PromotionCodeDTO pC = promotionCodeService.getPromotionCodeDTOByCode(promotioncode);
         if (pC == null){
             throw new PromotionCodeNotFoundException("There are no promotion code : " + promotioncode);
         }
@@ -84,8 +83,8 @@ public class PromotionCodeRestController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @DeleteMapping("/promotioncodes/{id}/delete")
-    public ResponseEntity<PromotionCode> deletePromotionCodeById(@PathVariable Long id){
+    @DeleteMapping("/promotioncodes/delete")
+    public ResponseEntity<PromotionCode> deletePromotionCodeById(@RequestParam Long id){
         if (promotionCodeService.deletePromotionCodeById(id) > 0){
             return new ResponseEntity<>(HttpStatus.OK);
         }

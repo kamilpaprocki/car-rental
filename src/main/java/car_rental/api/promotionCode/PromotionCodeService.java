@@ -1,6 +1,7 @@
 package car_rental.api.promotionCode;
 
 
+import car_rental.api.exceptions.WrongArgumentException;
 import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.math.BigDecimal;
@@ -8,6 +9,7 @@ import java.sql.Date;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class PromotionCodeService {
@@ -45,25 +47,40 @@ public class PromotionCodeService {
         return promotionCodeRepository.save(promotionCode);
     }
 
-    public List<PromotionCode> getAllPromotionCodes(){
-        return promotionCodeRepository.findAll();
+    public List<PromotionCodeDTO> getAllPromotionCodes(){
+        List<PromotionCode> promotionCodes = promotionCodeRepository.findAll();
+        return promotionCodes.stream().map(new PromotionCodeMapper() :: mapToDTO).collect(Collectors.toList());
     }
 
-    public PromotionCode getPromotionCodeById(Long id){
-        return promotionCodeRepository.findById(id).orElse(null);
+    public PromotionCodeDTO getPromotionCodeById(Long promotionCodeId){
+        if (promotionCodeId == null){
+            throw new WrongArgumentException("Promotion code id cannot be null");
+        }
+        PromotionCode promotionCode = promotionCodeRepository.findById(promotionCodeId).orElse(null);
+        return new PromotionCodeMapper().mapToDTO(promotionCode);
     }
 
-    public List<PromotionCode> getActivePromotionCodes(){
-        return promotionCodeRepository.getActivePromotionCodes();
+    public List<PromotionCodeDTO> getActivePromotionCodes(){
+        List<PromotionCode> promotionCodes = promotionCodeRepository.getActivePromotionCodes().orElseThrow(null);
+        return promotionCodes.stream().map(new PromotionCodeMapper() :: mapToDTO).collect(Collectors.toList());
     }
 
-    public List<PromotionCode> getInactivePromotionCodes(){
-        return promotionCodeRepository.getInactivePromotionCodes();
+    public List<PromotionCodeDTO> getInactivePromotionCodes(){
+        List<PromotionCode> promotionCodes = promotionCodeRepository.getInactivePromotionCodes().orElseThrow(null);
+        return promotionCodes.stream().map(new PromotionCodeMapper() :: mapToDTO).collect(Collectors.toList());
     }
 
     @Transactional
-    public int deletePromotionCodeById(Long id){
-        return promotionCodeRepository.deletePromotionCodeById(id);
+    public int deletePromotionCodeById(Long promotionCodeId){
+        if (promotionCodeId == null){
+            throw new WrongArgumentException("Promotion code id cannot be a null");
+        }
+        return promotionCodeRepository.deletePromotionCodeById(promotionCodeId);
+    }
+
+    public PromotionCodeDTO getPromotionCodeDTOByCode(String promotionCode){
+        PromotionCode pC = promotionCodeRepository.getPromotionCodeByCode(promotionCode).orElse(null);
+        return new PromotionCodeMapper().mapToDTO(pC);
     }
 
     public PromotionCode getPromotionCodeByCode(String promotionCode){
@@ -96,8 +113,11 @@ public class PromotionCodeService {
             pC.setActive(false);
             promotionCodeRepository.save(pC);
         }
-
         return pC.isActive();
+    }
+
+    public PromotionCodeDTO getGeneratedPromotionCode(PromotionCode promotionCode){
+        return new PromotionCodeMapper().mapToDTO(promotionCode);
     }
 
 

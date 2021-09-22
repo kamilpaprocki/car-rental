@@ -1,7 +1,6 @@
 package car_rental.api.promotionCode;
 
 import car_rental.api.utils.PromotionCodeChecker;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.validation.constraints.NotEmpty;
@@ -10,7 +9,7 @@ import javax.validation.constraints.NotNull;
 @PromotionCodeChecker
 public class PromotionCodeDTO {
 
-    @JsonIgnore
+    @JsonProperty(value = "id")
     private String id;
 
    @JsonProperty(value = "promotion_code")
@@ -81,6 +80,10 @@ public class PromotionCodeDTO {
         }
 
         public PromotionCodeDTOBuilder usedDate(String usedDate){
+            if (usedDate == null){
+                this.usedDate = null;
+                return this;
+            }
             this.usedDate = usedDate;
             return this;
         }

@@ -44,6 +44,8 @@ public class PromotionCode {
     @ColumnDefault("true")
     private Boolean isActive;
 
+    public PromotionCode() {
+    }
 
     public Long getId() {
         return id;
@@ -143,5 +145,105 @@ public class PromotionCode {
     @Override
     public int hashCode() {
         return Objects.hash(getId(), getPromotionCode(), getUsedDate(), getGenerateDate(), getExpDate(), getDiscount(), isMultipleUse(), getAvailableUse(), isActive);
+    }
+
+    private PromotionCode(PromotionCodeBuilder p){
+        this.id = p.id;
+        this.promotionCode = p.promotionCode;
+        this.usedDate = p.usedDate;
+        this.generateDate = p.generateDate;
+        this.expDate = p.expDate;
+        this.discount = p.discount;
+        this.availableUse = p.availableUse;
+        this.isMultipleUse = p.isMultipleUse;
+        this.isActive = p.isActive;
+    }
+
+    public static PromotionCodeBuilder builder() {
+        return new PromotionCodeBuilder();
+    }
+
+    public static final class PromotionCodeBuilder {
+        private Long id;
+        private String promotionCode;
+        private Date usedDate;
+        private Date generateDate;
+        private Date expDate;
+        private BigDecimal discount;
+        private boolean isMultipleUse;
+        private int availableUse;
+        private Boolean isActive;
+
+        private PromotionCodeBuilder() {
+        }
+
+        public PromotionCodeBuilder id(Long id) {
+            if (id == null){
+                this.id = null;
+                return this;
+            }
+            this.id = id;
+            return this;
+        }
+
+        public PromotionCodeBuilder promotionCode(String promotionCode){
+            if (promotionCode == null){
+                this.promotionCode = null;
+                return this;
+            }
+            this.promotionCode = promotionCode;
+            return this;
+        }
+
+        public PromotionCodeBuilder usedDate(Date usedDate) {
+            if (usedDate == null){
+                this.usedDate = null;
+                return this;
+            }
+            this.usedDate = usedDate;
+            return this;
+        }
+
+        public PromotionCodeBuilder generateDate(Date generateDate) {
+            if (generateDate == null){
+                this.generateDate = null;
+                return this;
+            }
+            this.generateDate = generateDate;
+            return this;
+        }
+
+        public PromotionCodeBuilder expDate(Date expDate) {
+            if (expDate == null){
+                this.expDate = null;
+                return this;
+            }
+            this.expDate = expDate;
+            return this;
+        }
+
+        public PromotionCodeBuilder discount(BigDecimal discount) {
+            this.discount = discount;
+            return this;
+        }
+
+        public PromotionCodeBuilder isMultipleUse(boolean isMultipleUse) {
+            this.isMultipleUse = isMultipleUse;
+            return this;
+        }
+
+        public PromotionCodeBuilder availableUse(int availableUse) {
+            this.availableUse = availableUse;
+            return this;
+        }
+
+        public PromotionCodeBuilder isActive(Boolean isActive) {
+            this.isActive = isActive;
+            return this;
+        }
+
+        public PromotionCode build() {
+            return new PromotionCode(this);
+        }
     }
 }
