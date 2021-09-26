@@ -28,9 +28,12 @@ public class PromotionCodeMapper implements DTOMapper<PromotionCode, PromotionCo
 
     @Override
     public PromotionCode mapToDAO(PromotionCodeDTO from) {
+        if(from == null){
+            return null;
+        }
         DateParser dateParser = new DateParser();
        return PromotionCode.builder()
-               .id(Long.parseLong(from.getId()))
+               .id(from.getId())
                .promotionCode(from.getPromotionCodeDTO())
                .usedDate(dateParser.parseStringToDateDAO(from.getUsedDate()))
                .generateDate(dateParser.parseStringToDateDAO(from.getGenerateDate()))

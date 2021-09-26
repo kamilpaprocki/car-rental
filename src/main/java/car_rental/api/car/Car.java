@@ -137,7 +137,7 @@ public class Car {
                 '}';
     }
 
-    public Car(CarBuilder c){
+    private Car(CarBuilder c){
         this.id = c.id;
         this.brand = c.brand;
         this.model = c.model;

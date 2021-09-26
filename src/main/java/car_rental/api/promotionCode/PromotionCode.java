@@ -177,12 +177,12 @@ public class PromotionCode {
         private PromotionCodeBuilder() {
         }
 
-        public PromotionCodeBuilder id(Long id) {
+        public PromotionCodeBuilder id(String id) {
             if (id == null){
                 this.id = null;
                 return this;
             }
-            this.id = id;
+            this.id = Long.parseLong(id);
             return this;
         }
 

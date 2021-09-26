@@ -18,7 +18,7 @@ public class UserDetailsRestController {
     }
 
     @PostMapping("/users/details")
-    public ResponseEntity<UserDetails> createOrUpdateUserDetails(@RequestBody UserDetails userDetails){
+    public ResponseEntity<UserAppDetails> createOrUpdateUserDetails(@RequestBody UserDetailsDTO userDetails){
         if (userDetails.getId() != null){
             return new ResponseEntity<>(userDetailsService.createOrUpdateUserDetails(userDetails), HttpStatus.OK);
         }
@@ -26,8 +26,8 @@ public class UserDetailsRestController {
     }
 
     @GetMapping("/users/details/all")
-    public ResponseEntity<List<UserDetails>> getAllUserDetails(){
-        List<UserDetails> userDetails = userDetailsService.getAllUserDetails();
+    public ResponseEntity<List<UserDetailsDTO>> getAllUserDetails(){
+        List<UserDetailsDTO> userDetails = userDetailsService.getAllUserDetails();
         if(userDetails.isEmpty()){
             throw new UserDetailsNotFoundException("There are no users details");
         }
@@ -35,7 +35,7 @@ public class UserDetailsRestController {
     }
     @ResponseBody
     @GetMapping("/users/details")
-    public ResponseEntity<UserDetailsDTO> getUserDetailsById(@RequestParam long id){
+    public ResponseEntity<UserDetailsDTO> getUserDetailsById(@RequestParam Long id){
         UserDetailsDTO userDetailsDTO = userDetailsService.getUserDetailsDTOById(id);
         if (userDetailsDTO == null){
             throw new UserDetailsNotFoundException("There is no user details with id: " + id);
@@ -43,8 +43,8 @@ public class UserDetailsRestController {
         return new ResponseEntity<>(userDetailsDTO, HttpStatus.OK);
     }
 
-    @DeleteMapping("/users/details/{id}/delete")
-    public ResponseEntity<UserDetails> deleteUserDetailsById(@RequestParam long id){
+    @DeleteMapping("/users/details/delete")
+    public ResponseEntity<UserAppDetails> deleteUserDetailsById(@RequestParam Long id){
         if(userDetailsService.deleteUserDetailsById(id) > 0){
             return new ResponseEntity<>(HttpStatus.OK);
         }

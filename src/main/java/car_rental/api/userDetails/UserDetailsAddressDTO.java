@@ -79,6 +79,10 @@ public class UserDetailsAddressDTO {
         }
 
         public ClientAddressDTOBuilder apartmentNumber(String apartmentNumber) {
+            if(apartmentNumber == null){
+                this.apartmentNumber = null;
+                return this;
+            }
             this.apartmentNumber = apartmentNumber;
             return this;
         }

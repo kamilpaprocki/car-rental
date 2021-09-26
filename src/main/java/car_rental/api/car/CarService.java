@@ -32,6 +32,10 @@ public Car createOrUpdateCar(CarDTO carDTO){
         return carRepository.save(new CarMapper().mapToDAO(carDTO));
 }
 
+public Car createOrUpdateCar(Car car){
+        return carRepository.save(car);
+}
+
 @Transactional
 public int deleteCarById(Long carId){
         if (carId == null){
