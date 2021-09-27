@@ -9,26 +9,30 @@
     <div class ="row">
             <div class="col-sm-10 mt-5">
 
-            <form method="post" th:action="@{/update/car}" th:object="${carById}">
+            <form method="post" th:action="@{/update/car}" th:object="${updateCar}">
 
                 <div class = "container-fluid" >
                     <div class = "model-container">
                     <div class="mb-3 row">
                         <label for="brand" class="col-sm-2 col-form-label" >Car id: </label>
                         <div class="col-sm-6">
-                            <input th:type="text" class="form-control" id="carId" placeholder="brand" name = "id" th:value ="${carById.getId()}" readonly>
+                            <input th:type="text" class="form-control" id="carId" placeholder="brand" name = "id" th:value ="${updateCar.getId()}" readonly>
                         </div>
                     </div>
                         <div class="mb-3 row">
                         <label for="brand" class="col-sm-2 col-form-label" >Car brand: </label>
                         <div class="col-sm-6">
-                            <input th:type="text" class="form-control" id="brand" placeholder="brand" name = "brand" th:value ="${carById.getBrand()}">
+                            <input th:type="text" class="form-control" id="brand" placeholder="brand" name = "brand" th:value ="${updateCar.getBrand()}">
+                            <p th:each="error : ${#fields.errors('${updateCar.brand}')}"
+                               th:text="${error}" class="text-danger fst-italic">Validation error</p>
                         </div>
                     </div>
                     <div class="mb-3 row">
                         <label for="model" class="col-sm-2 col-form-label">Car model: </label>
                         <div class="col-sm-6">
-                            <input th:type="text" class="form-control" id="model" placeholder="model" name = "model" th:value ="${carById.getModel()}">
+                            <input th:type="text" class="form-control" id="model" placeholder="model" name = "model" th:value ="${updateCar.getModel()}">
+                            <p th:each="error : ${#fields.errors('${updateCar.model}')}"
+                               th:text="${error}" class="text-danger fst-italic">Validation error</p>
                         </div>
                     </div>
 
@@ -40,6 +44,8 @@
                                     <input type="radio" th:field = "*{segment}" th:value="${carSegment}" class = "form-check-input" name = "segment">
                                     <label class = "col-sm-2 form-check-label" th:for = "${#ids.prev('segment')}" th:text="${carSegment}">carSegment</label>
                                 </div>
+                                <p th:each="error : ${#fields.errors('${updateCar.segment}')}"
+                                   th:text="${error}" class="text-danger fst-italic">Validation error</p>
 
                             </div>
                         </div>
@@ -47,19 +53,25 @@
                     <div class="mb-3 row">
                         <label for="modelYear" class="col-sm-2 col-form-label">Car model year: </label>
                         <div class="col-sm-6">
-                            <input th:type="number" class="form-control" id="modelYear" placeholder="model year" name = "modelYear" th:value ="${carById.getModelYear()}">
+                            <input th:type="number" class="form-control" id="modelYear" placeholder="model year" name = "modelYear" th:value ="${updateCar.getModelYear()}">
+                            <p th:each="error : ${#fields.errors('${updateCar.modelYear}')}"
+                               th:text="${error}" class="text-danger fst-italic">Validation error</p>
                         </div>
                     </div>
                     <div class="mb-3 row">
                         <label for="currentOdometer" class="col-sm-2 col-form-label">Current odometer: </label>
                         <div class="col-sm-6">
-                            <input th:type="number" class="form-control" id="currentOdometer" placeholder="odometer" name = "currentOdometer" th:value ="${carById.getCurrentOdometer()}">
+                            <input th:type="number" class="form-control" id="currentOdometer" placeholder="odometer" name = "currentOdometer" th:value ="${updateCar.getCurrentOdometer()}">
+                            <p th:each="error : ${#fields.errors('${updateCar.currentOdometer}')}"
+                               th:text="${error}" class="text-danger fst-italic">Validation error</p>
                         </div>
                     </div>
                     <div class="mb-3 row">
                         <label for="pricePerDay" class="col-sm-2 col-form-label">Rental price per day : </label>
                         <div class="col-sm-6">
-                            <input th:type="number" class="form-control" id="pricePerDay" placeholder="price" name = "pricePerDay" th:value ="${carById.getPricePerDay()}">
+                            <input th:type="number" class="form-control" id="pricePerDay" placeholder="price" name = "pricePerDay" th:value ="${updateCar.getPricePerDay()}">
+                            <p th:each="error : ${#fields.errors('${updateCar.pricePerDay}')}"
+                               th:text="${error}" class="text-danger fst-italic">Validation error</p>
                         </div>
                     </div>
                         <div class="mb-3 row">
@@ -67,10 +79,12 @@
                             <div class="col-sm-6">
 
                                 <div class="form-group">
-                                    <input type="radio" class = "form-check-input" id = "available" name = "available" value="1" th:checked="${carById.getAvailable() == true} ? ${true}">
+                                    <input type="radio" class = "form-check-input" id = "available" name = "available" value="1" th:checked="${updateCar.getAvailable() == true} ? ${true}">
                                     <label class = "col-sm-2 form-check-label" for = "available" >Yes</label>
-                                    <input type="radio" class = "form-check-input" id = "unavailable" name = "available" value="0" th:checked="${carById.getAvailable() == false}  ? ${true}">
+                                    <input type="radio" class = "form-check-input" id = "unavailable" name = "available" value="0" th:checked="${updateCar.getAvailable() == false}  ? ${true}">
                                     <label class = "col-sm-2 form-check-label" for = "unavailable" >No</label>
+                                    <p th:each="error : ${#fields.errors('${updateCar.isAvailable}')}"
+                                       th:text="${error}" class="text-danger fst-italic">Validation error</p>
                                 </div>
 
                             </div>

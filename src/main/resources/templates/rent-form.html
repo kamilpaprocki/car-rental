@@ -31,7 +31,7 @@
                     <td th:text = "${car.getPricePerDay()}"></td>
                     <td >
                         <form method="get" th:action="@{/add/rent}" >
-                            <input type="hidden" name = "carId" th:value = "${car.getId()}"/>
+                            <input type="hidden" name = "carid" th:value = "${car.getId()}"/>
                         <button type = "submit" class = "btn btn-outline-info btn-sm fst-italic">RENT</button>
                         </form>
                     </td>

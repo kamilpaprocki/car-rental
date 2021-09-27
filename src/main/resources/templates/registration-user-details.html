@@ -71,7 +71,7 @@
 
                         <div class="mb-2 row  col-sm-6">
                             <label for="drivingLicenseNumber" class="col-sm-6 col-form-label fw-bold">Driving license number: </label>
-                            <input th:type="text" class="form-control" id="drivingLicenseNumber" placeholder="NNNNN/NN/NNNN" name = "drivingLicenseNumber">
+                            <input th:type="text" class="form-control" id="drivingLicenseNumber" placeholder="NNNNN/NN/NNNN" name = "drivingLicenseNumber" th:field = "${userDetailsDTO.drivingLicenseNumber}">
                             <p th:each="error : ${#fields.errors('${userDetailsDTO.drivingLicenseNumber}')}"
                                th:text="${error}" class="text-danger">Validation error</p>
                         </div>

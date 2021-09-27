@@ -17,11 +17,11 @@ public class UserRestController {
 
     @GetMapping("/user")
     @ResponseBody
-    public ResponseEntity<UserSetRolesWrapper> getUserById(@RequestParam long id){
-        UserSetRolesWrapper userSetRolesWrapper = customUserDetailsService.getUserById(id);
-        if (userSetRolesWrapper == null){
+    public ResponseEntity<UserAppDTO> getUserById(@RequestParam Long id){
+        UserAppDTO userApp = customUserDetailsService.getUserAppById(id);
+        if (userApp == null){
             throw new UsernameNotFoundException("There is no user with id: " + id);
         }
-        return new ResponseEntity<>(userSetRolesWrapper, HttpStatus.OK);
+        return new ResponseEntity<>(userApp, HttpStatus.OK);
     }
 }

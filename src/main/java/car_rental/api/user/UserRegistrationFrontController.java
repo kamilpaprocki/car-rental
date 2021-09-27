@@ -1,9 +1,8 @@
 package car_rental.api.user;
 
-import car_rental.api.userDetails.UserDetailsDTO;
-import car_rental.api.userDetails.UserDetailsMapper;
-import car_rental.api.userDetails.UserDetailsService;
 import car_rental.api.exceptions.UserAlreadyExistException;
+import car_rental.api.userDetails.UserDetailsDTO;
+import car_rental.api.userDetails.UserDetailsService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -36,13 +35,12 @@ public String register(Model model){
 @PostMapping("/registration")
     public String registration(@Valid @ModelAttribute("userDTO") UserRegisterDTO userRegisterDTO,
                                BindingResult bindingResult,
-                               @ModelAttribute("newUser") UserApp userApp,
                                 Model model){
     if (bindingResult.hasErrors()){
         return "registration";
     }
     try {
-        userApp = customUserDetailsService.registerUser(userRegisterDTO);
+       UserAppDTO userApp = customUserDetailsService.registerUser(userRegisterDTO);
         model.addAttribute("newUser", userApp);
     }catch(UserAlreadyExistException uE){
             bindingResult.addError(new ObjectError("alreadyExist", "There is already an account registered with that email/username"));
@@ -58,7 +56,7 @@ public String register(Model model){
 }
 
 @PostMapping("/registration-user-details")
-    public String registrationClientInfo(@ModelAttribute("newUser") UserApp userApp,
+    public String registrationClientInfo(@ModelAttribute("newUser") UserAppDTO userApp,
                                          @ModelAttribute("userDetailsDTO") @Valid UserDetailsDTO userDetailsDTO,
                                          BindingResult bindingResult){
 
@@ -66,13 +64,8 @@ public String register(Model model){
             return "registration-user-details";
         }
 
-        customUserDetailsService.addUserDetails(userApp, new UserDetailsMapper().reverse(userDetailsDTO));
+        customUserDetailsService.addUserDetails(userApp, userDetailsDTO);
         return "redirect:/home?info=registered";
-}
-
-@ModelAttribute("newUser")
-public UserApp userApp(){
-        return new UserApp();
 }
 
 }

@@ -6,10 +6,10 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface UserDetailsRepository extends JpaRepository<UserDetails, Long> {
+public interface UserDetailsRepository extends JpaRepository<UserAppDetails, Long> {
 
     @Modifying
-    @Query(value = "DELETE FROM UserDetails u where u.id =: id")
+    @Query(value = "DELETE FROM UserAppDetails u where u.id =: id")
     int deleteUserDetailsById(long id);
 
 

@@ -9,28 +9,17 @@ public class PromotionCodeMapper implements DTOMapper<PromotionCode, PromotionCo
 
 
     @Override
-    public PromotionCodeDTO map(PromotionCode from) {
-
-        if (from.getUsedDate() != null){
-            return PromotionCodeDTO.builder()
-                    .id(from.getId().toString())
-                    .promotionCode(from.getPromotionCode())
-                    .generateDate(from.getGenerateDate().toString())
-                    .expDate(from.getExpDate().toString())
-                    .discount(from.getDiscount().toString())
-                    .isMultipleUse(String.valueOf(from.isMultipleUse()))
-                    .usedDate(from.getUsedDate().toString())
-                    .availableUse(String.valueOf(from.getAvailableUse()))
-                    .isActive(from.isActive().toString())
-                    .build();
+    public PromotionCodeDTO mapToDTO(PromotionCode from) {
+        if (from == null){
+            return null;
         }
-
+        DateParser dateParser = new DateParser();
         return PromotionCodeDTO.builder()
-                .id(from.getId().toString())
+                .id(String.valueOf(from.getId()))
                 .promotionCode(from.getPromotionCode())
-                .generateDate(from.getGenerateDate().toString())
-                .expDate(from.getExpDate().toString())
-                .discount(from.getDiscount().toString())
+                .generateDate(dateParser.parseDateToStringDTO(from.getGenerateDate()))
+                .expDate(dateParser.parseDateToStringDTO(from.getExpDate()))
+                .discount(String.valueOf(from.getDiscount()))
                 .isMultipleUse(String.valueOf(from.isMultipleUse()))
                 .availableUse(String.valueOf(from.getAvailableUse()))
                 .isActive(String.valueOf(from.isActive()))
@@ -38,21 +27,21 @@ public class PromotionCodeMapper implements DTOMapper<PromotionCode, PromotionCo
     }
 
     @Override
-    public PromotionCode reverse(PromotionCodeDTO from) {
-        PromotionCode promotionCode = new PromotionCode();
+    public PromotionCode mapToDAO(PromotionCodeDTO from) {
+        if(from == null){
+            return null;
+        }
         DateParser dateParser = new DateParser();
-        if(from.getId() != null){
-            promotionCode.setId(Long.parseLong(from.getId()));
-        }
-        promotionCode.setPromotionCode(from.getPromotionCodeDTO());
-        if (from.getUsedDate() != null) {
-            promotionCode.setUsedDate(dateParser.parseStringToDate(from.getUsedDate()));
-        }
-        promotionCode.setGenerateDate(dateParser.parseStringToDate(from.getGenerateDate()));
-        promotionCode.setExpDate(dateParser.parseStringToDate(from.getExpDate()));
-        promotionCode.setDiscount(new BigDecimal(from.getDiscount()));
-        promotionCode.setMultipleUse(Boolean.parseBoolean(from.getIsMultipleUse()));
-        promotionCode.setAvailableUse(Integer.parseInt(from.getAvailableUse()));
-        return promotionCode;
+       return PromotionCode.builder()
+               .id(from.getId())
+               .promotionCode(from.getPromotionCodeDTO())
+               .usedDate(dateParser.parseStringToDateDAO(from.getUsedDate()))
+               .generateDate(dateParser.parseStringToDateDAO(from.getGenerateDate()))
+               .expDate(dateParser.parseStringToDateDAO(from.getExpDate()))
+               .discount(new BigDecimal(from.getDiscount()))
+               .isMultipleUse(Boolean.parseBoolean(from.getIsMultipleUse()))
+               .availableUse(Integer.parseInt(from.getAvailableUse()))
+               .isActive(Boolean.parseBoolean(from.getIsActive()))
+               .build();
     }
 }

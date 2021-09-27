@@ -1,9 +1,11 @@
 package car_rental.api.car;
 
+import car_rental.api.exceptions.WrongArgumentException;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class CarService {
@@ -14,12 +16,20 @@ public class CarService {
         this.carRepository = carRepository;
     }
 
-public List<Car> getAllCars(){
-        return carRepository.findAll();
+public List<CarDTO> getAllCars(){
+        List<Car> cars = carRepository.findAll();
+        return cars.stream().map(new CarMapper() :: mapToDTO).collect(Collectors.toList());
 }
 
-public Car getCarById(long id){
-        return carRepository.findById(id).orElse(null);
+public CarDTO getCarById(Long carId){
+        if (carId == null){
+            throw new WrongArgumentException("Car id cannot be a null");
+        }
+        return new CarMapper().mapToDTO(carRepository.findById(carId).orElse(null));
+}
+
+public Car createOrUpdateCar(CarDTO carDTO){
+        return carRepository.save(new CarMapper().mapToDAO(carDTO));
 }
 
 public Car createOrUpdateCar(Car car){
@@ -27,16 +37,21 @@ public Car createOrUpdateCar(Car car){
 }
 
 @Transactional
-public int deleteCarById(long id){
-        return carRepository.deleteCarById(id);
+public int deleteCarById(Long carId){
+        if (carId == null){
+            throw new WrongArgumentException("Car id cannot be a null");
+        }
+        return carRepository.deleteCarById(carId);
 }
 
-public List<Car> getAvailableCar(){
-        return carRepository.getAvailableCars().orElse(null);
+public List<CarDTO> getAvailableCar() {
+    List<Car> cars = carRepository.getAvailableCars().orElseThrow(null);
+    return cars.stream().map(new CarMapper()::mapToDTO).collect(Collectors.toList());
 }
 
-public List<Car> getUnavailableCars(){
-        return carRepository.getUnavailableCars().orElse(null);
+public List<CarDTO> getUnavailableCars(){
+    List<Car> cars = carRepository.getUnavailableCars().orElseThrow(null);
+    return cars.stream().map(new CarMapper()::mapToDTO).collect(Collectors.toList());
 }
 
 }

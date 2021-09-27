@@ -20,7 +20,7 @@ public class RentRestController {
     }
 
     @PostMapping("/rents")
-    public ResponseEntity<Rent> createRent(@RequestBody Rent rent, @RequestParam(required = false) String promotionCode){
+    public ResponseEntity<Rent> createRent(@RequestBody RentDTO rent, @RequestParam(required = false) String promotionCode){
         try{
         if (promotionCode == null){
             return new ResponseEntity<>(rentService.createOrUpdateRent(rent), HttpStatus.CREATED);
@@ -31,18 +31,36 @@ public class RentRestController {
         }
     }
 
-
     @GetMapping("/rents")
-    public ResponseEntity<List<Rent>> getAllRents(){
-        List<Rent> rents = rentService.getAllRents();
-        if (rents.isEmpty()){
-            throw new RentNotFoundException("There are no rents");
+    public ResponseEntity<List<RentDTO>> getAllRents(@RequestParam(required = false) String rentStatus){
+
+        List<RentDTO> rents;
+        if (rentStatus == null){
+            rents = rentService.getAllRents();
+            if (rents.isEmpty()){
+                throw new RentNotFoundException("There are no rents");
+            }
+            return new ResponseEntity<>(rents, HttpStatus.OK);
         }
-        return new ResponseEntity<>(rents, HttpStatus.OK);
+        if ("active".equals(rentStatus)){
+            rents = rentService.getActiveRents();
+            if (rents.isEmpty()){
+                throw new RentNotFoundException("There are no active rents");
+            }
+            return new ResponseEntity<>(rents, HttpStatus.OK);
+        }
+        if ("finished".equals(rentStatus)){
+            rents = rentService.getFinishedRents();
+            if (rents.isEmpty()){
+                throw new RentNotFoundException("There are no finished rents");
+            }
+            return new ResponseEntity<>(rents, HttpStatus.OK);
+        }
+        throw new BadRequestException("Wrong input parameter. Input rent status: " + rentStatus);
     }
 
-    @GetMapping("/rents/{id}")
-    public ResponseEntity<Rent> getRentById(@PathVariable Long id){
+    @GetMapping("/rents/rent")
+    public ResponseEntity<Rent> getRentById(@RequestParam Long id){
         Rent rent = rentService.getRentById(id);
         if (rent == null){
             throw new RentNotFoundException("There is no rent with id: " + id);
@@ -50,8 +68,8 @@ public class RentRestController {
         return new ResponseEntity<>(rent, HttpStatus.OK);
     }
 
-    @PutMapping("/rents/{id}/extend")
-    public ResponseEntity<Rent> extendPlannedRentDays(@PathVariable Long id, @RequestParam int days){
+    @PutMapping("/rents/extend")
+    public ResponseEntity<Rent> extendPlannedRentDays(@RequestParam Long id, @RequestParam int days){
         try{
             return new ResponseEntity<>(rentService.extendPlannedRentDays(id,days), HttpStatus.OK);
         }catch(WrongRentException e){
@@ -59,8 +77,8 @@ public class RentRestController {
         }
     }
 
-    @PutMapping("/rents/{id}/update")
-    public ResponseEntity<Rent> updatePlannedRentDate(@PathVariable Long id, @RequestParam String returndate){
+    @PutMapping("/rents/update")
+    public ResponseEntity<Rent> updatePlannedRentDate(@RequestParam Long id, @RequestParam String returndate){
         try{
             return new ResponseEntity<>(rentService.updatePlannedReturnDate(id, returndate), HttpStatus.OK);
         }catch(WrongRentException e){
@@ -68,8 +86,8 @@ public class RentRestController {
         }
     }
 
-    @DeleteMapping("/rents/{id}/delete")
-    public ResponseEntity<Rent> deleteRentById(@PathVariable Long id){
+    @DeleteMapping("/rents/delete")
+    public ResponseEntity<Rent> deleteRentById(@RequestParam Long id){
         if (rentService.deleteRentById(id) > 0){
             return new ResponseEntity<>(HttpStatus.OK);
         }

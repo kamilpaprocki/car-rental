@@ -27,6 +27,9 @@ public class UserDetailsAddress {
     @Column(name = "city", nullable = false, length = 30)
     private String city;
 
+    public UserDetailsAddress() {
+    }
+
     public Long getId() {
         return id;
     }
@@ -98,5 +101,72 @@ public class UserDetailsAddress {
                 ", postalCode='" + postalCode + '\'' +
                 ", city='" + city + '\'' +
                 '}';
+    }
+
+    public static UserDetailsAddressBuilder builder() {
+        return new UserDetailsAddressBuilder();
+    }
+
+    private UserDetailsAddress(UserDetailsAddressBuilder u){
+        this.id = u.id;
+        this.street = u.street;
+        this.streetNumber = u.streetNumber;
+        this.city = u.city;
+        this.apartmentNumber = u.apartmentNumber;
+        this.postalCode = u.postalCode;
+    }
+
+    public static final class UserDetailsAddressBuilder {
+        private Long id;
+        private String street;
+        private String streetNumber;
+        private String apartmentNumber;
+        private String postalCode;
+        private String city;
+
+        private UserDetailsAddressBuilder() {
+        }
+
+        public UserDetailsAddressBuilder id(String id) {
+            if (id == null){
+                this.id = null;
+                return this;
+            }
+            this.id = Long.parseLong(id);
+            return this;
+        }
+
+        public UserDetailsAddressBuilder street(String street) {
+            this.street = street;
+            return this;
+        }
+
+        public UserDetailsAddressBuilder streetNumber(String streetNumber) {
+            this.streetNumber = streetNumber;
+            return this;
+        }
+
+        public UserDetailsAddressBuilder apartmentNumber(String apartmentNumber) {
+            if (apartmentNumber == null){
+                this.apartmentNumber = null;
+                return this;
+            }
+            this.apartmentNumber = apartmentNumber;
+            return this;
+        }
+
+        public UserDetailsAddressBuilder postalCode(String postalCode) {
+            this.postalCode = postalCode;
+            return this;
+        }
+
+        public UserDetailsAddressBuilder city(String city) {
+            this.city = city;
+            return this;
+        }
+
+        public UserDetailsAddress build() {
+return new UserDetailsAddress(this);
+        }
     }
 }

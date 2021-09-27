@@ -7,7 +7,7 @@ import java.util.Objects;
 
 @Table(name = "details")
 @Entity
-public class UserDetails {
+public class UserAppDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -41,6 +41,9 @@ public class UserDetails {
 
     @Column(name = "birth_date", nullable = false)
     private Date birthDate;
+
+    public UserAppDetails() {
+    }
 
     public Long getId() {
         return id;
@@ -125,8 +128,8 @@ public class UserDetails {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof UserDetails)) return false;
-        UserDetails userDetails = (UserDetails) o;
+        if (!(o instanceof UserAppDetails)) return false;
+        UserAppDetails userDetails = (UserAppDetails) o;
         return getId().equals(userDetails.getId()) && getName().equals(userDetails.getName()) && getLastName().equals(userDetails.getLastName()) && getNationality().equals(userDetails.getNationality()) && getClientAddress().equals(userDetails.getClientAddress()) && getDrivingLicenseNumber().equals(userDetails.getDrivingLicenseNumber()) && getIdentityCardNumber().equals(userDetails.getIdentityCardNumber()) && getPeselNumber().equals(userDetails.getPeselNumber()) && getPhoneNumber().equals(userDetails.getPhoneNumber()) && getBirthDate().equals(userDetails.getBirthDate());
     }
 
@@ -149,5 +152,96 @@ public class UserDetails {
                 ", phoneNumber='" + phoneNumber + '\'' +
                 ", birthDate=" + birthDate +
                 '}';
+    }
+
+    private UserAppDetails(UserAppDetailsBuilder u){
+        this.id = u.id;
+        this.name = u.name;
+        this.lastName = u.lastName;
+        this.nationality = u.nationality;
+        this.userDetailsAddress = u.userDetailsAddress;
+        this.drivingLicenseNumber = u.drivingLicenseNumber;
+        this.identityCardNumber = u.identityCardNumber;
+        this.peselNumber = u.peselNumber;
+        this.phoneNumber = u.phoneNumber;
+        this.birthDate = u.birthDate;
+    }
+
+    public static UserAppDetailsBuilder builder() {
+        return new UserAppDetailsBuilder();
+    }
+
+    public static final class UserAppDetailsBuilder {
+        private Long id;
+        private String name;
+        private String lastName;
+        private String nationality;
+        private UserDetailsAddress userDetailsAddress;
+        private String drivingLicenseNumber;
+        private String identityCardNumber;
+        private String peselNumber;
+        private String phoneNumber;
+        private Date birthDate;
+
+        private UserAppDetailsBuilder() {
+        }
+
+        public UserAppDetailsBuilder id(String id) {
+            if (id == null){
+                this.id = null;
+                return this;
+            }
+            this.id = Long.parseLong(id);
+            return this;
+        }
+
+        public UserAppDetailsBuilder name(String name) {
+            this.name = name;
+            return this;
+        }
+
+        public UserAppDetailsBuilder lastName(String lastName) {
+            this.lastName = lastName;
+            return this;
+        }
+
+        public UserAppDetailsBuilder nationality(String nationality) {
+            this.nationality = nationality;
+            return this;
+        }
+
+        public UserAppDetailsBuilder userDetailsAddress(UserDetailsAddress userDetailsAddress) {
+            this.userDetailsAddress = userDetailsAddress;
+            return this;
+        }
+
+        public UserAppDetailsBuilder drivingLicenseNumber(String drivingLicenseNumber) {
+            this.drivingLicenseNumber = drivingLicenseNumber;
+            return this;
+        }
+
+        public UserAppDetailsBuilder identityCardNumber(String identityCardNumber) {
+            this.identityCardNumber = identityCardNumber;
+            return this;
+        }
+
+        public UserAppDetailsBuilder peselNumber(String peselNumber) {
+            this.peselNumber = peselNumber;
+            return this;
+        }
+
+        public UserAppDetailsBuilder phoneNumber(String phoneNumber) {
+            this.phoneNumber = phoneNumber;
+            return this;
+        }
+
+        public UserAppDetailsBuilder birthDate(Date birthDate) {
+            this.birthDate = birthDate;
+            return this;
+        }
+
+        public UserAppDetails build() {
+return new UserAppDetails(this);
+        }
     }
 }

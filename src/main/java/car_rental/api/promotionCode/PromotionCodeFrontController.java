@@ -1,5 +1,6 @@
 package car_rental.api.promotionCode;
 
+import car_rental.api.exceptions.PromotionCodeNotFoundException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -9,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @Controller
 public class PromotionCodeFrontController {
@@ -24,39 +26,58 @@ private final PromotionCodeService promotionCodeService;
                                     @RequestParam(required = false) Long id,
                                     @RequestParam(required = false) String promotioncode,
                                     @RequestParam(required = false) String promotioncodestatus){
+
         if ("allPromotionCodes".equals(promotioncodestatus)){
-            model.addAttribute("allPromotionCodes", promotionCodeService.getAllPromotionCodes());
+            List<PromotionCodeDTO> promotionCodeDTOList = promotionCodeService.getAllPromotionCodes();
+            if (promotionCodeDTOList.isEmpty()){
+                throw new PromotionCodeNotFoundException("There is no promotion codes");
+            }
+            model.addAttribute("allPromotionCodes", promotionCodeDTOList);
 
         }
         if("activePromotionCodes".equals(promotioncodestatus)){
-            model.addAttribute("activePromotionCodes", promotionCodeService.getActivePromotionCodes());
+            List<PromotionCodeDTO> promotionCodeDTOList = promotionCodeService.getActivePromotionCodes();
+            if (promotionCodeDTOList.isEmpty()){
+                throw new PromotionCodeNotFoundException("There is no active promotion codes");
+            }
+            model.addAttribute("activePromotionCodes", promotionCodeDTOList);
 
         }
         if ("inactivePromotionCodes".equals(promotioncodestatus)){
+            List<PromotionCodeDTO> promotionCodeDTOList = promotionCodeService.getInactivePromotionCodes();
+            if (promotionCodeDTOList.isEmpty()){
+                throw new PromotionCodeNotFoundException("There is no inactive promotion codes");
+            }
             model.addAttribute("inactivePromotionCodes", promotionCodeService.getInactivePromotionCodes());
-
         }
-        if (id != null){
-            model.addAttribute("promotionCodeById", promotionCodeService.getPromotionCodeById(id));
+       if ("promotionCodeId".equals(promotioncodestatus)){
+           PromotionCodeDTO promotionCodeDTO = promotionCodeService.getPromotionCodeById(id);
+           if (promotionCodeDTO == null){
+               throw new PromotionCodeNotFoundException("There is no promotion code with id: " + id);
+           }
+           model.addAttribute("promotionCodeById", promotionCodeDTO);
+       }
 
-        }
-        if (promotioncode != null){
-            model.addAttribute("promotionCode", promotionCodeService.getPromotionCodeByCode(promotioncode));
+        if ("promotionCode".equals(promotioncodestatus)){
+            PromotionCodeDTO promotionCodeDTO = promotionCodeService.getPromotionCodeDTOByCode(promotioncode);
+            if (promotionCodeDTO == null){
+                throw new PromotionCodeNotFoundException("Wrong promotion code: " + promotioncode);
+            }
+            model.addAttribute("promotionCode", promotionCodeDTO);
 
         }
         return "promotioncodes";
     }
 
     @GetMapping("/generate/promotioncode")
-    public String getPromotionCodePage(Model model, @ModelAttribute("generatedPromotionCode") String generatedPromotionCode){
-        model.addAttribute("promotioncode", new PromotionCode());
+    public String getPromotionCodePage(@ModelAttribute("generatedPromotionCode") String generatedPromotionCode){
         return "generate-promotioncode";
     }
 
     @PostMapping("/generate/promotioncode")
     public String generatePromotionCode(RedirectAttributes redirectAttributes, @RequestParam BigDecimal discount, @RequestParam int activeDays, @RequestParam boolean isMultipleUse){
-        PromotionCode promotionCode = promotionCodeService.createPromotionCode(discount, activeDays, isMultipleUse);
-        redirectAttributes.addFlashAttribute("generatedPromotionCode", promotionCode.getPromotionCode());
+        PromotionCodeDTO generatedPromotionCode = promotionCodeService.getGeneratedPromotionCode(promotionCodeService.createPromotionCode(discount, activeDays, isMultipleUse));
+        redirectAttributes.addFlashAttribute("generatedPromotionCode", generatedPromotionCode.getPromotionCodeDTO());
         return "redirect:/generate/promotioncode?info=generated";
     }
 

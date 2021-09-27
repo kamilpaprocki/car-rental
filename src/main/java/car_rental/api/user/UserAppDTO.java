@@ -123,8 +123,12 @@ public class UserAppDTO {
         private UserAppDTOBuilder() {
         }
 
-        public UserAppDTOBuilder id(String id) {
-            this.id = id;
+        public UserAppDTOBuilder id(Long id) {
+            if (id == null){
+                this.id = null;
+                return this;
+            }
+            this.id = String.valueOf(id);
             return this;
         }
 

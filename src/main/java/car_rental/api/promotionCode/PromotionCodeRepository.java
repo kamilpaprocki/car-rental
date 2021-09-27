@@ -12,10 +12,10 @@ import java.util.Optional;
 public interface PromotionCodeRepository extends JpaRepository<PromotionCode, Long> {
 
     @Query(value = "SELECT p FROM PromotionCode p WHERE p.isActive = true")
-    List<PromotionCode> getActivePromotionCodes();
+    Optional<List<PromotionCode>> getActivePromotionCodes();
 
     @Query(value = "SELECT p FROM PromotionCode p WHERE p.isActive = false")
-    List<PromotionCode> getInactivePromotionCodes();
+    Optional<List<PromotionCode>> getInactivePromotionCodes();
 
     @Modifying
     @Query(value = "DELETE FROM PromotionCode p WHERE p.id = :id")

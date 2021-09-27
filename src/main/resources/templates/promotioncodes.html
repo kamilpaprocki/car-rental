@@ -26,14 +26,14 @@
                 <tbody>
                 <tr th:value = "${promotionCodeById}">
                     <td th:text = "${promotionCodeById.getId()}"></td>
-                    <td th:text = "${promotionCodeById.getPromotionCode()}"></td>
+                    <td th:text = "${promotionCodeById.getPromotionCodeDTO()}"></td>
                     <td th:text = "${promotionCodeById.getUsedDate()}"></td>
                     <td th:text = "${promotionCodeById.getGenerateDate()}"></td>
                     <td th:text = "${promotionCodeById.getExpDate()}"></td>
                     <td th:text = "${promotionCodeById.getDiscount()}"></td>
-                    <td th:text = "${promotionCodeById.isMultipleUse()}"></td>
+                    <td th:text = "${promotionCodeById.getIsMultipleUse()}"></td>
                     <td th:text = "${promotionCodeById.getAvailableUse()}"></td>
-                    <td th:text = "${promotionCodeById.isActive()}"></td>
+                    <td th:text = "${promotionCodeById.getIsActive()}"></td>
                 </tr>
                 </tbody>
             </table>
@@ -55,14 +55,14 @@
                 <tbody>
                 <tr th:value = "${promotionCode}">
                     <td th:text = "${promotionCode.getId()}"></td>
-                    <td th:text = "${promotionCode.getPromotionCode()}"></td>
+                    <td th:text = "${promotionCode.getPromotionCodeDTO()}"></td>
                     <td th:text = "${promotionCode.getUsedDate()}"></td>
                     <td th:text = "${promotionCode.getGenerateDate()}"></td>
                     <td th:text = "${promotionCode.getExpDate()}"></td>
                     <td th:text = "${promotionCode.getDiscount()}"></td>
-                    <td th:text = "${promotionCode.isMultipleUse()}"></td>
+                    <td th:text = "${promotionCode.getIsMultipleUse()}"></td>
                     <td th:text = "${promotionCode.getAvailableUse()}"></td>
-                    <td th:text = "${promotionCode.isActive()}"></td>
+                    <td th:text = "${promotionCode.getIsActive()}"></td>
                 </tr>
                 </tbody>
             </table>
@@ -84,14 +84,14 @@
                 <tbody>
                 <tr th:each = "p : ${allPromotionCodes}">
                     <td th:text = "${p.getId()}"></td>
-                    <td th:text = "${p.getPromotionCode()}"></td>
+                    <td th:text = "${p.getPromotionCodeDTO()}"></td>
                     <td th:text = "${p.getUsedDate()}"></td>
                     <td th:text = "${p.getGenerateDate()}"></td>
                     <td th:text = "${p.getExpDate()}"></td>
                     <td th:text = "${p.getDiscount()}"></td>
-                    <td th:text = "${p.isMultipleUse()}"></td>
+                    <td th:text = "${p.getIsMultipleUse()}"></td>
                     <td th:text = "${p.getAvailableUse()}"></td>
-                    <td th:text = "${p.isActive()}"></td>
+                    <td th:text = "${p.getIsActive()}"></td>
                 </tr>
                 </tbody>
             </table>
@@ -113,14 +113,14 @@
                 <tbody>
                 <tr th:each = "p : ${activePromotionCodes}">
                     <td th:text = "${p.getId()}"></td>
-                    <td th:text = "${p.getPromotionCode()}"></td>
+                    <td th:text = "${p.getPromotionCodeDTO()}"></td>
                     <td th:text = "${p.getUsedDate()}"></td>
                     <td th:text = "${p.getGenerateDate()}"></td>
                     <td th:text = "${p.getExpDate()}"></td>
                     <td th:text = "${p.getDiscount()}"></td>
-                    <td th:text = "${p.isMultipleUse()}"></td>
+                    <td th:text = "${p.getIsMultipleUse()}"></td>
                     <td th:text = "${p.getAvailableUse()}"></td>
-                    <td th:text = "${p.isActive()}"></td>
+                    <td th:text = "${p.getIsActive()}"></td>
                 </tr>
                 </tbody>
             </table>
@@ -142,14 +142,14 @@
                 <tbody>
                 <tr th:each = "p : ${inactivePromotionCodes}">
                     <td th:text = "${p.getId()}"></td>
-                    <td th:text = "${p.getPromotionCode()}"></td>
+                    <td th:text = "${p.getPromotionCodeDTO()}"></td>
                     <td th:text = "${p.getUsedDate()}"></td>
                     <td th:text = "${p.getGenerateDate()}"></td>
                     <td th:text = "${p.getExpDate()}"></td>
                     <td th:text = "${p.getDiscount()}"></td>
-                    <td th:text = "${p.isMultipleUse()}"></td>
+                    <td th:text = "${p.getIsMultipleUse()}"></td>
                     <td th:text = "${p.getAvailableUse()}"></td>
-                    <td th:text = "${p.isActive()}"></td>
+                    <td th:text = "${p.getIsActive()}"></td>
                 </tr>
                 </tbody>
             </table>

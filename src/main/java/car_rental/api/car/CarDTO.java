@@ -1,33 +1,45 @@
 package car_rental.api.car;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 
 public class CarDTO {
 
-    @JsonIgnore
+    @JsonProperty(value= "id")
     private String id;
 
     @JsonProperty(value = "brand")
+    @NotEmpty(message = "This can not be empty")
     private String brand;
 
     @JsonProperty(value = "model")
+    @NotEmpty(message = "This can not be empty")
     private String model;
 
     @JsonProperty(value = "segment")
+    @NotNull(message = "This can not be null")
     private String segment;
 
     @JsonProperty(value = "model_year")
+    @NotEmpty(message = "This can not be empty")
     private String modelYear;
 
-    @JsonProperty(value = "current_odemeter")
+    @JsonProperty(value = "current_odometer")
+    @NotEmpty(message = "This can not be empty")
     private String currentOdometer;
 
     @JsonProperty(value = "price_per_day")
+    @NotEmpty(message = "This can not be empty")
     private String pricePerDay;
 
     @JsonProperty(value = "is_available")
-    private String isAvailable;
+    @NotNull(message = "This can not be null")
+    private Boolean isAvailable;
+
+    public CarDTO() {
+    }
 
     private CarDTO(CarDTOBuilder b) {
         this.id = b.id;
@@ -52,7 +64,7 @@ public class CarDTO {
         private String modelYear;
         private String currentOdometer;
         private String pricePerDay;
-        private String isAvailable;
+        private Boolean isAvailable;
 
         public CarDTOBuilder id(String id){
             this.id = id;
@@ -89,7 +101,7 @@ public class CarDTO {
             return this;
         }
 
-        public CarDTOBuilder available(String isAvailable){
+        public CarDTOBuilder available(Boolean isAvailable){
             this.isAvailable = isAvailable;
             return this;
         }
@@ -127,20 +139,57 @@ public class CarDTO {
         return pricePerDay;
     }
 
-    public String isAvailable() {
+    public Boolean isAvailable() {
         return isAvailable;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public void setBrand(String brand) {
+        this.brand = brand;
+    }
+
+    public void setModel(String model) {
+        this.model = model;
+    }
+
+    public void setSegment(String segment) {
+        this.segment = segment;
+    }
+
+    public void setModelYear(String modelYear) {
+        this.modelYear = modelYear;
+    }
+
+    public void setCurrentOdometer(String currentOdometer) {
+        this.currentOdometer = currentOdometer;
+    }
+
+    public void setPricePerDay(String pricePerDay) {
+        this.pricePerDay = pricePerDay;
+    }
+
+    public Boolean getAvailable() {
+        return isAvailable;
+    }
+
+    public void setAvailable(Boolean available) {
+        isAvailable = available;
     }
 
     @Override
     public String toString() {
         return "CarDTO{" +
-                "brand='" + brand + '\'' +
+                "id='" + id + '\'' +
+                ", brand='" + brand + '\'' +
                 ", model='" + model + '\'' +
                 ", segment='" + segment + '\'' +
                 ", modelYear='" + modelYear + '\'' +
                 ", currentOdometer='" + currentOdometer + '\'' +
                 ", pricePerDay='" + pricePerDay + '\'' +
-                ", isAvailable=" + isAvailable +
+                ", isAvailable='" + isAvailable + '\'' +
                 '}';
     }
 }

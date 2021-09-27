@@ -23,4 +23,7 @@ public interface RentRepository extends JpaRepository<Rent, Long> {
     @Query(value = "SELECT r FROM Rent r WHERE r.isFinished = false")
     Optional<List<Rent>> getActiveRents();
 
+    @Query(value = "SELECT r FROM Rent r WHERE r.isFinished = true")
+    Optional<List<Rent>> getFinishedRents();
+
 }

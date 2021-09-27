@@ -13,7 +13,6 @@ import java.util.Objects;
 @Table(name = "cars")
 public class Car {
 
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "car_id")
@@ -41,6 +40,9 @@ public class Car {
     @Column(name = "is_available")
     @ColumnDefault("true")
     private Boolean isAvailable;
+
+    public Car() {
+    }
 
     public Long getId() {
         return id;
@@ -106,6 +108,8 @@ public class Car {
         this.isAvailable = isAvailable;
     }
 
+
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -131,5 +135,79 @@ public class Car {
                 ", pricePerDay=" + pricePerDay +
                 ", isAvailable=" + isAvailable +
                 '}';
+    }
+
+    private Car(CarBuilder c){
+        this.id = c.id;
+        this.brand = c.brand;
+        this.model = c.model;
+        this.segment = c.segment;
+        this.modelYear = c.modelYear;
+        this.currentOdometer = c.currentOdometer;
+        this.pricePerDay = c.pricePerDay;
+        this.isAvailable = c.isAvailable;
+    }
+
+    public static CarBuilder builder() {
+        return new CarBuilder();
+    }
+
+    public static final class CarBuilder {
+        private Long id;
+        private String brand;
+        private String model;
+        private CarSegment segment;
+        private int modelYear;
+        private long currentOdometer;
+        private BigDecimal pricePerDay;
+        private Boolean isAvailable;
+
+        public CarBuilder id(String id) {
+            if (id == null){
+                this.id = null;
+                return this;
+            }
+            this.id = Long.parseLong(id);
+            return this;
+        }
+
+        public CarBuilder brand(String brand) {
+            this.brand = brand;
+            return this;
+        }
+
+        public CarBuilder model(String model) {
+            this.model = model;
+            return this;
+        }
+
+        public CarBuilder segment(CarSegment segment) {
+            this.segment = segment;
+            return this;
+        }
+
+        public CarBuilder modelYear(int modelYear) {
+            this.modelYear = modelYear;
+            return this;
+        }
+
+        public CarBuilder currentOdometer(long currentOdometer) {
+            this.currentOdometer = currentOdometer;
+            return this;
+        }
+
+        public CarBuilder pricePerDay(BigDecimal pricePerDay) {
+            this.pricePerDay = pricePerDay;
+            return this;
+        }
+
+        public CarBuilder isAvailable(Boolean isAvailable) {
+            this.isAvailable = isAvailable;
+            return this;
+        }
+
+        public Car build() {
+            return new Car(this);
+        }
     }
 }

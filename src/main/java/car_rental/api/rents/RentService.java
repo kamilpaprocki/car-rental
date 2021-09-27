@@ -1,13 +1,10 @@
 package car_rental.api.rents;
 
-import car_rental.api.car.Car;
 import car_rental.api.car.CarDTO;
-import car_rental.api.car.CarMapper;
 import car_rental.api.car.CarService;
+import car_rental.api.exceptions.WrongArgumentException;
 import car_rental.api.exceptions.WrongDataFormatException;
-import car_rental.api.promotionCode.PromotionCode;
 import car_rental.api.promotionCode.PromotionCodeDTO;
-import car_rental.api.promotionCode.PromotionCodeMapper;
 import car_rental.api.promotionCode.PromotionCodeService;
 import car_rental.api.user.CustomUserDetailsService;
 import car_rental.api.user.UserApp;
@@ -39,7 +36,8 @@ public class RentService {
         this.customUserDetailsService = customUserDetailsService;
     }
 
-    public Rent createOrUpdateRent(Rent rent, String promotionCode){
+    public Rent createOrUpdateRent(RentDTO rentDTO, String promotionCode){
+        Rent rent = new RentMapper().mapToDAO(rentDTO);
         rent.setPromotionCode(promotionCodeService.usePromotionCode(promotionCode));
        rent.setRentalCost(rent.getRentalCost()
                 .subtract(
@@ -48,16 +46,21 @@ public class RentService {
         return rentRepository.save(rent);
     }
 
-    public Rent createOrUpdateRent(Rent rent){
-        return rentRepository.save(rent);
+    public Rent createOrUpdateRent(RentDTO rentDTO){
+        return rentRepository.save(new RentMapper().mapToDAO(rentDTO));
     }
 
-    public Rent getRentById(Long id){
-        return rentRepository.findById(id).orElse(null);
+    public RentDTO getRentById(String rentId){
+        if (rentId == null){
+            throw new WrongArgumentException("Rent id cannot be null");
+        }
+        Rent rent = rentRepository.findById(Long.parseLong(rentId)).orElse(null);
+        return new RentMapper().mapToDTO(rent);
     }
 
-    public List<Rent> getAllRents(){
-        return rentRepository.findAll();
+    public List<RentDTO> getAllRents(){
+        List<Rent> rents = rentRepository.findAll();
+        return rents.stream().map(new RentMapper() :: mapToDTO).collect(Collectors.toList());
     }
 
     public Rent extendPlannedRentDays(Long id, int days){
@@ -85,8 +88,11 @@ public class RentService {
     }
 
     @Transactional
-    public int deleteRentById(Long id){
-        return rentRepository.deleteRentById(id);
+    public int deleteRentById(Long rentId){
+        if (rentId == null){
+            throw new WrongArgumentException("Rent id cannot be null");
+        }
+        return rentRepository.deleteRentById(rentId);
     }
 
     public long getRentalDays(Date rentDay, Date returnDate){
@@ -103,29 +109,26 @@ public class RentService {
     }
 
     public RentDTO addPromotionCode(RentDTO rentDTO, PromotionCodeDTO promotionCodeDTO){
-
         promotionCodeService.usePromotionCode(promotionCodeDTO.getPromotionCodeDTO());
-        PromotionCode promotionCode = promotionCodeService.getPromotionCodeByCode(promotionCodeDTO.getPromotionCodeDTO());
-        promotionCodeDTO = new PromotionCodeMapper().map(promotionCode);
-        rentDTO.setPromotionCode(promotionCodeDTO);
-        BigDecimal discount = new BigDecimal(promotionCodeDTO.getDiscount());
+        PromotionCodeDTO promotionCode = promotionCodeService.getPromotionCodeDTOByCode(promotionCodeDTO.getPromotionCodeDTO());
+        rentDTO.setPromotionCode(promotionCode);
+        BigDecimal discount = new BigDecimal(promotionCode.getDiscount());
         BigDecimal rentalCost = new BigDecimal(rentDTO.getRentalCost());
         rentalCost = (rentalCost.multiply(BigDecimal.valueOf(100).subtract(discount))).divide(BigDecimal.valueOf(100)).setScale(2, RoundingMode.CEILING);
         rentDTO.setRentalCost(rentalCost.toString());
         return rentDTO;
     }
 
-    public RentDTO addUserAndCar(RentDTO rentDTO, UserApp userApp, Car car){
-        UserAppDTO userAppDTO = new UserAppMapper().map(userApp);
+    public RentDTO addUserAndCar(RentDTO rentDTO, UserApp userApp, CarDTO carDTO){
+        UserAppDTO userAppDTO = new UserAppMapper().mapToDTO(userApp);
         rentDTO.setUserApp(userAppDTO);
-        CarDTO carDTO = new CarMapper().map(car);
         rentDTO.setCar(carDTO);
         return rentDTO;
     }
 
     public RentDTO addOrUpdateRentDetails(RentDTO rentDTO){
         DateParser dateParser = new DateParser();
-        long rentalDays = getRentalDays(dateParser.parseStringToDate(rentDTO.getRentDate()), dateParser.parseStringToDate(rentDTO.getPlannedReturnDate()));
+        long rentalDays = getRentalDays(dateParser.parseStringToDateDAO(rentDTO.getRentDate()), dateParser.parseStringToDateDAO(rentDTO.getPlannedReturnDate()));
         rentDTO.setRentalDays(String.valueOf(rentalDays));
 
         String pricePerDay = rentDTO.getCar().getPricePerDay();
@@ -135,7 +138,7 @@ public class RentService {
     }
 
     public Rent addRent(RentDTO rentDTO){
-        Rent rent = new RentMapper().reverse(rentDTO);
+        Rent rent = new RentMapper().mapToDAO(rentDTO);
         rent.getCar().setAvailable(false);
         carService.createOrUpdateCar(rent.getCar());
         rent.getUserApp().setHasActiveRent(true);
@@ -144,11 +147,11 @@ public class RentService {
     }
 
     public List<RentDTO> getRentByUserApp(UserApp userApp){
-        List<Rent> rent = rentRepository.getRentByUserApp(userApp).orElse(null);
-        if (rent == null){
-            throw new WrongRentException("There is no active rent");
+        if (userApp == null){
+            throw new WrongArgumentException("User cannot be a null");
         }
-        return rent.stream().map(new RentMapper() :: map).collect(Collectors.toList());
+        List<Rent> rent = rentRepository.getRentByUserApp(userApp).orElseThrow(null);
+        return rent.stream().map(new RentMapper() ::mapToDTO).collect(Collectors.toList());
     }
 
     public RentDTO updatePlannedReturnDate(RentDTO rentDTO){
@@ -163,13 +166,15 @@ public class RentService {
     }
 
     public List<RentDTO> getActiveRents(){
-        List<Rent> rents = rentRepository.getActiveRents().orElse(null);
-        if (rents == null){
-            throw new WrongRentException("There are no active rents");
-        }
-       return rents.stream().map(new RentMapper() :: map).collect(Collectors.toList());
-
+        List<Rent> rents = rentRepository.getActiveRents().orElseThrow(null);
+       return rents.stream().map(new RentMapper() ::mapToDTO).collect(Collectors.toList());
     }
+
+    public List<RentDTO> getFinishedRents(){
+        List<Rent> rents = rentRepository.getFinishedRents().orElseThrow(null);
+        return rents.stream().map(new RentMapper() :: mapToDTO).collect(Collectors.toList());
+    }
+
 
     public CarReturnOdometerWrapper getCarLastOdometer(RentDTO rentDTO){
         CarReturnOdometerWrapper carReturnOdometerWrapper = new CarReturnOdometerWrapper();
@@ -180,7 +185,7 @@ public class RentService {
     public Rent finishRent(RentDTO rentDTO, CarReturnOdometerWrapper carReturnOdometerWrapper){
 
         if (carReturnOdometerWrapper.getCurrentOdometer() == null){
-            throw new WrongRentException("This cannot be a null.");
+            throw new WrongArgumentException("Current odometer distance cannot be a null.");
         }
 
         if (carReturnOdometerWrapper.getLastOdometer() == null){
@@ -192,7 +197,7 @@ public class RentService {
             rentDTO = updatePlannedReturnDate(rentDTO);
         }
 
-        Rent rent = new RentMapper().reverse(rentDTO);
+        Rent rent = new RentMapper().mapToDAO(rentDTO);
 
         if (rent.getRentDate().after(Date.valueOf(LocalDate.now()))){
             throw new WrongDataFormatException("Return date cannot be before rent date.");
@@ -209,5 +214,12 @@ public class RentService {
         rent.getUserApp().setHasActiveRent(false);
         return rentRepository.save(rent);
 
+    }
+
+    public Rent getRentById(Long rentId){
+        if (rentId == null){
+            throw new WrongArgumentException("Rent id cannot be null");
+        }
+        return rentRepository.findById(rentId).orElse(null);
     }
 }

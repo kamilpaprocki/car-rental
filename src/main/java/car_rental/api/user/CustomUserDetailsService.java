@@ -2,12 +2,12 @@ package car_rental.api.user;
 
 import car_rental.api.exceptions.UserAlreadyExistException;
 import car_rental.api.exceptions.WrongArgumentException;
-import car_rental.api.userDetails.UserDetails;
 import car_rental.api.userDetails.UserDetailsDTO;
 import car_rental.api.userDetails.UserDetailsMapper;
 import car_rental.api.utils.ChangePasswordWrapper;
 import com.google.common.collect.Sets;
 import org.springframework.context.annotation.Bean;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -18,6 +18,7 @@ import java.sql.Date;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
@@ -31,14 +32,14 @@ public class CustomUserDetailsService implements UserDetailsService {
         this.roleService = roleService;
     }
 
-    public org.springframework.security.core.userdetails.UserDetails loadUserByUsername(String username){
+    public UserDetails loadUserByUsername(String username){
         Optional<UserApp> userApp = userRepository.findByUsername(username);
         userApp.orElseThrow(() -> new UsernameNotFoundException("User not found"));
         return userApp.map(CustomUserDetails::new).get();
     }
 
     @Transactional
-    public UserApp registerUser(UserRegisterDTO userRegisterDTO){
+    public UserAppDTO registerUser(UserRegisterDTO userRegisterDTO){
         if (!usernameExist(userRegisterDTO.getUsername())){
             throw new UserAlreadyExistException("There is an account with that username");
         }
@@ -51,15 +52,16 @@ public class CustomUserDetailsService implements UserDetailsService {
         userApp.setUsername(userRegisterDTO.getUsername());
         userApp.setEmail(userRegisterDTO.getEmail());
         userApp.setPassword(bCryptPasswordEncoder().encode(userRegisterDTO.getPassword()));
-        userApp.setRegistredDate(Date.valueOf(LocalDate.now()));
+        userApp.setRegisteredDate(Date.valueOf(LocalDate.now()));
         userApp.setIsActive(true);
         userApp.setRoles(Sets.newHashSet(roleService.createRoleIfNotFound("ROLE_USER")));
-        return userApp;
+        return new UserAppMapper().mapToDTO(userApp);
     }
 
-    public UserApp addUserDetails(UserApp userApp, UserDetails userDetails){
-        userApp.setUserDetails(userDetails);
-        return userRepository.save(userApp);
+    public UserApp addUserDetails(UserAppDTO userApp, UserDetailsDTO userDetails){
+        System.out.println(userDetails.toString());
+        userApp.setUserDetailsDTO(userDetails);
+        return userRepository.save(new UserAppMapper().mapToDAO(userApp));
     }
 
     private boolean usernameExist(String username){
@@ -80,17 +82,17 @@ public class CustomUserDetailsService implements UserDetailsService {
         return userRepository.save(userApp);
     }
 
-    public List<UserApp> getActiveUsers(){
-        return userRepository.getActiveUsers().orElse(null);
+    public List<UserAppDTO> getActiveUsers(){
+        List<UserApp> userApps = userRepository.getActiveUsers().orElseThrow(null);
+        return userApps.stream().map(new UserAppMapper() :: mapToDTO).collect(Collectors.toList());
     }
 
-    public UserSetRolesWrapper getUserById(long id){
-        UserApp userApp = userRepository.getUserAppByById(id).orElse(null);
-        UserSetRolesWrapper user = null;
-        if (userApp != null) {
-            user = new UserSetRolesMapper().map(userApp);
+    public UserAppDTO getUserAppById(Long id){
+        if(id == null){
+            throw new WrongArgumentException("User id cannot be a null");
         }
-        return user ;
+        UserApp userApp = userRepository.getUserAppByById(id).orElse(null);
+        return new UserAppMapper().mapToDTO(userApp);
     }
 
     public UserApp setRoles(UserSetRolesWrapper userSetRolesWrapper, String[] roles){
@@ -111,19 +113,13 @@ public class CustomUserDetailsService implements UserDetailsService {
     }
 
     public UserApp changePassword(Long userId, ChangePasswordWrapper changePasswordWrapper){
-        UserApp userApp = userRepository.getUserAppByById(userId).orElse(null);
-        if (userApp == null){
-            throw new UsernameNotFoundException("THere is no user with id: " + userId);
-            }
+        UserApp userApp = userRepository.getUserAppByById(userId).orElseThrow(() -> new UsernameNotFoundException("There is no user with id: " + userId));
         userApp.setPassword(bCryptPasswordEncoder().encode(changePasswordWrapper.getPassword()));
         return userRepository.save(userApp);
     }
 
     public UserApp changeEmail(Long userId, String email){
-        UserApp userApp = userRepository.getUserAppByById(userId).orElse(null);
-        if (userApp == null){
-            throw new UsernameNotFoundException("There is no user with id: " + userId);
-        }
+        UserApp userApp = userRepository.getUserAppByById(userId).orElseThrow(() -> new UsernameNotFoundException("There is no user with id: " + userId));
         if (!emailExist(email)){
             throw new UserAlreadyExistException("There is user with this email");
         }
@@ -132,11 +128,8 @@ public class CustomUserDetailsService implements UserDetailsService {
     }
 
     public UserApp updateUserDetails(Long userId, UserDetailsDTO userDetailsDTO){
-        UserApp userApp = userRepository.getUserAppByById(userId).orElse(null);
-        if (userApp == null){
-            throw new UsernameNotFoundException("There is no user with id: " + userId);
-        }
-        userApp.setUserDetails(new UserDetailsMapper().reverse(userDetailsDTO));
+        UserApp userApp = userRepository.getUserAppByById(userId).orElseThrow(() -> new UsernameNotFoundException("There is no user with id: " + userId));
+        userApp.setUserDetails(new UserDetailsMapper().mapToDAO(userDetailsDTO));
         return userRepository.save(userApp);
     }
 

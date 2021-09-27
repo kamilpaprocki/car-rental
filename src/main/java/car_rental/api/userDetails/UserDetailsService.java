@@ -1,10 +1,12 @@
 package car_rental.api.userDetails;
 
 
+import car_rental.api.exceptions.WrongArgumentException;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class UserDetailsService {
@@ -15,25 +17,29 @@ public class UserDetailsService {
         this.userDetailsRepository = userDetailsRepository;
     }
 
-    public UserDetails createOrUpdateUserDetails(UserDetails userDetails){
-        return userDetailsRepository.save(userDetails);
+    public UserAppDetails createOrUpdateUserDetails(UserDetailsDTO userDetails){
+        return userDetailsRepository.save(new UserDetailsMapper().mapToDAO(userDetails));
     }
 
-    public List<UserDetails> getAllUserDetails(){
-        return userDetailsRepository.findAll();
+    public List<UserDetailsDTO> getAllUserDetails(){
+        List<UserAppDetails> userAppDetails = userDetailsRepository.findAll();
+        return userAppDetails.stream().map(new UserDetailsMapper() :: mapToDTO).collect(Collectors.toList());
     }
 
-    public UserDetailsDTO getUserDetailsDTOById(long id){
-        UserDetails userDetails = userDetailsRepository.findById(id).orElse(null);
-        if (userDetails == null){
-            return null;
+    public UserDetailsDTO getUserDetailsDTOById(Long userDetailsId){
+        if (userDetailsId == null){
+            throw new WrongArgumentException("User details id cannot be a null");
         }
-        return new UserDetailsMapper().map(userDetails);
+        UserAppDetails userDetails = userDetailsRepository.findById(userDetailsId).orElseThrow(null);
+        return new UserDetailsMapper().mapToDTO(userDetails);
     }
 
     @Transactional
-    public int deleteUserDetailsById(long id){
-        return userDetailsRepository.deleteUserDetailsById(id);
+    public int deleteUserDetailsById(Long userDetailsId){
+        if (userDetailsId == null){
+            throw new WrongArgumentException("User details id cannot be a null");
+        }
+        return userDetailsRepository.deleteUserDetailsById(userDetailsId);
     }
 
 }

@@ -6,10 +6,10 @@ public class UserDetailsAddressMapper implements DTOMapper<UserDetailsAddress, U
 
 
     @Override
-    public UserDetailsAddressDTO map(UserDetailsAddress from) {
+    public UserDetailsAddressDTO mapToDTO(UserDetailsAddress from) {
         return UserDetailsAddressDTO
                 .builder()
-                .id(from.getId().toString())
+                .id(String.valueOf(from.getId()))
                 .street(from.getStreet())
                 .streetNumber(from.getStreetNumber())
                 .apartmentNumber(from.getApartmentNumber())
@@ -19,16 +19,14 @@ public class UserDetailsAddressMapper implements DTOMapper<UserDetailsAddress, U
     }
 
     @Override
-    public UserDetailsAddress reverse(UserDetailsAddressDTO from){
-        UserDetailsAddress userDetailsAddress = new UserDetailsAddress();
-        if (from.getId() != null){
-            userDetailsAddress.setId(Long.parseLong(from.getId()));
-        }
-        userDetailsAddress.setStreet(from.getStreet());
-        userDetailsAddress.setStreetNumber(from.getStreetNumber());
-        userDetailsAddress.setApartmentNumber(from.getApartmentNumber());
-        userDetailsAddress.setPostalCode(from.getPostalCode());
-        userDetailsAddress.setCity(from.getCity());
-        return userDetailsAddress;
+    public UserDetailsAddress mapToDAO(UserDetailsAddressDTO from){
+return UserDetailsAddress.builder()
+        .id(from.getId())
+        .street(from.getStreet())
+        .streetNumber(from.getStreetNumber())
+        .apartmentNumber(from.getApartmentNumber())
+        .postalCode(from.getPostalCode())
+        .city(from.getCity())
+        .build();
     }
 }

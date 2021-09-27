@@ -19,8 +19,8 @@ public class CarRestController {
     }
 
     @GetMapping("/cars")
-    public ResponseEntity<List<Car>> getAllCars(@RequestParam(required = false) String carStatus){
-        List<Car> cars;
+    public ResponseEntity<List<CarDTO>> getAllCars(@RequestParam(required = false) String carStatus){
+        List<CarDTO> cars;
         if("available".equals(carStatus)) {
             cars = carService.getAvailableCar();
             if (cars.isEmpty()){
@@ -47,25 +47,25 @@ public class CarRestController {
         throw new BadRequestException("Wrong input parameter. Input car status: " + carStatus);
     }
 
-    @GetMapping("/cars/{id}")
-    public ResponseEntity<Car> getCarById(@RequestParam long id){
-        Car car = carService.getCarById(id);
+    @GetMapping("/cars/car")
+    public ResponseEntity<CarDTO> getCarById(@RequestParam Long id){
+        CarDTO car = carService.getCarById(id);
         if (car == null){
             throw new CarNotFoundException("There is no car with id: " + id);
         }
         return new ResponseEntity<>(car, HttpStatus.OK);
     }
 
-    @PostMapping("/cars")
-    public ResponseEntity<Car> createOrUpdateCar(@RequestBody Car car){
-        if (car.getId() != null){
-            return new ResponseEntity<>(carService.createOrUpdateCar(car), HttpStatus.OK);
+    @PostMapping("/cars/update")
+    public ResponseEntity<Car> createOrUpdateCar(@RequestBody CarDTO carDTO){
+        if (carDTO.getId() != null){
+            return new ResponseEntity<>(carService.createOrUpdateCar(carDTO), HttpStatus.OK);
         }
-        return new ResponseEntity<>(carService.createOrUpdateCar(car), HttpStatus.CREATED);
+        return new ResponseEntity<>(carService.createOrUpdateCar(carDTO), HttpStatus.CREATED);
     }
 
-    @DeleteMapping("/cars/{id}/delete")
-    public ResponseEntity<Car> deleteCarById(@RequestParam long id){
+    @DeleteMapping("/cars/delete")
+    public ResponseEntity<Car> deleteCarById(@RequestParam Long id){
         if (carService.deleteCarById(id) > 0){
             return new ResponseEntity<>(HttpStatus.OK);
         }
