@@ -1,6 +1,6 @@
 package car_rental.api.user;
 
-import car_rental.api.userDetails.UserDetails;
+import car_rental.api.userDetails.UserAppDetails;
 
 import javax.persistence.*;
 import java.sql.Date;
@@ -25,14 +25,11 @@ public class UserApp {
     @Column(name = "password", nullable = false)
     private String password;
 
-    @Column(name = "registred_date")
-    private Date registredDate;
+    @Column(name = "registered_date")
+    private Date registeredDate;
 
     @Column(name = "is_active")
     private boolean isActive;
-
-    @Column(name = "has_active_rent")
-    private boolean hasActiveRent;
 
     @ManyToMany(cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
     @JoinTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
@@ -40,7 +37,10 @@ public class UserApp {
 
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "user_details_id")
-    private UserDetails userDetails;
+    private UserAppDetails userDetails;
+
+    @Column(name = "has_active_rents")
+    private boolean hasActiveRent;
 
     public UserApp() {
     }
@@ -50,11 +50,11 @@ public class UserApp {
         this.username = u.username;
         this.email = u.email;
         this.password = u.password;
-        this.registredDate = u.registredDate;
+        this.registeredDate = u.registeredDate;
         this.isActive = u.isActive;
-        this.hasActiveRent = u.hasActiveRent;
         this.roles = u.roles;
         this.userDetails = u.userDetails;
+        this.hasActiveRent = u.hasActiveRent;
     }
 
     public Long getId() {
@@ -93,12 +93,12 @@ public class UserApp {
         this.password = password;
     }
 
-    public Date getRegistredDate() {
-        return registredDate;
+    public Date getRegisteredDate() {
+        return registeredDate;
     }
 
-    public void setRegistredDate(Date registredDate) {
-        this.registredDate = registredDate;
+    public void setRegisteredDate(Date registeredDate) {
+        this.registeredDate = registeredDate;
     }
 
     public boolean isActive() {
@@ -117,11 +117,11 @@ public class UserApp {
         this.roles = roles;
     }
 
-    public UserDetails getUserDetails() {
+    public UserAppDetails getUserDetails() {
         return userDetails;
     }
 
-    public void setUserDetails(UserDetails userDetails) {
+    public void setUserDetails(UserAppDetails userDetails) {
         this.userDetails = userDetails;
     }
 
@@ -140,11 +140,11 @@ public class UserApp {
                 ", username='" + username + '\'' +
                 ", email='" + email + '\'' +
                 ", password='" + password + '\'' +
-                ", registredDate=" + registredDate +
+                ", registeredDate=" + registeredDate +
                 ", isActive=" + isActive +
-                ", hasActiveRent=" + hasActiveRent +
                 ", roles=" + roles +
                 ", userDetails=" + userDetails +
+                ", hasActiveRent=" + hasActiveRent +
                 '}';
     }
 
@@ -153,11 +153,103 @@ public class UserApp {
         if (this == o) return true;
         if (!(o instanceof UserApp)) return false;
         UserApp userApp = (UserApp) o;
-        return isActive == userApp.isActive && Objects.equals(getId(), userApp.getId()) && getUsername().equals(userApp.getUsername()) && getEmail().equals(userApp.getEmail()) && getPassword().equals(userApp.getPassword()) && Objects.equals(getRegistredDate(), userApp.getRegistredDate()) && Objects.equals(getRoles(), userApp.getRoles()) && getUserDetails().equals(userApp.getUserDetails());
+        return isActive() == userApp.isActive() && isHasActiveRent() == userApp.isHasActiveRent() && Objects.equals(getId(), userApp.getId()) && Objects.equals(getUsername(), userApp.getUsername()) && Objects.equals(getEmail(), userApp.getEmail()) && Objects.equals(getPassword(), userApp.getPassword()) && Objects.equals(getRegisteredDate(), userApp.getRegisteredDate()) && Objects.equals(getRoles(), userApp.getRoles()) && Objects.equals(getUserDetails(), userApp.getUserDetails());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getId(), getUsername(), getEmail(), getPassword(), getRegistredDate(), isActive, getRoles(), getUserDetails());
+        return Objects.hash(getId(), getUsername(), getEmail(), getPassword(), getRegisteredDate(), isActive(), getRoles(), getUserDetails(), isHasActiveRent());
+    }
+
+    public static UserAppBuilder builder() {
+        return new UserAppBuilder();
+    }
+
+    private UserApp(UserAppBuilder u){
+        this.id = u.id;
+        this.username = u.username;
+        this.email = u.email;
+        this.password = u.password;
+        this.registeredDate = u.registeredDate;
+        this.isActive = u.isActive;
+        this.roles = u.roles;
+        this.userDetails = u.userDetails;
+        this.hasActiveRent = u.hasActiveRents;
+    }
+
+    public static final class UserAppBuilder {
+        private Long id;
+        private String username;
+        private String email;
+        private String password;
+        private Date registeredDate;
+        private boolean isActive;
+        private Set<Role> roles;
+        private UserAppDetails userDetails;
+        private boolean hasActiveRents;
+
+        private UserAppBuilder() {
+        }
+
+        public UserAppBuilder id(String id) {
+            if (id == null){
+                this.id = null;
+                return this;
+            }
+            this.id = Long.parseLong(id);
+            return this;
+        }
+
+        public UserAppBuilder username(String username) {
+            this.username = username;
+            return this;
+        }
+
+        public UserAppBuilder email(String email) {
+            this.email = email;
+            return this;
+        }
+
+        public UserAppBuilder password(String password) {
+            this.password = password;
+            return this;
+        }
+
+        public UserAppBuilder registeredDate(Date registeredDate) {
+            this.registeredDate = registeredDate;
+            return this;
+        }
+
+        public UserAppBuilder isActive(boolean isActive) {
+            this.isActive = isActive;
+            return this;
+        }
+
+        public UserAppBuilder roles(Set<Role> roles) {
+            if (roles == null){
+                this.roles = null;
+                return this;
+            }
+            this.roles = roles;
+            return this;
+        }
+
+        public UserAppBuilder userDetails(UserAppDetails userDetails) {
+            if (userDetails == null){
+                this.userDetails = null;
+                return this;
+            }
+            this.userDetails = userDetails;
+            return this;
+        }
+
+        public UserAppBuilder hasActiveRents(boolean hasActiveRents){
+            this.hasActiveRents = hasActiveRents;
+            return this;
+        }
+
+        public UserApp build() {
+            return new UserApp(this);
+        }
     }
 }

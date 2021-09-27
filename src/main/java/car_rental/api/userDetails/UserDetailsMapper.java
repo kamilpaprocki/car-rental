@@ -6,6 +6,9 @@ import car_rental.api.utils.DateParser;
 public class UserDetailsMapper implements DTOMapper<UserAppDetails, UserDetailsDTO> {
     @Override
     public UserDetailsDTO mapToDTO(UserAppDetails from) {
+        if (from == null){
+            return null;
+        }
 
         return UserDetailsDTO.builder()
                 .id(String.valueOf(from.getId()))

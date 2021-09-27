@@ -29,6 +29,7 @@ public class UserFrontController {
     @GetMapping("/user")
     public String getUsers(Model model){
         model.addAttribute("users", customUserDetailsService.getActiveUsers());
+        model.addAttribute("userSetRoleWrapper", new UserSetRolesWrapper());
         return "get-users";
     }
 
