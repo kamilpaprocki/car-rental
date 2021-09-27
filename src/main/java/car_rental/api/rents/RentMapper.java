@@ -12,76 +12,52 @@ import java.math.BigDecimal;
 public class RentMapper implements DTOMapper<Rent, RentDTO> {
 
     @Override
-    public RentDTO map(Rent from) {
-
-        if (from.getPromotionCode() != null) {
-            return RentDTO.builder()
-                    .id(from.getId().toString())
-                    .userApp(new UserAppMapper().map(from.getUserApp()))
-                    .car(new CarMapper().map(from.getCar()))
-                    .rentAddress(new AddressMapper().map(from.getRentAddress()))
-                    .plannedReturnDate(new DateParser().parseDateToString(from.getPlannedReturnDate()))
-                    .rentalDays(String.valueOf(from.getRentalDays()))
-                    .returnAddress(new AddressMapper().map(from.getReturnAddress()))
-                    .rentDate(new DateParser().parseDateToString(from.getRentDate()))
-                    .returnDate(new DateParser().parseDateToString(from.getReturnDate()))
-                    .rentalCost(from.getRentalCost().toString())
-                    .promotionCode(new PromotionCodeMapper().map(from.getPromotionCode()))
-                    .odometerDistance(String.valueOf(from.getOdometerDistance()))
-                    .paymentMethod(from.getPaymentMethod().toString())
-                    .currency(from.getCurrency().toString())
-                    .isFinished(from.isFinished().toString())
-                    .build();
+    public RentDTO mapToDTO(Rent from) {
+        if (from == null){
+            return null;
         }
-
-        return RentDTO.builder()
-                .id(from.getId().toString())
-                .userApp(new UserAppMapper().map(from.getUserApp()))
-                .car(new CarMapper().map(from.getCar()))
-                .rentAddress(new AddressMapper().map(from.getRentAddress()))
-                .plannedReturnDate(new DateParser().parseDateToString(from.getPlannedReturnDate()))
+        DateParser dateParser = new DateParser();
+        return  RentDTO.builder()
+                .id(from.getId())
+                .userApp(new UserAppMapper().mapToDTO(from.getUserApp()))
+                .car(new CarMapper().mapToDTO(from.getCar()))
+                .rentDate(dateParser.parseDateToStringDTO(from.getRentDate()))
+                .rentAddress(new AddressMapper().mapToDTO(from.getRentAddress()))
+                .plannedReturnDate(dateParser.parseDateToStringDTO(from.getPlannedReturnDate()))
+                .returnDate(dateParser.parseDateToStringDTO(from.getReturnDate()))
                 .rentalDays(String.valueOf(from.getRentalDays()))
-                .returnAddress(new AddressMapper().map(from.getReturnAddress()))
-                .rentDate(new DateParser().parseDateToString(from.getRentDate()))
-                .returnDate(new DateParser().parseDateToString(from.getReturnDate()))
-                .rentalCost(from.getRentalCost().toString())
-                .odometerDistance(String.valueOf(from.getOdometerDistance()))
-                .paymentMethod(from.getPaymentMethod().toString())
+                .returnAddress(new AddressMapper().mapToDTO(from.getReturnAddress()))
+                .rentalCost(String.valueOf(from.getRentalCost()))
+                .odometerDistance(from.getOdometerDistance())
+                .promotionCode(new PromotionCodeMapper().mapToDTO(from.getPromotionCode()))
                 .currency(from.getCurrency().toString())
-                .isFinished(from.isFinished().toString())
+                .paymentMethod(from.getPaymentMethod().toString())
+                .isFinished(from.isFinished())
                 .build();
     }
 
     @Override
-    public Rent reverse(RentDTO from) {
-        Rent rent = new Rent();
+    public Rent mapToDAO(RentDTO from) {
+        if(from == null){
+            return null;
+        }
         DateParser dateParser = new DateParser();
-
-        if(from.getId() != null) {
-            rent.setId(Long.parseLong(from.getId()));
-        }
-        rent.setUserApp(new UserAppMapper().reverse(from.getUserApp()));
-        rent.setCar(new CarMapper().reverse(from.getCar()));
-        rent.setRentDate(dateParser.parseStringToDate(from.getRentDate()));
-        rent.setRentAddress(new AddressMapper().reverse(from.getRentAddress()));
-        rent.setPlannedReturnDate(dateParser.parseStringToDate(from.getPlannedReturnDate()));
-        rent.setRentalDays(Long.parseLong(from.getRentalDays()));
-        rent.setReturnAddress(new AddressMapper().reverseToReturnAddress(from.getReturnAddress()));
-        if (from.getReturnDate() != null){
-            rent.setReturnDate(dateParser.parseStringToDate(from.getReturnDate()));
-        }
-        rent.setRentalCost(new BigDecimal(from.getRentalCost()));
-        if (from.getOdometerDistance() != null) {
-            rent.setOdometerDistance(Long.parseLong(from.getOdometerDistance()));
-        }
-        if (from.getPromotionCode() != null){
-            rent.setPromotionCode(new PromotionCodeMapper().reverse(from.getPromotionCode()));
-        }
-        rent.setPaymentMethod(PaymentMethod.valueOf(from.getPaymentMethod()));
-        if(from.getIsFinished() != null) {
-            rent.setFinished(Boolean.parseBoolean(from.getIsFinished()));
-        }
-        rent.setCurrency(Currency.valueOf(from.getCurrency()));
-        return rent;
+       return Rent.builder()
+               .id(from.getId())
+               .userApp(new UserAppMapper().mapToDAO(from.getUserApp()))
+               .car(new CarMapper().mapToDAO(from.getCar()))
+               .rentDate(dateParser.parseStringToDateDAO(from.getRentDate()))
+               .rentAddress(new AddressMapper().mapAddressToRentAddressDAO(from.getRentAddress()))
+               .plannedReturnDate(dateParser.parseStringToDateDAO(from.getPlannedReturnDate()))
+               .returnDate(dateParser.parseStringToDateDAO(from.getReturnDate()))
+               .rentalDays(Long.parseLong(from.getRentalDays()))
+               .returnAddress(new AddressMapper().mapAddressToReturnAddressDAO(from.getReturnAddress()))
+               .rentalCost(new BigDecimal(from.getRentalCost()))
+               .odometerDistance(from.getOdometerDistance())
+               .promotionCode(new PromotionCodeMapper().mapToDAO(from.getPromotionCode()))
+               .currency(Currency.valueOf(from.getCurrency()))
+               .paymentMethod(PaymentMethod.valueOf(from.getPaymentMethod()))
+               .isFinished(Boolean.parseBoolean(from.getIsFinished()))
+               .build();
     }
 }

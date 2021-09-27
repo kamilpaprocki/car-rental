@@ -1,9 +1,8 @@
 package car_rental.api.rents;
 
-import car_rental.api.car.Car;
 import car_rental.api.car.CarDTO;
-import car_rental.api.car.CarMapper;
 import car_rental.api.car.CarService;
+import car_rental.api.exceptions.RentNotFoundException;
 import car_rental.api.promotionCode.PromotionCodeDTO;
 import car_rental.api.user.UserApp;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -17,7 +16,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Controller
 @SessionAttributes({"rentDTO", "activeRentDTO", "finishRentDTO", "odometerWrapper"})
@@ -39,17 +37,16 @@ public class RentFrontController {
             return "redirect:/home?info=multiplerents";
         }
 
-        List<Car> cars = carService.getAvailableCar();
-        List<CarDTO> carDTOs = cars.stream().map(new CarMapper() :: map).collect(Collectors.toList());
+        List<CarDTO> carDTOs = carService.getAvailableCar();
        model.addAttribute("cars", carDTOs);
        return "rent-form";
     }
 
     @GetMapping("/add/rent")
-    public String addRent(@ModelAttribute("rentDTO") RentDTO rentDTO, Model model, @RequestParam String carId){
+    public String addRent(@ModelAttribute("rentDTO") RentDTO rentDTO, Model model, @RequestParam String carid){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         UserApp userApp = (UserApp)(authentication.getPrincipal());
-        Car car = carService.getCarById(Long.parseLong(carId));
+        CarDTO car = carService.getCarById(Long.parseLong(carid));
         rentDTO = rentService.addUserAndCar(rentDTO, userApp, car);
         model.addAttribute("rentDTO", rentDTO);
         return "rent-details";
@@ -64,7 +61,6 @@ public class RentFrontController {
         rentDTO = rentService.addOrUpdateRentDetails(rentDTO);
         model.addAttribute("rentDTO", rentDTO);
         model.addAttribute("promotionCodeDTO", new PromotionCodeDTO());
-        
         return "rent-summary";
     }
 
@@ -80,7 +76,7 @@ public class RentFrontController {
         if (bindingResult.hasErrors()){
             return "rent-summary";
         }
-        if (!(rentDTO.getPromotionCode() == null)){
+        if ((rentDTO.getPromotionCode() != null)){
             bindingResult.addError(new ObjectError("multipleUse", "Promotion codes cannot be used multiple times"));
             return "rent-summary";
         }
@@ -100,14 +96,16 @@ public class RentFrontController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         UserApp userApp = (UserApp)(authentication.getPrincipal());
         List<RentDTO> rentDTO = rentService.getRentByUserApp(userApp);
+        if (rentDTO.isEmpty()){
+            throw new RentNotFoundException("User " + userApp.getUsername() + "hasnot active rents");
+        }
         model.addAttribute("rents", rentDTO);
         return "get-rent";
     }
 
     @GetMapping("/extend/rent/update")
-    public String extendRent(Model model, @RequestParam String rentId){
-        Rent rent = rentService.getRentById(Long.parseLong(rentId));
-        RentDTO rentDTO = new RentMapper().map(rent);
+    public String extendRent(Model model, @RequestParam String rentid){
+        RentDTO rentDTO = rentService.getRentById(rentid);
         model.addAttribute("activeRentDTO", rentDTO);
         return "extend-rent";
     }
@@ -123,7 +121,7 @@ public class RentFrontController {
 
     @PostMapping("/update/extend/rent")
     public String saveUpdatedRent(@ModelAttribute("activeRentDTO") RentDTO rentDTO){
-        rentService.createOrUpdateRent(new RentMapper().reverse(rentDTO));
+        rentService.createOrUpdateRent(rentDTO);
         return "redirect:/home?info=extended";
     }
 
@@ -134,8 +132,8 @@ public class RentFrontController {
     }
 
     @GetMapping("/finish/rent/update")
-    public String getFinishRentForm(@RequestParam String rentId, Model model){
-        RentDTO finishRentDTO = new RentMapper().map(rentService.getRentById(Long.parseLong(rentId)));
+    public String getFinishRentForm(@RequestParam String rentid, Model model){
+        RentDTO finishRentDTO = rentService.getRentById(rentid);
         model.addAttribute("finishRentDTO", finishRentDTO);
         model.addAttribute("odometerWrapper", rentService.getCarLastOdometer(finishRentDTO));
     return "finish-rent";

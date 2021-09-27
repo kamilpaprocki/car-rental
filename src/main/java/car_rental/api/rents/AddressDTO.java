@@ -1,6 +1,5 @@
 package car_rental.api.rents;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.validation.constraints.NotEmpty;
@@ -9,7 +8,7 @@ import javax.validation.constraints.Pattern;
 
 public class AddressDTO {
 
-    @JsonIgnore
+    @JsonProperty(value = "id")
     private String id;
 
     @JsonProperty(value = "street")
@@ -58,8 +57,12 @@ public class AddressDTO {
         private String postalCode;
         private String city;
 
-        public AddressDTOBuilder id(String id){
-            this.id = id;
+        public AddressDTOBuilder id(Long id){
+            if (id == null){
+                this.id = null;
+                return this;
+            }
+            this.id = String.valueOf(id);
             return this;
         }
 

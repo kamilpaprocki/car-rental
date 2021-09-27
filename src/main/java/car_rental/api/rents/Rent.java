@@ -57,7 +57,7 @@ public class Rent {
 
     @Column(name = "odometer_distance")
     @ColumnDefault("0")
-    private long odometerDistance;
+    private Long odometerDistance;
 
     @JoinColumn(name = "promotion_code_id")
     @OneToOne(cascade = {CascadeType.MERGE}, orphanRemoval = true)
@@ -74,6 +74,9 @@ public class Rent {
     @Column(name = "is_finished")
     @ColumnDefault("false")
     private Boolean isFinished;
+
+    public Rent() {
+    }
 
     public Long getId() {
         return id;
@@ -155,12 +158,12 @@ public class Rent {
         this.rentalCost = rentalCost;
     }
 
-    public long getOdometerDistance() {
+    public Long getOdometerDistance() {
         return odometerDistance;
     }
 
-    public void setOdometerDistance(long odomoterDistance) {
-        this.odometerDistance = odomoterDistance;
+    public void setOdometerDistance(Long odometerDistance) {
+        this.odometerDistance = odometerDistance;
     }
 
     public PromotionCode getPromotionCode() {
@@ -221,11 +224,150 @@ public class Rent {
         if (this == o) return true;
         if (!(o instanceof Rent)) return false;
         Rent rent = (Rent) o;
-        return getRentalDays() == rent.getRentalDays() && getOdometerDistance() == rent.getOdometerDistance() && Objects.equals(getId(), rent.getId()) && getUserApp().equals(rent.getUserApp()) && getCar().equals(rent.getCar()) && getRentDate().equals(rent.getRentDate()) && getRentAddress().equals(rent.getRentAddress()) && getPlannedReturnDate().equals(rent.getPlannedReturnDate()) && getReturnDate().equals(rent.getReturnDate()) && getReturnAddress().equals(rent.getReturnAddress()) && Objects.equals(getRentalCost(), rent.getRentalCost()) && Objects.equals(getPromotionCode(), rent.getPromotionCode()) && getPaymentMethod() == rent.getPaymentMethod() && Objects.equals(isFinished, rent.isFinished);
+        return getRentalDays() == rent.getRentalDays() && Objects.equals(getId(), rent.getId()) && Objects.equals(getUserApp(), rent.getUserApp()) && Objects.equals(getCar(), rent.getCar()) && Objects.equals(getRentDate(), rent.getRentDate()) && Objects.equals(getRentAddress(), rent.getRentAddress()) && Objects.equals(getPlannedReturnDate(), rent.getPlannedReturnDate()) && Objects.equals(getReturnDate(), rent.getReturnDate()) && Objects.equals(getReturnAddress(), rent.getReturnAddress()) && Objects.equals(getRentalCost(), rent.getRentalCost()) && Objects.equals(getOdometerDistance(), rent.getOdometerDistance()) && Objects.equals(getPromotionCode(), rent.getPromotionCode()) && getCurrency() == rent.getCurrency() && getPaymentMethod() == rent.getPaymentMethod() && Objects.equals(isFinished, rent.isFinished);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getId(), getUserApp(), getCar(), getRentDate(), getRentAddress(), getPlannedReturnDate(), getReturnDate(), getRentalDays(), getReturnAddress(), getRentalCost(), getOdometerDistance(), getPromotionCode(), getPaymentMethod(), isFinished);
+        return Objects.hash(getId(), getUserApp(), getCar(), getRentDate(), getRentAddress(), getPlannedReturnDate(), getReturnDate(), getRentalDays(), getReturnAddress(), getRentalCost(), getOdometerDistance(), getPromotionCode(), getCurrency(), getPaymentMethod(), isFinished);
+    }
+
+    public static RentBuilder builder() {
+        return new RentBuilder();
+    }
+
+    private Rent(RentBuilder r){
+        this.id = r.id;
+        this.userApp = r.userApp;
+        this.car = r.car;
+        this.rentDate = r.rentDate;
+        this.rentAddress = r.rentAddress;
+        this.plannedReturnDate = r.plannedReturnDate;
+        this.returnDate = r.returnDate;
+        this.rentalDays = r.rentalDays;
+        this.returnAddress = r.returnAddress;
+        this.rentalCost = r.rentalCost;
+        this.odometerDistance = r.odometerDistance;
+        this.promotionCode = r.promotionCode;
+        this.currency = r.currency;
+        this.paymentMethod = r.paymentMethod;
+        this.isFinished = r.isFinished;
+    }
+
+
+    public static final class RentBuilder {
+        private Long id;
+        private UserApp userApp;
+        private Car car;
+        private Date rentDate;
+        private RentAddress rentAddress;
+        private Date plannedReturnDate;
+        private Date returnDate;
+        private long rentalDays;
+        private ReturnAddress returnAddress;
+        private BigDecimal rentalCost;
+        private Long odometerDistance;
+        private PromotionCode promotionCode;
+        private Currency currency;
+        private PaymentMethod paymentMethod;
+        private Boolean isFinished;
+
+        private RentBuilder() {
+        }
+
+        public RentBuilder id(String id) {
+            if (id == null){
+                this.id = null;
+                return this;
+            }
+            this.id = Long.parseLong(id);
+            return this;
+        }
+
+        public RentBuilder userApp(UserApp userApp) {
+            this.userApp = userApp;
+            return this;
+        }
+
+        public RentBuilder car(Car car) {
+            this.car = car;
+            return this;
+        }
+
+        public RentBuilder rentDate(Date rentDate) {
+            this.rentDate = rentDate;
+            return this;
+        }
+
+        public RentBuilder rentAddress(RentAddress rentAddress) {
+            this.rentAddress = rentAddress;
+            return this;
+        }
+
+        public RentBuilder plannedReturnDate(Date plannedReturnDate) {
+            this.plannedReturnDate = plannedReturnDate;
+            return this;
+        }
+
+        public RentBuilder returnDate(Date returnDate) {
+            if (returnDate == null){
+                this.returnDate = null;
+                return this;
+            }
+            this.returnDate = returnDate;
+            return this;
+        }
+
+        public RentBuilder rentalDays(long rentalDays) {
+            this.rentalDays = rentalDays;
+            return this;
+        }
+
+        public RentBuilder returnAddress(ReturnAddress returnAddress) {
+            this.returnAddress = returnAddress;
+            return this;
+        }
+
+        public RentBuilder rentalCost(BigDecimal rentalCost) {
+            this.rentalCost = rentalCost;
+            return this;
+        }
+
+        public RentBuilder odometerDistance(String odometerDistance) {
+            if (odometerDistance == null){
+                this.odometerDistance = null;
+                return this;
+            }
+            this.odometerDistance = Long.parseLong(odometerDistance);
+            return this;
+        }
+
+        public RentBuilder promotionCode(PromotionCode promotionCode) {
+            if (promotionCode == null){
+                this.promotionCode = null;
+                return this;
+            }
+            this.promotionCode = promotionCode;
+            return this;
+        }
+
+        public RentBuilder currency(Currency currency) {
+            this.currency = currency;
+            return this;
+        }
+
+        public RentBuilder paymentMethod(PaymentMethod paymentMethod) {
+            this.paymentMethod = paymentMethod;
+            return this;
+        }
+
+        public RentBuilder isFinished(Boolean isFinished) {
+            this.isFinished = isFinished;
+            return this;
+        }
+
+        public Rent build() {
+            return new Rent(this);
+        }
     }
 }

@@ -4,7 +4,6 @@ import car_rental.api.car.CarDTO;
 import car_rental.api.promotionCode.PromotionCodeDTO;
 import car_rental.api.user.UserAppDTO;
 import car_rental.api.utils.DateFormat;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.validation.Valid;
@@ -12,7 +11,7 @@ import javax.validation.Valid;
 @DateFormat
 public class RentDTO {
 
-    @JsonIgnore
+    @JsonProperty(value = "id")
     private String id;
 
     @JsonProperty(value = "user")
@@ -40,6 +39,7 @@ public class RentDTO {
     private String rentalDays;
 
     @JsonProperty(value = "return_address")
+    @Valid
     private AddressDTO returnAddress;
 
     @JsonProperty(value = "rental_cost")
@@ -170,8 +170,12 @@ public class RentDTO {
         private String paymentMethod;
         private String isFinished;
 
-        public RentDTOBuilder id(String id){
-            this.id = id;
+        public RentDTOBuilder id(Long id){
+            if (id == null){
+                this.id = null;
+                return this;
+            }
+            this.id = String.valueOf(id);
             return this;
         }
 
@@ -211,9 +215,11 @@ public class RentDTO {
         }
 
         public RentDTOBuilder returnDate(String returnDate) {
-            if(returnDate != null) {
-                this.returnDate = returnDate;
+            if(returnDate == null) {
+                this.returnDate = null;
+                return this;
             }
+            this.returnDate = returnDate;
             return this;
         }
 
@@ -222,12 +228,20 @@ public class RentDTO {
             return this;
         }
 
-        public RentDTOBuilder odometerDistance(String odometerDistance) {
-            this.odometerDistance = odometerDistance;
+        public RentDTOBuilder odometerDistance(Long odometerDistance) {
+            if (odometerDistance == null){
+                this.odometerDistance = null;
+                return this;
+            }
+            this.odometerDistance = String.valueOf(odometerDistance);
             return this;
         }
 
         public RentDTOBuilder promotionCode(PromotionCodeDTO promotionCode) {
+            if (promotionCode == null){
+                this.promotionCode = null;
+                return this;
+            }
             this.promotionCode = promotionCode;
             return this;
         }
@@ -242,8 +256,12 @@ public class RentDTO {
             return this;
         }
 
-        public RentDTOBuilder isFinished(String isFinished) {
-            this.isFinished = isFinished;
+        public RentDTOBuilder isFinished(Boolean isFinished) {
+            if (isFinished == null){
+                this.isFinished = null;
+                return this;
+            }
+            this.isFinished = String.valueOf(isFinished);
             return this;
         }
 
