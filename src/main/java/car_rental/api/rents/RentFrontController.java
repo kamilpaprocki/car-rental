@@ -67,6 +67,10 @@ public class RentFrontController {
     @PostMapping("/add/rent/summary")
     public String summary(@ModelAttribute("rentDTO") RentDTO rentDTO){
         rentService.addRent(rentDTO);
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserApp currentUser = (UserApp) authentication.getPrincipal();
+        currentUser.setHasActiveRent(true);
         return "redirect:/home?info=rented";
     }
 
@@ -146,6 +150,11 @@ public class RentFrontController {
             return "finish-rent";
         }
       rentService.finishRent(rentDTO, carReturnOdometerWrapper);
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserApp currentUser = (UserApp) authentication.getPrincipal();
+        currentUser.setHasActiveRent(false);
+
         return "redirect:/home?info=finished";
 
     }
