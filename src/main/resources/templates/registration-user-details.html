@@ -13,6 +13,11 @@
 
                 <div class = "container-fluid" >
                     <div class = "model-container">
+
+                        <div th:if="${info == 'empty'}">
+                            <div class="alert alert-warning fst-italic" >You have to add your details.</div>
+                        </div>
+
                         <div class="mb-2 row col-sm-6">
                             <label for="name" class="col-sm-6 col-form-label fw-bold" >Name: </label>
                             <input th:type ="text" class="form-control" id="name" placeholder="name" th:field = "${userDetailsDTO.name}" name = "name">
