@@ -5,6 +5,7 @@ import car_rental.api.exceptions.RentNotFoundException;
 import car_rental.api.promotionCode.WrongPromotionCodeException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,6 +21,7 @@ public class RentRestController {
     }
 
     @PostMapping("/rents")
+    @PreAuthorize("hasAnyRole('USER', 'WORKER', 'ADMIN')")
     public ResponseEntity<Rent> createRent(@RequestBody RentDTO rent, @RequestParam(required = false) String promotionCode){
         try{
         if (promotionCode == null){
@@ -32,6 +34,7 @@ public class RentRestController {
     }
 
     @GetMapping("/rents")
+    @PreAuthorize("hasAnyRole('WORKER', 'ADMIN')")
     public ResponseEntity<List<RentDTO>> getAllRents(@RequestParam(required = false) String rentStatus){
 
         List<RentDTO> rents;
@@ -60,6 +63,7 @@ public class RentRestController {
     }
 
     @GetMapping("/rents/rent")
+    @PreAuthorize("hasAnyRole('WORKER', 'ADMIN')")
     public ResponseEntity<Rent> getRentById(@RequestParam Long id){
         Rent rent = rentService.getRentById(id);
         if (rent == null){
@@ -69,6 +73,7 @@ public class RentRestController {
     }
 
     @PutMapping("/rents/extend")
+    @PreAuthorize("hasAnyRole('USER', 'WORKER', 'ADMIN')")
     public ResponseEntity<Rent> extendPlannedRentDays(@RequestParam Long id, @RequestParam int days){
         try{
             return new ResponseEntity<>(rentService.extendPlannedRentDays(id,days), HttpStatus.OK);
@@ -78,6 +83,7 @@ public class RentRestController {
     }
 
     @PutMapping("/rents/update")
+    @PreAuthorize("hasAnyRole('USER', 'WORKER', 'ADMIN')")
     public ResponseEntity<Rent> updatePlannedRentDate(@RequestParam Long id, @RequestParam String returndate){
         try{
             return new ResponseEntity<>(rentService.updatePlannedReturnDate(id, returndate), HttpStatus.OK);
@@ -87,6 +93,7 @@ public class RentRestController {
     }
 
     @DeleteMapping("/rents/delete")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Rent> deleteRentById(@RequestParam Long id){
         if (rentService.deleteRentById(id) > 0){
             return new ResponseEntity<>(HttpStatus.OK);

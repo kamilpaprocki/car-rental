@@ -18,6 +18,7 @@
                     <th scope="col">Planned return date</th>
                     <th scope="col">Rental days</th>
                     <th scope="col">Rental cost</th>
+                    <th scope="col">User</th>
                     <th scope="col"></th>
                 </tr>
                 </thead>
@@ -29,6 +30,7 @@
                     <td th:text = "${r.getPlannedReturnDate()}"></td>
                     <td th:text = "${r.getRentalDays()}"></td>
                     <td th:text = "${r.getRentalCost()}"></td>
+                    <td th:text = "${r.getUserApp().username}"></td>
                     <td >
                         <form method="get" th:action="@{/finish/rent/update}" >
                             <input type="hidden" name = "rentid" th:value = "${r.getId()}"/>
