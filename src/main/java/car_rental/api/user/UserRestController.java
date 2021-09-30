@@ -2,6 +2,7 @@ package car_rental.api.user;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,6 +18,7 @@ public class UserRestController {
 
     @GetMapping("/user")
     @ResponseBody
+    @PreAuthorize("hasAnyRole('WORKER', 'ADMIN')")
     public ResponseEntity<UserAppDTO> getUserById(@RequestParam Long id){
         UserAppDTO userApp = customUserDetailsService.getUserAppById(id);
         if (userApp == null){

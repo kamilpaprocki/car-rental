@@ -27,6 +27,7 @@ public class UserFrontController {
     }
     
     @GetMapping("/user")
+    @PreAuthorize("hasRole('ADMIN')")
     public String getUsers(Model model){
         model.addAttribute("users", customUserDetailsService.getActiveUsers());
         model.addAttribute("userSetRoleWrapper", new UserSetRolesWrapper());
@@ -34,12 +35,14 @@ public class UserFrontController {
     }
 
     @PostMapping("/set/user/role")
+    @PreAuthorize("hasRole('ADMIN')")
     public String setRole(@RequestParam(value = "roles", required = false) String[] strings, UserSetRolesWrapper userSetRolesWrapper){
         customUserDetailsService.setRoles(userSetRolesWrapper, strings);
         return "redirect:/home";
     }
 
     @GetMapping("/info/user")
+    @PreAuthorize("isAuthenticated()")
     public String getUserInfo(Model model, @RequestParam(required = false) String info){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         UserApp userApp = (UserApp)(authentication.getPrincipal());
@@ -97,13 +100,21 @@ public class UserFrontController {
     }
 
     @GetMapping("/change/details")
+    @PreAuthorize("isAuthenticated()")
     public String getChangeDetails(Model model, @RequestParam(required = false) String id){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserApp userApp = (UserApp)authentication.getPrincipal();
+        if (userApp.getUserDetails() == null){
+            return "redirect:/registration-user-details";
+        }
+
         model.addAttribute("userDetailsId", id);
         model.addAttribute("userDetails", new UserDetailsDTO());
         return "change-details";
     }
 
     @PostMapping("/change/details")
+    @PreAuthorize("isAuthenticated()")
     public String changeDetails(@ModelAttribute("userDetails") @Valid UserDetailsDTO userDetailsDTO, BindingResult bindingResult, Model model){
         if (bindingResult.hasErrors()){
             model.addAttribute("userDetailsId", userDetailsDTO.getId());

@@ -68,6 +68,12 @@ public String register(Model model){
 @GetMapping("/registration-user-details")
 @PreAuthorize("isAuthenticated()")
     public String registrationUserDetails(Model model, @RequestParam(required = false) String info){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserApp userApp = (UserApp)authentication.getPrincipal();
+        if (userApp.getUserDetails() != null){
+            return "redirect:/home";
+        }
+
         model.addAttribute("userDetailsDTO", new UserDetailsDTO());
         model.addAttribute("info", info);
         return "registration-user-details";
