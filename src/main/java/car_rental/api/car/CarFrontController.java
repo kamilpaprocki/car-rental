@@ -1,6 +1,7 @@
 package car_rental.api.car;
 
 import car_rental.api.exceptions.CarNotFoundException;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -22,6 +23,7 @@ private final CarService carService;
     }
 
     @GetMapping("/car")
+    @PreAuthorize("hasAnyRole('USER','WORKER', 'ADMIN')")
     public String carPage(Model model,
                           @RequestParam(required = false) String cars,
                           @RequestParam(required = false) Long carId
@@ -60,12 +62,14 @@ private final CarService carService;
     }
 
     @GetMapping("/add/car")
+    @PreAuthorize("hasAnyRole('WORKER', 'ADMIN')")
     public String getAddCarPage(Model model){
        model.addAttribute("car", new CarDTO());
         return "add-form-car";
     }
 
     @PostMapping("/add/car")
+    @PreAuthorize("hasAnyRole('WORKER', 'ADMIN')")
     public String addCar(@ModelAttribute("car") @Valid CarDTO carDTO, BindingResult bindingResult){
         if (bindingResult.hasErrors()){
             return "add-form-car";
@@ -75,11 +79,13 @@ private final CarService carService;
     }
 
     @GetMapping("/update/edit-car")
+    @PreAuthorize("hasAnyRole('WORKER', 'ADMIN')")
     public String getUpdateCar(){
         return "update-car";
     }
 
     @GetMapping("/update/car")
+    @PreAuthorize("hasAnyRole('WORKER', 'ADMIN')")
     public String getUpdateCarPage(@RequestParam(required = false) Long carId, Model model){
         CarDTO carDTO = carService.getCarById(carId);
         if (carDTO == null){
@@ -90,6 +96,7 @@ private final CarService carService;
     }
 
     @PostMapping("/update/car")
+    @PreAuthorize("hasAnyRole('WORKER', 'ADMIN')")
     public String updateCar(@ModelAttribute("updateCar") @Valid CarDTO carDTO, BindingResult bindingResult){
         if(bindingResult.hasErrors()){
             return "update-form-car";
@@ -99,16 +106,19 @@ private final CarService carService;
     }
 
     @GetMapping("/cars")
+    @PreAuthorize("hasAnyRole('USER', 'WORKER', 'ADMIN')")
     public String getCarsPage(){
         return "get-car";
     }
 
     @GetMapping("/delete/delete-car")
+    @PreAuthorize("hasRole('ADMIN')")
     public String getDeleteCar(){
         return "delete-car";
     }
 
     @GetMapping("/delete/car")
+    @PreAuthorize("hasRole('ADMIN')")
     public String deleteCarPage(@RequestParam(required = false) Long id){
            carService.deleteCarById(id);
        return "redirect:/home?info=deleted";

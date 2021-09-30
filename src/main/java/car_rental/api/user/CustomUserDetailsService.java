@@ -62,7 +62,7 @@ public class CustomUserDetailsService implements UserDetailsService {
             throw new UsernameNotFoundException("THere is no user with id: " + userId);
         }
         userApp.setUserDetails(new UserDetailsMapper().mapToDAO(userDetailsDTO));
-        userApp.setRoles(Sets.newHashSet(roleService.createRoleIfNotFound("ROLE_USER")));
+        userApp.setRoles(Sets.newHashSet(roleService.createRoleIfNotFound("USER")));
         return userRepository.save(userApp);
     }
 
@@ -104,7 +104,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 
         UserApp userApp = userRepository.getUserAppByById(Long.parseLong(userSetRolesWrapper.getId())).orElseThrow();
         userApp.getRoles().clear();
-        userApp.getRoles().add(roleService.createRoleIfNotFound("ROLE_USER"));
+        userApp.getRoles().add(roleService.createRoleIfNotFound("USER"));
         if (roles != null) {
             for (String role : roles) {
                 userApp.getRoles().add(roleService.createRoleIfNotFound(role));

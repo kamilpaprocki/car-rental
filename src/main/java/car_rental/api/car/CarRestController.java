@@ -4,6 +4,7 @@ import car_rental.api.exceptions.BadRequestException;
 import car_rental.api.exceptions.CarNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,6 +20,7 @@ public class CarRestController {
     }
 
     @GetMapping("/cars")
+    @PreAuthorize("hasAnyRole('USER', 'WORKER', 'ADMIN')")
     public ResponseEntity<List<CarDTO>> getAllCars(@RequestParam(required = false) String carStatus){
         List<CarDTO> cars;
         if("available".equals(carStatus)) {
@@ -48,6 +50,7 @@ public class CarRestController {
     }
 
     @GetMapping("/cars/car")
+    @PreAuthorize("hasAnyRole('WORKER', 'ADMIN')")
     public ResponseEntity<CarDTO> getCarById(@RequestParam Long id){
         CarDTO car = carService.getCarById(id);
         if (car == null){
@@ -57,6 +60,7 @@ public class CarRestController {
     }
 
     @PostMapping("/cars/update")
+    @PreAuthorize("hasAnyRole('WORKER', 'ADMIN')")
     public ResponseEntity<Car> createOrUpdateCar(@RequestBody CarDTO carDTO){
         if (carDTO.getId() != null){
             return new ResponseEntity<>(carService.createOrUpdateCar(carDTO), HttpStatus.OK);
@@ -65,6 +69,7 @@ public class CarRestController {
     }
 
     @DeleteMapping("/cars/delete")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Car> deleteCarById(@RequestParam Long id){
         if (carService.deleteCarById(id) > 0){
             return new ResponseEntity<>(HttpStatus.OK);

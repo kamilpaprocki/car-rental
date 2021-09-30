@@ -59,19 +59,19 @@
                     <input th:type="text" readonly class="form-control" id="username" placeholder="username" name = username th:field = "${userSetRoleWrapper.username}">
                 </div>
                 <div class = "form-check" style="padding-top: 10px">
-                    <input class = "form-check-input" type = "checkbox"  id="user" th:value = "ROLE_USER" name="roles" checked disabled>
+                    <input class = "form-check-input" type = "checkbox"  id="user" th:value = "USER" name="roles" checked disabled>
                     <label class = "form-check-label" for = "user">
                         USER
                     </label>
                 </div>
                 <div class = "form-check">
-                    <input class = "form-check-input" type = "checkbox"  id="worker" th:value="ROLE_WORKER" name="roles">
+                    <input class = "form-check-input" type = "checkbox"  id="worker" th:value="WORKER" name="roles">
                     <label class = "form-check-label" for = "worker">
                         WORKER
                     </label>
                 </div>
                 <div class = "form-check">
-                    <input class = "form-check-input" type = "checkbox"  id="admin" th:value = "ROLE_ADMIN" name="roles">
+                    <input class = "form-check-input" type = "checkbox"  id="admin" th:value = "ADMIN" name="roles">
                     <label class = "form-check-label" for = "admin">
                         ADMIN
                     </label>
