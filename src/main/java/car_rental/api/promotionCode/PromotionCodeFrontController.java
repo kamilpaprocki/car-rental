@@ -1,6 +1,7 @@
 package car_rental.api.promotionCode;
 
 import car_rental.api.exceptions.PromotionCodeNotFoundException;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,6 +23,7 @@ private final PromotionCodeService promotionCodeService;
     }
 
     @GetMapping("/promotioncode")
+    @PreAuthorize("hasAnyRole('USER', 'WORKER', 'ADMIN')")
     public String promotionCodePage(Model model,
                                     @RequestParam(required = false) Long id,
                                     @RequestParam(required = false) String promotioncode,
@@ -70,11 +72,13 @@ private final PromotionCodeService promotionCodeService;
     }
 
     @GetMapping("/generate/promotioncode")
+    @PreAuthorize("hasAnyRole('WORKER', 'ADMIN')")
     public String getPromotionCodePage(@ModelAttribute("generatedPromotionCode") String generatedPromotionCode){
         return "generate-promotioncode";
     }
 
     @PostMapping("/generate/promotioncode")
+    @PreAuthorize("hasAnyRole('WORKER', 'ADMIN')")
     public String generatePromotionCode(RedirectAttributes redirectAttributes, @RequestParam BigDecimal discount, @RequestParam int activeDays, @RequestParam boolean isMultipleUse){
         PromotionCodeDTO generatedPromotionCode = promotionCodeService.getGeneratedPromotionCode(promotionCodeService.createPromotionCode(discount, activeDays, isMultipleUse));
         redirectAttributes.addFlashAttribute("generatedPromotionCode", generatedPromotionCode.getPromotionCodeDTO());
@@ -82,16 +86,19 @@ private final PromotionCodeService promotionCodeService;
     }
 
     @GetMapping("/promotioncodes")
+    @PreAuthorize("hasAnyRole('USER', 'WORKER', 'ADMIN')")
     public String getPromotionCodesPage(){
         return "get-promotion-code";
     }
 
     @GetMapping("/delete/delete-promotion-code")
+    @PreAuthorize("hasRole('ADMIN')")
     public String getDeletePromotionCode(){
         return "delete-promotion-code";
     }
 
     @GetMapping("/delete/promotioncode")
+    @PreAuthorize("hasRole('ADMIN')")
     public String deletePromotionCodePage(@RequestParam(required = false) Long id){
         promotionCodeService.deletePromotionCodeById(id);
         return "redirect:/home?info=deleted";

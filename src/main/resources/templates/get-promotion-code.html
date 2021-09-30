@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="https://www.thymeleaf.org">
+<html lang="en" xmlns:th="https://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head th:replace="headers::head"></head>
 
 <body>
@@ -34,7 +34,7 @@
                         </label>
                     </div>
 
-                    <div class="input-group">
+                    <div class="input-group" sec:authorize="hasAnyRole('ADMIN', 'WORKER')">
                     <div class = "form-check"  style = "padding: 10px">
                         <input type = "radio" class = "form-check-input" id = "promotionCodeId" value = "promotionCodeId" name = "promotioncodestatus">
                         <label class = "form-check-label" for = "promotionCodeId">
@@ -48,7 +48,7 @@
 
 
 
-                <div class="input-group">
+                <div class="input-group" sec:authorize="hasAnyRole('ADMIN', 'WORKER')">
                     <div class = "form-check"  style = "padding: 10px">
                         <input type = "radio" class = "form-check-input" id = "promotionCode" value = "promotionCode" name = "promotioncodestatus">
                         <label class = "form-check-label" for = "promotionCode">
