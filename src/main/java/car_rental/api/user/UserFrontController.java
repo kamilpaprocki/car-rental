@@ -37,7 +37,7 @@ public class UserFrontController {
     @PostMapping("/set/user/role")
     @PreAuthorize("hasRole('ADMIN')")
     public String setRole(@RequestParam(value = "roles", required = false) String[] strings, UserSetRolesWrapper userSetRolesWrapper){
-        customUserDetailsService.setRoles(userSetRolesWrapper, strings);
+        customUserDetailsService.setRoles(Long.parseLong(userSetRolesWrapper.getId()), strings);
         return "redirect:/home";
     }
 

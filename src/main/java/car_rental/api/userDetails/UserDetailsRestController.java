@@ -38,7 +38,7 @@ public class UserDetailsRestController {
     }
     @ResponseBody
     @GetMapping("/users/details")
-    @PreAuthorize("hasAnyRole('USER', 'WORKER', 'ADMIN')")
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<UserDetailsDTO> getUserDetailsById(@RequestParam Long id){
         UserDetailsDTO userDetailsDTO = userDetailsService.getUserDetailsDTOById(id);
         if (userDetailsDTO == null){
