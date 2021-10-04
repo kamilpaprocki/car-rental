@@ -79,7 +79,7 @@ public class PromotionCodeRestController {
 
     @GetMapping("/promotioncodes/{promotioncode}/use")
     @PreAuthorize("hasAnyRole('USER','WORKER', 'ADMIN')")
-    public ResponseEntity<PromotionCode> usePromotionCode(@PathVariable String promotioncode){
+    public ResponseEntity<PromotionCodeDTO> usePromotionCode(@PathVariable String promotioncode){
         try{
             promotionCodeService.usePromotionCode(promotioncode);
         }

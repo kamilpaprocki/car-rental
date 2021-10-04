@@ -61,7 +61,7 @@ public class CarRestController {
 
     @PostMapping("/cars/update")
     @PreAuthorize("hasAnyRole('WORKER', 'ADMIN')")
-    public ResponseEntity<Car> createOrUpdateCar(@RequestBody CarDTO carDTO){
+    public ResponseEntity<CarDTO> createOrUpdateCar(@RequestBody CarDTO carDTO){
         if (carDTO.getId() != null){
             return new ResponseEntity<>(carService.createOrUpdateCar(carDTO), HttpStatus.OK);
         }

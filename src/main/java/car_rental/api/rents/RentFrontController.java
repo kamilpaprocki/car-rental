@@ -81,6 +81,9 @@ public class RentFrontController {
     @PreAuthorize("hasAnyRole('USER', 'WORKER', 'ADMIN')")
     public String use(@ModelAttribute("promotionCodeDTO") @Valid PromotionCodeDTO promotionCodeDTO, BindingResult bindingResult,
                       @ModelAttribute("rentDTO") RentDTO rentDTO, Model model){
+        System.out.println(rentDTO.toString());
+        System.out.println("\n");
+        System.out.println(promotionCodeDTO.toString());
         if (bindingResult.hasErrors()){
             return "rent-summary";
         }

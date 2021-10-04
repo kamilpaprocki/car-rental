@@ -5,6 +5,7 @@ import car_rental.api.car.CarService;
 import car_rental.api.exceptions.WrongArgumentException;
 import car_rental.api.exceptions.WrongDataFormatException;
 import car_rental.api.promotionCode.PromotionCodeDTO;
+import car_rental.api.promotionCode.PromotionCodeMapper;
 import car_rental.api.promotionCode.PromotionCodeService;
 import car_rental.api.user.CustomUserDetailsService;
 import car_rental.api.user.UserApp;
@@ -36,18 +37,20 @@ public class RentService {
         this.customUserDetailsService = customUserDetailsService;
     }
 
-    public Rent createOrUpdateRent(RentDTO rentDTO, String promotionCode){
+    public RentDTO createOrUpdateRent(RentDTO rentDTO, String promotionCode){
         Rent rent = new RentMapper().mapToDAO(rentDTO);
-        rent.setPromotionCode(promotionCodeService.usePromotionCode(promotionCode));
+        rent.setPromotionCode(new PromotionCodeMapper().mapToDAO(promotionCodeService.usePromotionCode(promotionCode)));
        rent.setRentalCost(rent.getRentalCost()
                 .subtract(
                         rent.getRentalCost().multiply(BigDecimal.valueOf(0.01)).multiply
                         (promotionCodeService.getPromotionCodeByCode(promotionCode).getDiscount())));
-        return rentRepository.save(rent);
+
+       return new RentMapper().mapToDTO(rentRepository.save(rent));
     }
 
-    public Rent createOrUpdateRent(RentDTO rentDTO){
-        return rentRepository.save(new RentMapper().mapToDAO(rentDTO));
+    public RentDTO createOrUpdateRent(RentDTO rentDTO){
+        rentRepository.save(new RentMapper().mapToDAO(rentDTO));
+        return rentDTO;
     }
 
     public RentDTO getRentById(String rentId){
@@ -63,7 +66,7 @@ public class RentService {
         return rents.stream().map(new RentMapper() :: mapToDTO).collect(Collectors.toList());
     }
 
-    public Rent extendPlannedRentDays(Long id, int days){
+    public RentDTO extendPlannedRentDays(Long id, int days){
         Rent rent = getRentById(id);
         if (rent == null){
             throw new WrongRentException("There is no rent with id: " + id);
@@ -72,10 +75,10 @@ public class RentService {
             throw new WrongRentException("Days can not be less than zero. Input days: " + days);
         }
         rent.setPlannedReturnDate(Date.valueOf(rent.getPlannedReturnDate().toLocalDate().plusDays(days)));
-        return rentRepository.save(rent);
+        return new RentMapper().mapToDTO(rentRepository.save(rent));
     }
 
-    public Rent updatePlannedReturnDate(Long id, String plannedReturnDate){
+    public RentDTO updatePlannedReturnDate(Long id, String plannedReturnDate){
         Rent rent = getRentById(id);
         if (rent == null){
             throw new WrongRentException("There is no rent with id: " + id);
@@ -84,7 +87,7 @@ public class RentService {
             throw new WrongRentException("Wrong Data format. Input planned return date: " + plannedReturnDate);
         }
         rent.setPlannedReturnDate(Date.valueOf(plannedReturnDate));
-        return rentRepository.save(rent);
+        return new RentMapper().mapToDTO(rentRepository.save(rent));
     }
 
     @Transactional
@@ -216,10 +219,15 @@ public class RentService {
 
     }
 
-    public Rent getRentById(Long rentId){
+    private Rent getRentById(Long rentId){
         if (rentId == null){
             throw new WrongArgumentException("Rent id cannot be null");
         }
         return rentRepository.findById(rentId).orElse(null);
+    }
+
+    public RentDTO getRentDTOById(Long rentId){
+        Rent rent = getRentById(rentId);
+        return new RentMapper().mapToDTO(rent);
     }
 }

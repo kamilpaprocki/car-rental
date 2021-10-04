@@ -28,8 +28,9 @@ public CarDTO getCarById(Long carId){
         return new CarMapper().mapToDTO(carRepository.findById(carId).orElse(null));
 }
 
-public Car createOrUpdateCar(CarDTO carDTO){
-        return carRepository.save(new CarMapper().mapToDAO(carDTO));
+public CarDTO createOrUpdateCar(CarDTO carDTO){
+    carRepository.save(new CarMapper().mapToDAO(carDTO));
+    return carDTO;
 }
 
 public Car createOrUpdateCar(Car car){

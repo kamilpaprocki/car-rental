@@ -22,7 +22,7 @@ public class RentRestController {
 
     @PostMapping("/rents")
     @PreAuthorize("hasAnyRole('USER', 'WORKER', 'ADMIN')")
-    public ResponseEntity<Rent> createRent(@RequestBody RentDTO rent, @RequestParam(required = false) String promotionCode){
+    public ResponseEntity<RentDTO> createRent(@RequestBody RentDTO rent, @RequestParam(required = false) String promotionCode){
         try{
         if (promotionCode == null){
             return new ResponseEntity<>(rentService.createOrUpdateRent(rent), HttpStatus.CREATED);
@@ -64,8 +64,8 @@ public class RentRestController {
 
     @GetMapping("/rents/rent")
     @PreAuthorize("hasAnyRole('WORKER', 'ADMIN')")
-    public ResponseEntity<Rent> getRentById(@RequestParam Long id){
-        Rent rent = rentService.getRentById(id);
+    public ResponseEntity<RentDTO> getRentById(@RequestParam Long id){
+        RentDTO rent = rentService.getRentDTOById(id);
         if (rent == null){
             throw new RentNotFoundException("There is no rent with id: " + id);
         }
@@ -74,7 +74,7 @@ public class RentRestController {
 
     @PutMapping("/rents/extend")
     @PreAuthorize("hasAnyRole('USER', 'WORKER', 'ADMIN')")
-    public ResponseEntity<Rent> extendPlannedRentDays(@RequestParam Long id, @RequestParam int days){
+    public ResponseEntity<RentDTO> extendPlannedRentDays(@RequestParam Long id, @RequestParam int days){
         try{
             return new ResponseEntity<>(rentService.extendPlannedRentDays(id,days), HttpStatus.OK);
         }catch(WrongRentException e){
@@ -84,7 +84,7 @@ public class RentRestController {
 
     @PutMapping("/rents/update")
     @PreAuthorize("hasAnyRole('USER', 'WORKER', 'ADMIN')")
-    public ResponseEntity<Rent> updatePlannedRentDate(@RequestParam Long id, @RequestParam String returndate){
+    public ResponseEntity<RentDTO> updatePlannedRentDate(@RequestParam Long id, @RequestParam String returndate){
         try{
             return new ResponseEntity<>(rentService.updatePlannedReturnDate(id, returndate), HttpStatus.OK);
         }catch(WrongRentException e){

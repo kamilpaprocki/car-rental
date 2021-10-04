@@ -20,7 +20,7 @@ public class UserDetailsRestController {
 
     @PostMapping("/users/details")
     @PreAuthorize("hasAnyRole('USER', 'WORKER', 'ADMIN')")
-    public ResponseEntity<UserAppDetails> createOrUpdateUserDetails(@RequestBody UserDetailsDTO userDetails){
+    public ResponseEntity<UserDetailsDTO> createOrUpdateUserDetails(@RequestBody UserDetailsDTO userDetails){
         if (userDetails.getId() != null){
             return new ResponseEntity<>(userDetailsService.createOrUpdateUserDetails(userDetails), HttpStatus.OK);
         }
