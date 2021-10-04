@@ -1,6 +1,6 @@
 package car_rental.api.promotionCode;
 
-import car_rental.api.exceptions.PromotionCodeNotFoundException;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.math.BigDecimal;
@@ -32,7 +33,7 @@ private final PromotionCodeService promotionCodeService;
         if ("allPromotionCodes".equals(promotioncodestatus)){
             List<PromotionCodeDTO> promotionCodeDTOList = promotionCodeService.getAllPromotionCodes();
             if (promotionCodeDTOList.isEmpty()){
-                throw new PromotionCodeNotFoundException("There is no promotion codes");
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "There is no promotion codes");
             }
             model.addAttribute("allPromotionCodes", promotionCodeDTOList);
 
@@ -40,7 +41,7 @@ private final PromotionCodeService promotionCodeService;
         if("activePromotionCodes".equals(promotioncodestatus)){
             List<PromotionCodeDTO> promotionCodeDTOList = promotionCodeService.getActivePromotionCodes();
             if (promotionCodeDTOList.isEmpty()){
-                throw new PromotionCodeNotFoundException("There is no active promotion codes");
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "There is no active promotion codes");
             }
             model.addAttribute("activePromotionCodes", promotionCodeDTOList);
 
@@ -48,14 +49,14 @@ private final PromotionCodeService promotionCodeService;
         if ("inactivePromotionCodes".equals(promotioncodestatus)){
             List<PromotionCodeDTO> promotionCodeDTOList = promotionCodeService.getInactivePromotionCodes();
             if (promotionCodeDTOList.isEmpty()){
-                throw new PromotionCodeNotFoundException("There is no inactive promotion codes");
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "There is no inactive promotion codes");
             }
             model.addAttribute("inactivePromotionCodes", promotionCodeService.getInactivePromotionCodes());
         }
        if ("promotionCodeId".equals(promotioncodestatus)){
            PromotionCodeDTO promotionCodeDTO = promotionCodeService.getPromotionCodeById(id);
            if (promotionCodeDTO == null){
-               throw new PromotionCodeNotFoundException("There is no promotion code with id: " + id);
+               throw new ResponseStatusException(HttpStatus.NOT_FOUND, "There is no promotion code with id: " + id);
            }
            model.addAttribute("promotionCodeById", promotionCodeDTO);
        }
@@ -63,7 +64,7 @@ private final PromotionCodeService promotionCodeService;
         if ("promotionCode".equals(promotioncodestatus)){
             PromotionCodeDTO promotionCodeDTO = promotionCodeService.getPromotionCodeDTOByCode(promotioncode);
             if (promotionCodeDTO == null){
-                throw new PromotionCodeNotFoundException("Wrong promotion code: " + promotioncode);
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Wrong promotion code: " + promotioncode);
             }
             model.addAttribute("promotionCode", promotionCodeDTO);
 

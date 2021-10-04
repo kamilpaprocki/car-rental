@@ -2,6 +2,7 @@ package car_rental.api.rents;
 
 import car_rental.api.exceptions.BadRequestException;
 import car_rental.api.exceptions.RentNotFoundException;
+import car_rental.api.exceptions.WrongArgumentException;
 import car_rental.api.promotionCode.WrongPromotionCodeException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -77,7 +78,7 @@ public class RentRestController {
     public ResponseEntity<RentDTO> extendPlannedRentDays(@RequestParam Long id, @RequestParam int days){
         try{
             return new ResponseEntity<>(rentService.extendPlannedRentDays(id,days), HttpStatus.OK);
-        }catch(WrongRentException e){
+        }catch(WrongArgumentException e){
             throw new RentNotFoundException(e.getMessage());
         }
     }
@@ -87,7 +88,7 @@ public class RentRestController {
     public ResponseEntity<RentDTO> updatePlannedRentDate(@RequestParam Long id, @RequestParam String returndate){
         try{
             return new ResponseEntity<>(rentService.updatePlannedReturnDate(id, returndate), HttpStatus.OK);
-        }catch(WrongRentException e){
+        }catch(WrongArgumentException e){
             throw new RentNotFoundException(e.getMessage());
         }
     }
