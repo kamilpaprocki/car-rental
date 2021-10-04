@@ -4,6 +4,7 @@ import car_rental.api.exceptions.BadRequestException;
 import car_rental.api.exceptions.PromotionCodeNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
@@ -20,6 +21,7 @@ public class PromotionCodeRestController {
     }
 
     @PostMapping("/promotioncodes")
+    @PreAuthorize("hasAnyRole('WORKER', 'ADMIN')")
     public ResponseEntity<PromotionCodeDTO> createPromotionCode(@RequestParam BigDecimal discount, @RequestParam int activeDays, @RequestParam boolean isMultipleUse){
         try{
             return new ResponseEntity<>(promotionCodeService.getGeneratedPromotionCode(promotionCodeService.createPromotionCode(discount, activeDays, isMultipleUse)), HttpStatus.CREATED);
@@ -29,6 +31,7 @@ public class PromotionCodeRestController {
     }
 
     @GetMapping("/promotioncodes/")
+    @PreAuthorize("hasAnyRole('USER', 'WORKER', 'ADMIN')")
     public ResponseEntity<List<PromotionCodeDTO>> getAllPromotionCodes(@RequestParam(required = false) String promotionCodeStatus){
         List<PromotionCodeDTO> promotionCodes;
         if (promotionCodeStatus == null){
@@ -56,6 +59,7 @@ public class PromotionCodeRestController {
     }
 
     @GetMapping("/promotioncodes/code")
+    @PreAuthorize("hasAnyRole('WORKER', 'ADMIN')")
     public ResponseEntity<PromotionCodeDTO> getPromotionCodeById(@RequestParam Long id){
         PromotionCodeDTO promotionCode = promotionCodeService.getPromotionCodeById(id);
         if (promotionCode == null){
@@ -64,6 +68,7 @@ public class PromotionCodeRestController {
         return new ResponseEntity<>(promotionCode, HttpStatus.OK);
     }
     @GetMapping("/promotioncodes/code/{promotioncode}")
+    @PreAuthorize("hasAnyRole('WORKER', 'ADMIN')")
     public ResponseEntity<PromotionCodeDTO> getPromotionCodeByCode(@PathVariable String promotioncode){
         PromotionCodeDTO pC = promotionCodeService.getPromotionCodeDTOByCode(promotioncode);
         if (pC == null){
@@ -73,7 +78,8 @@ public class PromotionCodeRestController {
     }
 
     @GetMapping("/promotioncodes/{promotioncode}/use")
-    public ResponseEntity<PromotionCode> usePromotionCode(@PathVariable String promotioncode){
+    @PreAuthorize("hasAnyRole('USER','WORKER', 'ADMIN')")
+    public ResponseEntity<PromotionCodeDTO> usePromotionCode(@PathVariable String promotioncode){
         try{
             promotionCodeService.usePromotionCode(promotioncode);
         }
@@ -84,6 +90,7 @@ public class PromotionCodeRestController {
     }
 
     @DeleteMapping("/promotioncodes/delete")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<PromotionCode> deletePromotionCodeById(@RequestParam Long id){
         if (promotionCodeService.deletePromotionCodeById(id) > 0){
             return new ResponseEntity<>(HttpStatus.OK);

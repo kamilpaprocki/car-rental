@@ -5,6 +5,7 @@ import car_rental.api.exceptions.RentNotFoundException;
 import car_rental.api.promotionCode.WrongPromotionCodeException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,7 +21,8 @@ public class RentRestController {
     }
 
     @PostMapping("/rents")
-    public ResponseEntity<Rent> createRent(@RequestBody RentDTO rent, @RequestParam(required = false) String promotionCode){
+    @PreAuthorize("hasAnyRole('USER', 'WORKER', 'ADMIN')")
+    public ResponseEntity<RentDTO> createRent(@RequestBody RentDTO rent, @RequestParam(required = false) String promotionCode){
         try{
         if (promotionCode == null){
             return new ResponseEntity<>(rentService.createOrUpdateRent(rent), HttpStatus.CREATED);
@@ -32,6 +34,7 @@ public class RentRestController {
     }
 
     @GetMapping("/rents")
+    @PreAuthorize("hasAnyRole('WORKER', 'ADMIN')")
     public ResponseEntity<List<RentDTO>> getAllRents(@RequestParam(required = false) String rentStatus){
 
         List<RentDTO> rents;
@@ -60,8 +63,9 @@ public class RentRestController {
     }
 
     @GetMapping("/rents/rent")
-    public ResponseEntity<Rent> getRentById(@RequestParam Long id){
-        Rent rent = rentService.getRentById(id);
+    @PreAuthorize("hasAnyRole('WORKER', 'ADMIN')")
+    public ResponseEntity<RentDTO> getRentById(@RequestParam Long id){
+        RentDTO rent = rentService.getRentDTOById(id);
         if (rent == null){
             throw new RentNotFoundException("There is no rent with id: " + id);
         }
@@ -69,7 +73,8 @@ public class RentRestController {
     }
 
     @PutMapping("/rents/extend")
-    public ResponseEntity<Rent> extendPlannedRentDays(@RequestParam Long id, @RequestParam int days){
+    @PreAuthorize("hasAnyRole('USER', 'WORKER', 'ADMIN')")
+    public ResponseEntity<RentDTO> extendPlannedRentDays(@RequestParam Long id, @RequestParam int days){
         try{
             return new ResponseEntity<>(rentService.extendPlannedRentDays(id,days), HttpStatus.OK);
         }catch(WrongRentException e){
@@ -78,7 +83,8 @@ public class RentRestController {
     }
 
     @PutMapping("/rents/update")
-    public ResponseEntity<Rent> updatePlannedRentDate(@RequestParam Long id, @RequestParam String returndate){
+    @PreAuthorize("hasAnyRole('USER', 'WORKER', 'ADMIN')")
+    public ResponseEntity<RentDTO> updatePlannedRentDate(@RequestParam Long id, @RequestParam String returndate){
         try{
             return new ResponseEntity<>(rentService.updatePlannedReturnDate(id, returndate), HttpStatus.OK);
         }catch(WrongRentException e){
@@ -87,6 +93,7 @@ public class RentRestController {
     }
 
     @DeleteMapping("/rents/delete")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Rent> deleteRentById(@RequestParam Long id){
         if (rentService.deleteRentById(id) > 0){
             return new ResponseEntity<>(HttpStatus.OK);

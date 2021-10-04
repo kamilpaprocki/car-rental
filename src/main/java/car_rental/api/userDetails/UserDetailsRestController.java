@@ -3,6 +3,7 @@ package car_rental.api.userDetails;
 import car_rental.api.exceptions.UserDetailsNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,7 +19,8 @@ public class UserDetailsRestController {
     }
 
     @PostMapping("/users/details")
-    public ResponseEntity<UserAppDetails> createOrUpdateUserDetails(@RequestBody UserDetailsDTO userDetails){
+    @PreAuthorize("hasAnyRole('USER', 'WORKER', 'ADMIN')")
+    public ResponseEntity<UserDetailsDTO> createOrUpdateUserDetails(@RequestBody UserDetailsDTO userDetails){
         if (userDetails.getId() != null){
             return new ResponseEntity<>(userDetailsService.createOrUpdateUserDetails(userDetails), HttpStatus.OK);
         }
@@ -26,6 +28,7 @@ public class UserDetailsRestController {
     }
 
     @GetMapping("/users/details/all")
+    @PreAuthorize("hasAnyRole('WORKER', 'ADMIN')")
     public ResponseEntity<List<UserDetailsDTO>> getAllUserDetails(){
         List<UserDetailsDTO> userDetails = userDetailsService.getAllUserDetails();
         if(userDetails.isEmpty()){
@@ -35,6 +38,7 @@ public class UserDetailsRestController {
     }
     @ResponseBody
     @GetMapping("/users/details")
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<UserDetailsDTO> getUserDetailsById(@RequestParam Long id){
         UserDetailsDTO userDetailsDTO = userDetailsService.getUserDetailsDTOById(id);
         if (userDetailsDTO == null){
@@ -44,6 +48,7 @@ public class UserDetailsRestController {
     }
 
     @DeleteMapping("/users/details/delete")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<UserAppDetails> deleteUserDetailsById(@RequestParam Long id){
         if(userDetailsService.deleteUserDetailsById(id) > 0){
             return new ResponseEntity<>(HttpStatus.OK);

@@ -3,6 +3,7 @@ package car_rental.api.user;
 import car_rental.api.exceptions.UserAlreadyExistException;
 import car_rental.api.exceptions.WrongArgumentException;
 import car_rental.api.userDetails.UserDetailsDTO;
+import car_rental.api.userDetails.UserDetailsMapper;
 import car_rental.api.userDetails.UserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -68,6 +69,12 @@ public String register(Model model){
 @GetMapping("/registration-user-details")
 @PreAuthorize("isAuthenticated()")
     public String registrationUserDetails(Model model, @RequestParam(required = false) String info){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserApp userApp = (UserApp)authentication.getPrincipal();
+        if (userApp.getUserDetails() != null){
+            return "redirect:/home";
+        }
+
         model.addAttribute("userDetailsDTO", new UserDetailsDTO());
         model.addAttribute("info", info);
         return "registration-user-details";
@@ -84,9 +91,8 @@ public String register(Model model){
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
     UserApp currentUser = (UserApp)(authentication.getPrincipal());
 
-    UserApp registerUserDetails = customUserDetailsService.addUserDetails(currentUser.getId(), userDetailsDTO);
-    currentUser.setUserDetails(registerUserDetails.getUserDetails());
-    System.out.println(currentUser);
+    UserAppDTO registerUserDetails = customUserDetailsService.addUserDetails(currentUser.getId(), userDetailsDTO);
+    currentUser.setUserDetails(new UserDetailsMapper().mapToDAO(registerUserDetails.getUserDetailsDTO()));
 
         return "redirect:/home?info=details";
 }

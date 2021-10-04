@@ -29,7 +29,7 @@ public class RentFrontController {
         this.carService = carService;
     }
 
-    @PreAuthorize("isAuthenticated()")
+    @PreAuthorize("hasAnyRole('USER', 'WORKER', 'ADMIN')")
     @GetMapping("/rent")
       public String rentForm(Model model){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -43,6 +43,7 @@ public class RentFrontController {
     }
 
     @GetMapping("/add/rent")
+    @PreAuthorize("hasAnyRole('USER', 'WORKER', 'ADMIN')")
     public String addRent(@ModelAttribute("rentDTO") RentDTO rentDTO, Model model, @RequestParam String carid){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         UserApp userApp = (UserApp)(authentication.getPrincipal());
@@ -53,6 +54,7 @@ public class RentFrontController {
     }
 
     @PostMapping("/add/rent/details")
+    @PreAuthorize("hasAnyRole('USER', 'WORKER', 'ADMIN')")
     public String addRentDetails(@ModelAttribute("rentDTO") @Valid RentDTO rentDTO, BindingResult bindingResult, Model model){
         if (bindingResult.hasErrors()){
             return "rent-details";
@@ -65,6 +67,7 @@ public class RentFrontController {
     }
 
     @PostMapping("/add/rent/summary")
+    @PreAuthorize("hasAnyRole('USER', 'WORKER', 'ADMIN')")
     public String summary(@ModelAttribute("rentDTO") RentDTO rentDTO){
         rentService.addRent(rentDTO);
 
@@ -75,8 +78,12 @@ public class RentFrontController {
     }
 
     @PostMapping(value = "/usepromotioncode")
+    @PreAuthorize("hasAnyRole('USER', 'WORKER', 'ADMIN')")
     public String use(@ModelAttribute("promotionCodeDTO") @Valid PromotionCodeDTO promotionCodeDTO, BindingResult bindingResult,
                       @ModelAttribute("rentDTO") RentDTO rentDTO, Model model){
+        System.out.println(rentDTO.toString());
+        System.out.println("\n");
+        System.out.println(promotionCodeDTO.toString());
         if (bindingResult.hasErrors()){
             return "rent-summary";
         }
@@ -94,20 +101,21 @@ public class RentFrontController {
         return new RentDTO();
     }
 
-    @PreAuthorize("isAuthenticated()")
+    @PreAuthorize("hasAnyRole('USER', 'WORKER', 'ADMIN')")
     @GetMapping(value = "/extend/rent")
     public String getExtendRent(Model model){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         UserApp userApp = (UserApp)(authentication.getPrincipal());
         List<RentDTO> rentDTO = rentService.getRentByUserApp(userApp);
         if (rentDTO.isEmpty()){
-            throw new RentNotFoundException("User " + userApp.getUsername() + "hasnot active rents");
+            throw new RentNotFoundException("User: " + userApp.getUsername() + ", has not active rents");
         }
         model.addAttribute("rents", rentDTO);
         return "get-rent";
     }
 
     @GetMapping("/extend/rent/update")
+    @PreAuthorize("hasAnyRole('USER', 'WORKER', 'ADMIN')")
     public String extendRent(Model model, @RequestParam String rentid){
         RentDTO rentDTO = rentService.getRentById(rentid);
         model.addAttribute("activeRentDTO", rentDTO);
@@ -115,6 +123,7 @@ public class RentFrontController {
     }
 
     @PostMapping("/extend/rent")
+    @PreAuthorize("hasAnyRole('USER', 'WORKER', 'ADMIN')")
     public String updateRent(@ModelAttribute("activeRentDTO") @Valid RentDTO rentDTO, BindingResult bindingResult, Model model){
         if (bindingResult.hasErrors()){
             return "extend-rent";
@@ -124,18 +133,21 @@ public class RentFrontController {
     }
 
     @PostMapping("/update/extend/rent")
+    @PreAuthorize("hasAnyRole('USER', 'WORKER', 'ADMIN')")
     public String saveUpdatedRent(@ModelAttribute("activeRentDTO") RentDTO rentDTO){
         rentService.createOrUpdateRent(rentDTO);
         return "redirect:/home?info=extended";
     }
 
     @GetMapping("/finish/rent")
+    @PreAuthorize("hasAnyRole('WORKER', 'ADMIN')")
     public String getActiveRents(Model model){
         model.addAttribute("rents", rentService.getActiveRents());
         return "get-rents-to-finish";
     }
 
     @GetMapping("/finish/rent/update")
+    @PreAuthorize("hasAnyRole('WORKER', 'ADMIN')")
     public String getFinishRentForm(@RequestParam String rentid, Model model){
         RentDTO finishRentDTO = rentService.getRentById(rentid);
         model.addAttribute("finishRentDTO", finishRentDTO);
@@ -144,6 +156,7 @@ public class RentFrontController {
     }
 
     @PostMapping("/finish/rent/update")
+    @PreAuthorize("hasAnyRole('WORKER', 'ADMIN')")
     public String finishRent(@ModelAttribute("odometerWrapper") @Valid  CarReturnOdometerWrapper carReturnOdometerWrapper, BindingResult bindingResult
             , @ModelAttribute("finishRentDTO") RentDTO rentDTO){
         if (bindingResult.hasErrors()){

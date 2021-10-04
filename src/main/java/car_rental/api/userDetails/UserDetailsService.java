@@ -17,8 +17,9 @@ public class UserDetailsService {
         this.userDetailsRepository = userDetailsRepository;
     }
 
-    public UserAppDetails createOrUpdateUserDetails(UserDetailsDTO userDetails){
-        return userDetailsRepository.save(new UserDetailsMapper().mapToDAO(userDetails));
+    public UserDetailsDTO createOrUpdateUserDetails(UserDetailsDTO userDetails){
+        userDetailsRepository.save(new UserDetailsMapper().mapToDAO(userDetails));
+        return userDetails;
     }
 
     public List<UserDetailsDTO> getAllUserDetails(){

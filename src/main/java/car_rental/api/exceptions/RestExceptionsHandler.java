@@ -84,4 +84,28 @@ public class RestExceptionsHandler extends ResponseEntityExceptionHandler {
                 .build();
         return handleExceptionInternal(e, body, new HttpHeaders(), HttpStatus.NOT_FOUND, request);
     }
+
+    @ExceptionHandler(value = UserAlreadyExistException.class)
+    protected ResponseEntity<Object> handleUserAlreadyExistException(RuntimeException e, WebRequest request){
+        ExceptionBody body = ExceptionBody
+                .builder()
+                .message(e.getMessage())
+                .status(400)
+                .path(request.getDescription(true))
+                .timestamp(new Date().toString())
+                .build();
+        return handleExceptionInternal(e, body, new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
+    }
+
+    @ExceptionHandler(value = UserNotFoundExceptions.class)
+    protected ResponseEntity<Object> handleUserNotFoundException(RuntimeException e, WebRequest request){
+        ExceptionBody body = ExceptionBody
+                .builder()
+                .message(e.getMessage())
+                .status(404)
+                .path(request.getDescription(true))
+                .timestamp(new Date().toString())
+                .build();
+        return handleExceptionInternal(e, body, new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
+    }
 }

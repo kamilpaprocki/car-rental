@@ -87,7 +87,7 @@ public class PromotionCodeService {
         return promotionCodeRepository.getPromotionCodeByCode(promotionCode).orElse(null);
     }
 
-    public PromotionCode usePromotionCode(String promotionCode){
+    public PromotionCodeDTO usePromotionCode(String promotionCode){
         PromotionCode pC = getPromotionCodeByCode(promotionCode);
         if (pC == null){
             throw new WrongPromotionCodeException("Wrong promotion code. Input promotion code: " + promotionCode);
@@ -100,7 +100,7 @@ public class PromotionCodeService {
             pC.setUsedDate(Date.valueOf(LocalDate.now()));
             pC.setActive(false);
         }
-        return promotionCodeRepository.save(pC);
+        return new PromotionCodeMapper().mapToDTO(promotionCodeRepository.save(pC));
     }
 
     public boolean isCorrectAndAvailablePromotionCode(String promotionCode){
