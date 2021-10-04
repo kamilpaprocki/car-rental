@@ -1,6 +1,6 @@
 package car_rental.api.car;
 
-import car_rental.api.exceptions.CarNotFoundException;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.server.ResponseStatusException;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -32,28 +33,28 @@ private final CarService carService;
         if ("carById".equals(cars)){
             CarDTO carDTO = carService.getCarById(carId);
             if (carDTO == null){
-                throw new CarNotFoundException("There is no car with id: " + carId);
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "There is no car with id: " + carId);
             }
             model.addAttribute("carById", carDTO);
         }
         if ("allCars".equals(cars)){
             List<CarDTO> availableCarDTOList = carService.getAllCars();
             if (availableCarDTOList.isEmpty()){
-                throw new CarNotFoundException("There is no car");
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND,"There is no car");
             }
             model.addAttribute("allCars", availableCarDTOList);
         }
         if ("availableCars".equals(cars)){
             List<CarDTO> availableCarDTOList = carService.getAvailableCar();
             if (availableCarDTOList.isEmpty()){
-                throw new CarNotFoundException("There is no available cars");
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND,"There is no available cars");
             }
             model.addAttribute("availableCars", availableCarDTOList);
         }
         if ("unavailableCars".equals(cars)){
             List<CarDTO> availableCarDTOList = carService.getUnavailableCars();
             if (availableCarDTOList.isEmpty()){
-                throw new CarNotFoundException("There is no unavailable cars");
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND,"There is no unavailable cars");
             }
             model.addAttribute("unavailableCars", availableCarDTOList);
         }
@@ -89,7 +90,7 @@ private final CarService carService;
     public String getUpdateCarPage(@RequestParam(required = false) Long carId, Model model){
         CarDTO carDTO = carService.getCarById(carId);
         if (carDTO == null){
-            throw new CarNotFoundException("There is no car with id: " + carId);
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "There is no car with id: " + carId);
         }
         model.addAttribute("updateCar", carDTO);
         return "update-form-car";

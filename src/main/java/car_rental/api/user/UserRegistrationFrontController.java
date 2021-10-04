@@ -1,11 +1,11 @@
 package car_rental.api.user;
 
 import car_rental.api.exceptions.UserAlreadyExistException;
-import car_rental.api.exceptions.WrongArgumentException;
 import car_rental.api.userDetails.UserDetailsDTO;
 import car_rental.api.userDetails.UserDetailsMapper;
 import car_rental.api.userDetails.UserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.server.ResponseStatusException;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
@@ -61,7 +62,7 @@ public String register(Model model){
     try{
         authenticateUserAfterRegistration(userRegisterDTO, request);
     }catch (Exception e){
-       throw new WrongArgumentException("Wrong username or password");
+        throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Wrong username or password");
     }
     return "redirect:/home?info=registered";
 }

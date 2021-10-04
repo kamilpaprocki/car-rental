@@ -69,10 +69,10 @@ public class RentService {
     public RentDTO extendPlannedRentDays(Long id, int days){
         Rent rent = getRentById(id);
         if (rent == null){
-            throw new WrongRentException("There is no rent with id: " + id);
+            throw new WrongArgumentException("There is no rent with id: " + id);
         }
         if(days <= 0){
-            throw new WrongRentException("Days can not be less than zero. Input days: " + days);
+            throw new WrongArgumentException("Days can not be less than zero. Input days: " + days);
         }
         rent.setPlannedReturnDate(Date.valueOf(rent.getPlannedReturnDate().toLocalDate().plusDays(days)));
         return new RentMapper().mapToDTO(rentRepository.save(rent));
@@ -81,10 +81,10 @@ public class RentService {
     public RentDTO updatePlannedReturnDate(Long id, String plannedReturnDate){
         Rent rent = getRentById(id);
         if (rent == null){
-            throw new WrongRentException("There is no rent with id: " + id);
+            throw new WrongArgumentException("There is no rent with id: " + id);
         }
         if (!plannedReturnDate.matches("\\d{4}[-]\\d{1,2}[-]\\d{1,2}")){
-            throw new WrongRentException("Wrong Data format. Input planned return date: " + plannedReturnDate);
+            throw new WrongArgumentException("Wrong Data format. Input planned return date: " + plannedReturnDate);
         }
         rent.setPlannedReturnDate(Date.valueOf(plannedReturnDate));
         return new RentMapper().mapToDTO(rentRepository.save(rent));

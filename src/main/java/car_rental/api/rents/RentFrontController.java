@@ -2,9 +2,9 @@ package car_rental.api.rents;
 
 import car_rental.api.car.CarDTO;
 import car_rental.api.car.CarService;
-import car_rental.api.exceptions.RentNotFoundException;
 import car_rental.api.promotionCode.PromotionCodeDTO;
 import car_rental.api.user.UserApp;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -13,6 +13,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -81,9 +82,6 @@ public class RentFrontController {
     @PreAuthorize("hasAnyRole('USER', 'WORKER', 'ADMIN')")
     public String use(@ModelAttribute("promotionCodeDTO") @Valid PromotionCodeDTO promotionCodeDTO, BindingResult bindingResult,
                       @ModelAttribute("rentDTO") RentDTO rentDTO, Model model){
-        System.out.println(rentDTO.toString());
-        System.out.println("\n");
-        System.out.println(promotionCodeDTO.toString());
         if (bindingResult.hasErrors()){
             return "rent-summary";
         }
@@ -108,7 +106,7 @@ public class RentFrontController {
         UserApp userApp = (UserApp)(authentication.getPrincipal());
         List<RentDTO> rentDTO = rentService.getRentByUserApp(userApp);
         if (rentDTO.isEmpty()){
-            throw new RentNotFoundException("User: " + userApp.getUsername() + ", has not active rents");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User: " + userApp.getUsername() + ", has not active rents");
         }
         model.addAttribute("rents", rentDTO);
         return "get-rent";
