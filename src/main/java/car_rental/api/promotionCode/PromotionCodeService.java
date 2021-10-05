@@ -1,7 +1,10 @@
 package car_rental.api.promotionCode;
 
 
+import car_rental.api.exceptions.PromotionCodeNotFoundException;
 import car_rental.api.exceptions.WrongArgumentException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.math.BigDecimal;
@@ -16,6 +19,8 @@ public class PromotionCodeService {
 
     private final PromotionCodeRepository promotionCodeRepository;
 
+    private final static Logger logger = LoggerFactory.getLogger(PromotionCodeService.class);
+
     private final int availableUse = 10;
     private final BigDecimal maxDiscount = new BigDecimal(90);
 
@@ -25,13 +30,16 @@ public class PromotionCodeService {
 
     public PromotionCode createPromotionCode(BigDecimal discount, int activeDays, boolean isMultipleUse){
         if (discount.compareTo(BigDecimal.ZERO) <=0){
-            throw new WrongPromotionCodeException("Wrong discount. This can not be less than zero. Input discount: " + discount);
+            throw new WrongArgumentException("Wrong discount. This can not be less than zero. Input discount: " + discount);
+            //throw new WrongPromotionCodeException("Wrong discount. This can not be less than zero. Input discount: " + discount);
         }
         if (discount.compareTo(maxDiscount) > 0){
-            throw new WrongPromotionCodeException("Wrong discount. This can not be more than max discount. Input discount: " + discount);
+            throw new WrongArgumentException("Wrong discount. This can not be more than max discount. Input discount: " + discount);
+            //throw new WrongPromotionCodeException("Wrong discount. This can not be more than max discount. Input discount: " + discount);
         }
         if (activeDays <= 0){
-            throw new WrongPromotionCodeException("Wrong Discount. Active days can not be less than zero. Input active days: " + activeDays);
+            throw new WrongArgumentException("Wrong Discount. Active days can not be less than zero. Input active days: " + activeDays);
+           // throw new WrongPromotionCodeException("Wrong Discount. Active days can not be less than zero. Input active days: " + activeDays);
         }
         PromotionCode promotionCode = new PromotionCode();
         promotionCode.setPromotionCode(UUID.randomUUID().toString());
@@ -73,6 +81,7 @@ public class PromotionCodeService {
     @Transactional
     public int deletePromotionCodeById(Long promotionCodeId){
         if (promotionCodeId == null){
+            logger.error("Promotion code id is null.");
             throw new WrongArgumentException("Promotion code id cannot be a null");
         }
         return promotionCodeRepository.deletePromotionCodeById(promotionCodeId);
@@ -90,10 +99,10 @@ public class PromotionCodeService {
     public PromotionCodeDTO usePromotionCode(String promotionCode){
         PromotionCode pC = getPromotionCodeByCode(promotionCode);
         if (pC == null){
-            throw new WrongPromotionCodeException("Wrong promotion code. Input promotion code: " + promotionCode);
+            throw new PromotionCodeNotFoundException("Wrong promotion code. Input promotion code: " + promotionCode);
         }
         if (!pC.isActive()){
-            throw new WrongPromotionCodeException("Used Promotion Code. Input promotion code: " + promotionCode);
+            throw new PromotionCodeNotFoundException("Used Promotion Code. Input promotion code: " + promotionCode);
         }
         pC.setAvailableUse(pC.getAvailableUse()-1);
         if (pC.getAvailableUse() == 0){
@@ -106,13 +115,17 @@ public class PromotionCodeService {
     public boolean isCorrectAndAvailablePromotionCode(String promotionCode){
         PromotionCode pC = getPromotionCodeByCode(promotionCode);
         if (pC == null){
+            logger.error("Wrong promotion code: {}.", promotionCode);
             return false;
         }
         if(pC.getExpDate().before(Date.valueOf(LocalDate.now()))){
             pC.setUsedDate(pC.getExpDate());
             pC.setActive(false);
             promotionCodeRepository.save(pC);
+            logger.error("Promotion code {} is expired.", promotionCode);
+            return false;
         }
+        logger.info("Promotion code {} is {}. ", promotionCode, pC.isActive());
         return pC.isActive();
     }
 

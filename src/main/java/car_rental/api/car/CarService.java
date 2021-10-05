@@ -33,12 +33,6 @@ public CarDTO getCarById(Long carId){
 }
 
 public CarDTO createOrUpdateCar(CarDTO carDTO){
-        if (carDTO.getId() == null){
-            logger.info("Create new car");
-        }
-        if (carDTO.getId() != null){
-            logger.info("Update car with id {}", carDTO.getId());
-        }
     carRepository.save(new CarMapper().mapToDAO(carDTO));
     return carDTO;
 }

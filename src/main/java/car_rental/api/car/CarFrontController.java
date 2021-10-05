@@ -161,7 +161,7 @@ private static final Logger logger = LoggerFactory.getLogger(CarFrontController.
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         }
         logger.info("Car with id {} not exists.", id);
-       return "redirect:/home?info=deleted";
+       return "redirect:/home";
     }
 
 

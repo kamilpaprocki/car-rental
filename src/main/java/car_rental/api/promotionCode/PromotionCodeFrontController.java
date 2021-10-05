@@ -1,5 +1,8 @@
 package car_rental.api.promotionCode;
 
+import car_rental.api.exceptions.WrongArgumentException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
@@ -19,6 +22,8 @@ public class PromotionCodeFrontController {
 
 private final PromotionCodeService promotionCodeService;
 
+private final static Logger logger = LoggerFactory.getLogger(PromotionCodeFrontController.class);
+
     public PromotionCodeFrontController(PromotionCodeService promotionCodeService) {
         this.promotionCodeService = promotionCodeService;
     }
@@ -30,42 +35,54 @@ private final PromotionCodeService promotionCodeService;
                                     @RequestParam(required = false) String promotioncode,
                                     @RequestParam(required = false) String promotioncodestatus){
 
+        List<PromotionCodeDTO> promotionCodeDTOList;
+
         if ("allPromotionCodes".equals(promotioncodestatus)){
-            List<PromotionCodeDTO> promotionCodeDTOList = promotionCodeService.getAllPromotionCodes();
+            promotionCodeDTOList = promotionCodeService.getAllPromotionCodes();
             if (promotionCodeDTOList.isEmpty()){
+                logger.error("List of all promotion codes is empty");
                 throw new ResponseStatusException(HttpStatus.NOT_FOUND, "There is no promotion codes");
             }
+            logger.info("Return {} promotion codes.", promotionCodeDTOList.size());
             model.addAttribute("allPromotionCodes", promotionCodeDTOList);
 
         }
         if("activePromotionCodes".equals(promotioncodestatus)){
-            List<PromotionCodeDTO> promotionCodeDTOList = promotionCodeService.getActivePromotionCodes();
+            promotionCodeDTOList = promotionCodeService.getActivePromotionCodes();
             if (promotionCodeDTOList.isEmpty()){
+                logger.error("List of active promotion codes is empty");
                 throw new ResponseStatusException(HttpStatus.NOT_FOUND, "There is no active promotion codes");
             }
+            logger.info("Return {} active promotion codes.", promotionCodeDTOList.size());
             model.addAttribute("activePromotionCodes", promotionCodeDTOList);
 
         }
         if ("inactivePromotionCodes".equals(promotioncodestatus)){
-            List<PromotionCodeDTO> promotionCodeDTOList = promotionCodeService.getInactivePromotionCodes();
+            promotionCodeDTOList = promotionCodeService.getInactivePromotionCodes();
             if (promotionCodeDTOList.isEmpty()){
+                logger.error("List of inactive promotion codes is empty");
                 throw new ResponseStatusException(HttpStatus.NOT_FOUND, "There is no inactive promotion codes");
             }
+            logger.info("Return {} inactive promotion codes.", promotionCodeDTOList.size());
             model.addAttribute("inactivePromotionCodes", promotionCodeService.getInactivePromotionCodes());
         }
        if ("promotionCodeId".equals(promotioncodestatus)){
            PromotionCodeDTO promotionCodeDTO = promotionCodeService.getPromotionCodeById(id);
            if (promotionCodeDTO == null){
+               logger.error("Promotion code with id {} not found.", id);
                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "There is no promotion code with id: " + id);
            }
+           logger.info("Return promotion code with id {}.", id);
            model.addAttribute("promotionCodeById", promotionCodeDTO);
        }
 
         if ("promotionCode".equals(promotioncodestatus)){
             PromotionCodeDTO promotionCodeDTO = promotionCodeService.getPromotionCodeDTOByCode(promotioncode);
             if (promotionCodeDTO == null){
+                logger.error("Promotion code {} not found.", promotioncode);
                 throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Wrong promotion code: " + promotioncode);
             }
+            logger.info("Return promotion code: {}", promotioncode);
             model.addAttribute("promotionCode", promotionCodeDTO);
 
         }
@@ -81,8 +98,15 @@ private final PromotionCodeService promotionCodeService;
     @PostMapping("/generate/promotioncode")
     @PreAuthorize("hasAnyRole('WORKER', 'ADMIN')")
     public String generatePromotionCode(RedirectAttributes redirectAttributes, @RequestParam BigDecimal discount, @RequestParam int activeDays, @RequestParam boolean isMultipleUse){
-        PromotionCodeDTO generatedPromotionCode = promotionCodeService.getGeneratedPromotionCode(promotionCodeService.createPromotionCode(discount, activeDays, isMultipleUse));
-        redirectAttributes.addFlashAttribute("generatedPromotionCode", generatedPromotionCode.getPromotionCodeDTO());
+        try{
+            logger.info("Generate new promotion code with {} discount, with {} active days and is multiple use {}.", discount, activeDays, isMultipleUse);
+            PromotionCodeDTO generatedPromotionCode = promotionCodeService.getGeneratedPromotionCode(promotionCodeService.createPromotionCode(discount, activeDays, isMultipleUse));
+            redirectAttributes.addFlashAttribute("generatedPromotionCode", generatedPromotionCode.getPromotionCodeDTO());
+        }catch (WrongArgumentException e){
+            logger.error(e.getMessage());
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+        }
+
         return "redirect:/generate/promotioncode?info=generated";
     }
 
@@ -101,8 +125,17 @@ private final PromotionCodeService promotionCodeService;
     @GetMapping("/delete/promotioncode")
     @PreAuthorize("hasRole('ADMIN')")
     public String deletePromotionCodePage(@RequestParam(required = false) Long id){
-        promotionCodeService.deletePromotionCodeById(id);
-        return "redirect:/home?info=deleted";
+        try{
+            if (promotionCodeService.deletePromotionCodeById(id) > 0){
+                logger.info("Delete promotion code with id {}.", id);
+                return "redirect:/home?info=deleted";
+            }
+        }catch (WrongArgumentException e){
+            logger.error(e.getMessage());
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+        }
+        logger.info("Promotion code with id {} not exist.", id);
+        return "redirect:/home";
     }
 
 

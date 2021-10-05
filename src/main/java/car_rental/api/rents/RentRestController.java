@@ -1,9 +1,9 @@
 package car_rental.api.rents;
 
 import car_rental.api.exceptions.BadRequestException;
+import car_rental.api.exceptions.PromotionCodeNotFoundException;
 import car_rental.api.exceptions.RentNotFoundException;
 import car_rental.api.exceptions.WrongArgumentException;
-import car_rental.api.promotionCode.WrongPromotionCodeException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -29,7 +29,7 @@ public class RentRestController {
             return new ResponseEntity<>(rentService.createOrUpdateRent(rent), HttpStatus.CREATED);
         }
         return new ResponseEntity<>(rentService.createOrUpdateRent(rent, promotionCode), HttpStatus.CREATED);
-    }catch(WrongPromotionCodeException e){
+    }catch(PromotionCodeNotFoundException e){
             throw new BadRequestException(e.getMessage());
         }
     }
