@@ -1,6 +1,7 @@
 package car_rental.api.rents;
 
 import car_rental.api.car.CarDTO;
+import car_rental.api.car.CarMapper;
 import car_rental.api.car.CarService;
 import car_rental.api.exceptions.WrongArgumentException;
 import car_rental.api.exceptions.WrongDataFormatException;
@@ -143,7 +144,7 @@ public class RentService {
     public Rent addRent(RentDTO rentDTO){
         Rent rent = new RentMapper().mapToDAO(rentDTO);
         rent.getCar().setAvailable(false);
-        carService.createOrUpdateCar(rent.getCar());
+        carService.createOrUpdateCar(new CarMapper().mapToDTO(rent.getCar()));
         rent.getUserApp().setHasActiveRent(true);
         customUserDetailsService.updateUser(rent.getUserApp());
         return rentRepository.save(rent);
