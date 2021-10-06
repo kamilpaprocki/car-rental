@@ -39,7 +39,7 @@
 </div>
 
 <div class = "modal" id = "setRole" tabindex="-1" role = "dialog" aria-labelledby="setRoleLabel" aria-hidden="true">
-    <form method="post" th:action="@{/set/user/role}" th:object="${userSetRoleWrapper}">
+    <form method="post" th:action="@{/set/user/role}">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -49,15 +49,16 @@
 
                 <div class="form-group">
                     <label for="email" class="col-form-label fw-bold" >E-mail: </label>
-                    <input th:type ="email" readonly class="form-control" id="email" placeholder="email" name = "email" th:field = "${userSetRoleWrapper.email}" >
+                    <input th:type ="email" readonly class="form-control" id="email" name = "email">
                 </div>
                 <div class="form-group">
-                    <input hidden th:type ="number" readonly class="form-control" id="id" placeholder="email" name = "id" th:field = "${userSetRoleWrapper.id}">
+                    <input hidden th:type ="number" readonly class="form-control" id="id"  name = "userid">
                 </div>
                 <div class="form-group">
                     <label for="username" class="col-form-label fw-bold">Username: </label>
-                    <input th:type="text" readonly class="form-control" id="username" placeholder="username" name = username th:field = "${userSetRoleWrapper.username}">
+                    <input th:type="text" readonly class="form-control" id="username" name = username>
                 </div>
+
                 <div class = "form-check" style="padding-top: 10px">
                     <input class = "form-check-input" type = "checkbox"  id="user" th:value = "USER" name="roles" checked disabled>
                     <label class = "form-check-label" for = "user">

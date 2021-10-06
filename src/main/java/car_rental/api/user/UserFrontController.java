@@ -44,20 +44,19 @@ public class UserFrontController {
         }
         logger.info("Return {} active users.", userApps.size());
         model.addAttribute("users", userApps);
-        model.addAttribute("userSetRoleWrapper", new UserSetRolesWrapper());
         return "get-users";
     }
 
     @PostMapping("/set/user/role")
     @PreAuthorize("hasRole('ADMIN')")
-    public String setRole(@RequestParam(value = "roles", required = false) String[] strings, UserSetRolesWrapper userSetRolesWrapper){
+    public String setRole(@RequestParam(value = "roles", required = false) String[] strings, @RequestParam String userid){
         try{
-            customUserDetailsService.setRoles(Long.parseLong(userSetRolesWrapper.getId()), strings);
+            customUserDetailsService.setRoles(Long.parseLong(userid), strings);
         }catch (WrongArgumentException | UserNotFoundExceptions e){
             logger.error(e.getMessage());
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         }
-        logger.info("Set roles {} user with id {}.", strings.length, userSetRolesWrapper.getId());
+        logger.info("Set {} roles more than USER ROLE to user  with id {}.", strings.length, userid);
         return "redirect:/home";
     }
 
