@@ -1,6 +1,8 @@
 package car_rental.api.currency;
 
 import car_rental.api.utils.JSONParser;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -16,6 +18,8 @@ public class CurrencyReplaceController {
 
     private final CurrencyService currencyService;
 
+    private final static Logger logger = LoggerFactory.getLogger(CurrencyReplaceController.class);
+
     public CurrencyReplaceController(CurrencyService currencyService) {
         this.currencyService = currencyService;
     }
@@ -29,7 +33,7 @@ public class CurrencyReplaceController {
     public String getCurrencyPLN(@RequestParam("cost") String rentalCostJSON){
 
         BigDecimal rentalCost = new JSONParser().parseJSONtoBigDecimal(rentalCostJSON);
-
+        logger.info("Return rental cost in PLN");
         return "currency :: currency-pln(rentalCost="+rentalCost+")";
     }
 
@@ -38,7 +42,7 @@ public class CurrencyReplaceController {
 
         BigDecimal rentalCost = new JSONParser().parseJSONtoBigDecimal(rentalCostJSON);
         rentalCost = currencyService.convertAmountFromPLN(USD, rentalCost);
-
+        logger.info("Return rental cost in USD");
         return "currency :: currency-usd(rentalCost="+rentalCost+")";
     }
 
@@ -47,7 +51,7 @@ public class CurrencyReplaceController {
 
         BigDecimal rentalCost = new JSONParser().parseJSONtoBigDecimal(rentalCostJSON);
         rentalCost = currencyService.convertAmountFromPLN(EUR, rentalCost);
-
+        logger.info("Return rental cost in EUR");
         return "currency :: currency-eur(rentalCost="+rentalCost+")";
     }
 

@@ -13,7 +13,7 @@ public class PromotionCodeDTO {
     private String id;
 
    @JsonProperty(value = "promotion_code")
-   @NotEmpty(message = "This can not be empty.")
+   @NotEmpty(message = "Field: \"promotion code\" cannot be empty.")
    @NotNull(message = "This can not be null.")
    private String promotionCodeDTO;
 

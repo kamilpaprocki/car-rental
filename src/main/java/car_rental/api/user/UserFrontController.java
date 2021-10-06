@@ -1,8 +1,13 @@
 package car_rental.api.user;
 
 import car_rental.api.exceptions.UserAlreadyExistException;
+import car_rental.api.exceptions.UserNotFoundExceptions;
+import car_rental.api.exceptions.WrongArgumentException;
 import car_rental.api.userDetails.UserDetailsDTO;
 import car_rental.api.utils.ChangePasswordWrapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -14,14 +19,17 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.server.ResponseStatusException;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @Controller
 public class UserFrontController {
 
     private final CustomUserDetailsService customUserDetailsService;
 
+    private final static Logger logger = LoggerFactory.getLogger(UserFrontController.class);
     public UserFrontController(CustomUserDetailsService customUserDetailsService) {
         this.customUserDetailsService = customUserDetailsService;
     }
@@ -29,7 +37,13 @@ public class UserFrontController {
     @GetMapping("/user")
     @PreAuthorize("hasRole('ADMIN')")
     public String getUsers(Model model){
-        model.addAttribute("users", customUserDetailsService.getActiveUsers());
+        List<UserAppDTO> userApps = customUserDetailsService.getActiveUsers();
+        if(userApps.isEmpty()){
+            logger.error("List of active users is empty.");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "There is no active users.");
+        }
+        logger.info("Return {} active users.", userApps.size());
+        model.addAttribute("users", userApps);
         model.addAttribute("userSetRoleWrapper", new UserSetRolesWrapper());
         return "get-users";
     }
@@ -37,7 +51,13 @@ public class UserFrontController {
     @PostMapping("/set/user/role")
     @PreAuthorize("hasRole('ADMIN')")
     public String setRole(@RequestParam(value = "roles", required = false) String[] strings, UserSetRolesWrapper userSetRolesWrapper){
-        customUserDetailsService.setRoles(Long.parseLong(userSetRolesWrapper.getId()), strings);
+        try{
+            customUserDetailsService.setRoles(Long.parseLong(userSetRolesWrapper.getId()), strings);
+        }catch (WrongArgumentException | UserNotFoundExceptions e){
+            logger.error(e.getMessage());
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+        }
+        logger.info("Set roles {} user with id {}.", strings.length, userSetRolesWrapper.getId());
         return "redirect:/home";
     }
 
@@ -47,6 +67,7 @@ public class UserFrontController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         UserApp userApp = (UserApp)(authentication.getPrincipal());
         if (userApp.getUserDetails() == null){
+            logger.error("User with id {} does not have completed details.", userApp.getId());
             return "redirect:/registration-user-details?info=empty";
         }
         model.addAttribute("user", userApp);
@@ -65,11 +86,15 @@ public class UserFrontController {
     @PreAuthorize("isAuthenticated()")
     public String changePassword(@ModelAttribute("changePasswordWrapper") @Valid ChangePasswordWrapper changePasswordWrapper, BindingResult bindingResult){
         if (bindingResult.hasErrors()){
+            for (ObjectError error : bindingResult.getAllErrors()){
+                logger.error(error.getDefaultMessage());
+            }
             return "change-password";
         }
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         UserApp userApp = (UserApp)(authentication.getPrincipal());
         customUserDetailsService.changePassword(userApp.getId(), changePasswordWrapper);
+        logger.info("User with id {} change password.", userApp.getId());
         return "redirect:/info/user?info=changed";
     }
 
@@ -84,6 +109,9 @@ public class UserFrontController {
     @PreAuthorize("isAuthenticated()")
     public String changeEmail(@ModelAttribute("email") @Valid ChangeEmailWrapper changeEmailWrapper, BindingResult bindingResult){
         if (bindingResult.hasErrors()){
+            for(ObjectError error : bindingResult.getAllErrors()){
+                logger.error(error.getDefaultMessage());
+            }
             return "change-email";
         }
 
@@ -92,8 +120,10 @@ public class UserFrontController {
 
        try{
            customUserDetailsService.changeEmail(userApp.getId(), changeEmailWrapper.getEmail());
+           logger.info("User with id {} change email.", userApp.getId());
         }catch (UserAlreadyExistException e){
            bindingResult.addError(new ObjectError("alreadyExist", "There is already an account registered with that email/username"));
+           logger.error("User with id {} try to change to existing email.", userApp.getId());
            return "change-email";
        }
         return "redirect:/info/user?info=changed";
@@ -105,6 +135,7 @@ public class UserFrontController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         UserApp userApp = (UserApp)authentication.getPrincipal();
         if (userApp.getUserDetails() == null){
+            logger.error("User with id {} does not have completed details.", userApp.getId());
             return "redirect:/registration-user-details";
         }
 
@@ -117,6 +148,9 @@ public class UserFrontController {
     @PreAuthorize("isAuthenticated()")
     public String changeDetails(@ModelAttribute("userDetails") @Valid UserDetailsDTO userDetailsDTO, BindingResult bindingResult, Model model){
         if (bindingResult.hasErrors()){
+            for (ObjectError error : bindingResult.getAllErrors()){
+                logger.error(error.getDefaultMessage());
+            }
             model.addAttribute("userDetailsId", userDetailsDTO.getId());
             return "change-details";
         }
@@ -124,6 +158,7 @@ public class UserFrontController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         UserApp userApp = (UserApp)(authentication.getPrincipal());
         customUserDetailsService.updateUserDetails(userApp.getId(), userDetailsDTO);
+        logger.info("User with id {} update details.", userApp.getId());
         return "redirect:/info/user?info=changed";
     }
 

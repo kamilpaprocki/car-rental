@@ -12,14 +12,14 @@ public class UserDetailsAddressDTO {
     private String id;
 
     @JsonProperty(value = "street")
-    @NotEmpty(message = "This can not be empty.")
-    @NotNull(message = "This can not be null.")
-    @Pattern(regexp = "(\\p{L}|\\d)+([ '-](\\p{L}|\\d)+)*", message = "Not allowed special characters/digits.")
+    @NotEmpty(message = "Field: \"street name\" cannot be empty.")
+    @NotNull(message = "Field: \"street name\" cannot be null.")
+    @Pattern(regexp = "(\\p{L}|\\d)+([ '-](\\p{L}|\\d)+)*", message = "Not allowed special characters/digits in street name field.")
     private String street;
 
     @JsonProperty(value = "streetNumber")
-    @NotEmpty(message = "This can not be empty.")
-    @NotNull(message = "This can not be null.")
+    @NotEmpty(message = "Field: \"street number\" cannot be empty.")
+    @NotNull(message = "Field: \"street number\" cannot be null.")
     @Pattern(regexp = "\\d+[a-zA-Z]?", message = "Not allowed special characters/digits. Street number must be start with number.")
     private String streetNumber;
 
@@ -28,15 +28,15 @@ public class UserDetailsAddressDTO {
     private String apartmentNumber;
 
     @JsonProperty(value = "postalCode")
-    @NotEmpty(message = "This can not be empty.")
-    @NotNull(message = "This can not be null.")
-    @Pattern(regexp = "\\d{2}[-]\\d{3}", message = "Wrong input format. Correct format: 11-111")
+    @NotEmpty(message = "Field: \"postal code\" cannot be empty.")
+    @NotNull(message = "Field: \"postal code\" cannot be null.")
+    @Pattern(regexp = "\\d{2}[-]\\d{3}", message = "Wrong input format. Correct postal code format: 11-111")
     private String postalCode;
 
     @JsonProperty(value = "city")
-    @NotEmpty(message = "This can not be empty.")
-    @NotNull(message = "This can not be null.")
-    @Pattern(regexp = "(\\p{L}|\\d)+([ '-]\\p{L}+)*", message = "Not allowed special characters/digits.")
+    @NotEmpty(message = "Field: \"city\" cannot be empty.")
+    @NotNull(message = "Field: \"city\" cannot be null.")
+    @Pattern(regexp = "(\\p{L}|\\d)+([ '-]\\p{L}+)*", message = "Not allowed special characters/digits in city field.")
     private String city;
 
     public static ClientAddressDTOBuilder builder() {

@@ -1,6 +1,5 @@
 package car_rental.api.user;
 
-import car_rental.api.exceptions.BadRequestException;
 import car_rental.api.exceptions.UserAlreadyExistException;
 import car_rental.api.exceptions.WrongArgumentException;
 import car_rental.api.userDetails.UserDetailsDTO;
@@ -151,7 +150,7 @@ public class CustomUserDetailsService implements UserDetailsService {
     @Transactional
     public int deleteUserById(Long userId){
         if (userId == null){
-            throw new BadRequestException("User id cannot be a null");
+            throw new WrongArgumentException("User id cannot be a null");
         }
        return userRepository.deleteUserAppById(userId);
     }

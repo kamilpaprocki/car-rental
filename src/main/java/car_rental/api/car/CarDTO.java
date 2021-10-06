@@ -11,31 +11,31 @@ public class CarDTO {
     private String id;
 
     @JsonProperty(value = "brand")
-    @NotEmpty(message = "This can not be empty")
+    @NotEmpty(message = "Field: \"the car brand\" cannot be empty")
     private String brand;
 
     @JsonProperty(value = "model")
-    @NotEmpty(message = "This can not be empty")
+    @NotEmpty(message = "Field: \"the car model\" cannot be empty")
     private String model;
 
     @JsonProperty(value = "segment")
-    @NotNull(message = "This can not be null")
+    @NotNull(message = "Field: \"the car segment\" cannot be null")
     private String segment;
 
     @JsonProperty(value = "model_year")
-    @NotEmpty(message = "This can not be empty")
+    @NotEmpty(message = "Field: \"the model year of car\" cannot be empty")
     private String modelYear;
 
     @JsonProperty(value = "current_odometer")
-    @NotEmpty(message = "This can not be empty")
+    @NotEmpty(message = "Field: \"the car current odometer\" cannot be empty")
     private String currentOdometer;
 
     @JsonProperty(value = "price_per_day")
-    @NotEmpty(message = "This can not be empty")
+    @NotEmpty(message = "Field: \"the car price per day\" cannot be empty")
     private String pricePerDay;
 
     @JsonProperty(value = "is_available")
-    @NotNull(message = "This can not be null")
+    @NotNull(message = "Field: \"the car is available\" cannot be null")
     private Boolean isAvailable;
 
     public CarDTO() {

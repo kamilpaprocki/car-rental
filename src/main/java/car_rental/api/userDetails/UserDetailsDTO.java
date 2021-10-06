@@ -14,18 +14,18 @@ public class UserDetailsDTO {
     private String id;
 
     @JsonProperty(value = "name")
-    @NotEmpty(message = "This can not be empty.")
-    @Pattern(regexp = "\\p{L}+(\\p{L}+)*", message = "Not allowed special characters/digits.")
+    @NotEmpty(message = "Field: \"name\" cannot be empty.")
+    @Pattern(regexp = "\\p{L}+(\\p{L}+)*", message = "Not allowed special characters/digits in name field.")
     private String name;
 
     @JsonProperty(value = "lastName")
-    @NotEmpty(message = "This can not be empty.")
-    @Pattern(regexp = "\\p{L}+([ '-]\\p{L}+)*", message = "Not allowed special characters/digits.")
+    @NotEmpty(message = "Field: \"last name\" cannot be empty.")
+    @Pattern(regexp = "\\p{L}+([ '-]\\p{L}+)*", message = "Not allowed special characters/digits in last name field.")
     private String lastName;
 
     @JsonProperty(value = "nationality")
-    @NotEmpty(message = "This can not be empty.")
-    @Pattern(regexp = "\\p{L}+(\\p{L}+)*", message = "Not allowed special characters/digits.")
+    @NotEmpty(message = "Field: \"nationality\" cannot be empty.")
+    @Pattern(regexp = "\\p{L}+(\\p{L}+)*", message = "Not allowed special characters/digits in nationality field.")
     private String nationality;
 
     @JsonProperty(value = "address")
@@ -33,22 +33,22 @@ public class UserDetailsDTO {
     private UserDetailsAddressDTO addressDTO;
 
     @JsonProperty(value = "drivingLicenseNumber")
-    @NotEmpty(message = "This can not be empty.")
-    @Pattern(regexp = "\\d{5}[/]\\d{2}[/]\\d{4}", message = "Wrong input format. Correct format: 11111/11/1111")
+    @NotEmpty(message = "Field: \"driving license number\" cannot be empty.")
+    @Pattern(regexp = "\\d{5}[/]\\d{2}[/]\\d{4}", message = "Wrong input format. Correct driving license number format : 11111/11/1111")
     private String drivingLicenseNumber;
 
     @JsonProperty(value = "identityCardNumber")
-    @NotEmpty(message = "This can not be empty.")
-   @Pattern(regexp = "[A-Z]{3}\\d{6}", message = "Wrong input format. Correct format: AAA111111")
+    @NotEmpty(message = "Field: \"identity card number\" cannot be empty.")
+   @Pattern(regexp = "[A-Z]{3}\\d{6}", message = "Wrong input format. Correct identity card number format : AAA111111")
     private String identityCardNumber;
 
     @JsonProperty(value = "peselNumber")
-    @NotEmpty(message = "This can not be empty.")
-    @Pattern(regexp = "\\d{11}", message = "Not allowed characters. Correct pesel format is 11 digits.")
+    @NotEmpty(message = "Field: \"pesel number\" cannot be empty.")
+    @Pattern(regexp = "\\d{11}", message = "Not allowed characters. Correct pesel number format is 11 digits.")
     private String peselNumber;
 
     @JsonProperty(value = "phoneNumber")
-    @NotEmpty(message = "This can not be empty.")
+    @NotEmpty(message = "Field: \"phone number\" cannot be empty.")
     @Pattern(regexp = "\\d{9}", message = "Not allowed characters. Correct phone number format is 9 digits.")
     private String phoneNumber;
 

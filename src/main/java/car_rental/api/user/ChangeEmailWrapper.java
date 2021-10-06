@@ -9,13 +9,13 @@ import javax.validation.constraints.NotNull;
 @EmailMatcher
 public class ChangeEmailWrapper {
 
-    @NotEmpty(message = "This can not be empty")
-    @NotNull(message = "This can not be null")
+    @NotEmpty(message = "Field: \"email\" cannot be empty.")
+    @NotNull(message = "Field: \"email\" cannot be null.")
     @Email
     private String email;
 
-    @NotEmpty(message = "This can not be empty")
-    @NotNull(message = "This can not be null")
+    @NotEmpty(message = "Field: \"confirm email\" cannot be empty.")
+    @NotNull(message = "Field: \"confirm email\" cannot be null.")
     @Email
     private String confirmEmail;
 

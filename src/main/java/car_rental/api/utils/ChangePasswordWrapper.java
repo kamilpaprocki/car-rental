@@ -7,13 +7,13 @@ import javax.validation.constraints.Size;
 @PasswordMatcher
 public class ChangePasswordWrapper {
 
-    @NotEmpty(message = "This can not be empty")
-    @NotNull(message = "This can not be null")
-    @Size(min = 6, message = "Try one with at least 6 characters")
+    @NotEmpty(message = "Field: \"password\" cannot be empty.")
+    @NotNull(message = "Field: \"password\" cannot be null.")
+    @Size(min = 6, message = "Try one with at least 6 characters in password field.")
     private String password;
 
-    @NotEmpty(message = "This can not be empty")
-    @NotNull(message = "This can not be null")
+    @NotEmpty(message = "Field: \"confirm password\" cannot be empty.")
+    @NotNull(message = "Field: \"confirm password\" cannot be null.")
     private String confirmPassword;
 
     public String getPassword() {
