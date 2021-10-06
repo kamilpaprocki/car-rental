@@ -112,10 +112,16 @@ public class PromotionCodeRestController {
     @DeleteMapping("/promotioncodes/delete")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<PromotionCode> deletePromotionCodeById(@RequestParam Long id){
-        if (promotionCodeService.deletePromotionCodeById(id) > 0){
-            logger.info("Delete promotion code with id {}.", id);
-            return new ResponseEntity<>(HttpStatus.OK);
+        try{
+            if (promotionCodeService.deletePromotionCodeById(id) > 0){
+                logger.info("Delete promotion code with id {}.", id);
+                return new ResponseEntity<>(HttpStatus.OK);
+            }
+        }catch (WrongArgumentException e){
+            logger.error(e.getMessage());
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
+
         logger.info("Promotion code with id {} not exists.", id);
         return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
     }

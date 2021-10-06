@@ -67,7 +67,14 @@ private final static Logger logger = LoggerFactory.getLogger(PromotionCodeFrontC
             model.addAttribute("inactivePromotionCodes", promotionCodeService.getInactivePromotionCodes());
         }
        if ("promotionCodeId".equals(promotioncodestatus)){
-           PromotionCodeDTO promotionCodeDTO = promotionCodeService.getPromotionCodeById(id);
+           PromotionCodeDTO promotionCodeDTO;
+           try{
+                promotionCodeDTO = promotionCodeService.getPromotionCodeById(id);
+           }catch (WrongArgumentException e){
+               logger.error(e.getMessage());
+               throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+           }
+
            if (promotionCodeDTO == null){
                logger.error("Promotion code with id {} not found.", id);
                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "There is no promotion code with id: " + id);

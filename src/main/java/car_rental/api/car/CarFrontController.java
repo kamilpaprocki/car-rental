@@ -112,7 +112,14 @@ private static final Logger logger = LoggerFactory.getLogger(CarFrontController.
     @GetMapping("/update/car")
     @PreAuthorize("hasAnyRole('WORKER', 'ADMIN')")
     public String getUpdateCarPage(@RequestParam(required = false) Long carId, Model model){
-        CarDTO carDTO = carService.getCarById(carId);
+        CarDTO carDTO;
+        try{
+            carDTO = carService.getCarById(carId);
+        } catch (WrongArgumentException e){
+            logger.error(e.getMessage());
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+        }
+
         if (carDTO == null){
             logger.error("Car with id {} not found.", carId);
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "There is no car with id: " + carId);

@@ -4,6 +4,8 @@ import car_rental.api.exceptions.UserAlreadyExistException;
 import car_rental.api.userDetails.UserDetailsDTO;
 import car_rental.api.userDetails.UserDetailsMapper;
 import car_rental.api.userDetails.UserDetailsService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -31,10 +33,13 @@ import javax.validation.Valid;
 public class UserRegistrationFrontController {
 
     @Autowired
-    AuthenticationManager authenticationManager;
+    private AuthenticationManager authenticationManager;
 
-    CustomUserDetailsService customUserDetailsService;
-    UserDetailsService userDetailsService;
+    private final CustomUserDetailsService customUserDetailsService;
+    private final UserDetailsService userDetailsService;
+
+
+    private final Logger logger = LoggerFactory.getLogger(UserRegistrationFrontController.class);
 
     public UserRegistrationFrontController(CustomUserDetailsService customUserDetailsService, UserDetailsService userDetailsService) {
         this.customUserDetailsService = customUserDetailsService;
@@ -51,17 +56,23 @@ public String register(Model model){
     public String registration(@Valid @ModelAttribute("userDTO") UserRegisterDTO userRegisterDTO,
                                BindingResult bindingResult, HttpServletRequest request){
     if (bindingResult.hasErrors()){
+        for (ObjectError error : bindingResult.getAllErrors()){
+            logger.error(error.getDefaultMessage());
+        }
         return "registration";
     }
     try {
         customUserDetailsService.registerUser(userRegisterDTO);
+        logger.info("Register new user: {}.", userRegisterDTO.getUsername());
     }catch(UserAlreadyExistException uE){
             bindingResult.addError(new ObjectError("alreadyExist", "There is already an account registered with that email/username"));
+            logger.error("User with email {} or username {} is exist.", userRegisterDTO.getEmail(), userRegisterDTO.getUsername());
             return "registration";
         }
     try{
         authenticateUserAfterRegistration(userRegisterDTO, request);
     }catch (Exception e){
+        logger.error(e.getMessage());
         throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Wrong username or password");
     }
     return "redirect:/home?info=registered";
@@ -73,6 +84,7 @@ public String register(Model model){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         UserApp userApp = (UserApp)authentication.getPrincipal();
         if (userApp.getUserDetails() != null){
+            logger.error("User with details try to add details again.");
             return "redirect:/home";
         }
 
@@ -86,6 +98,9 @@ public String register(Model model){
     public String registrationClientInfo(@ModelAttribute("userDetailsDTO") @Valid UserDetailsDTO userDetailsDTO,
                                          BindingResult bindingResult){
         if (bindingResult.hasErrors() ){
+            for(ObjectError error : bindingResult.getAllErrors()){
+                logger.error(error.getDefaultMessage());
+            }
             return "registration-user-details";
         }
 
@@ -94,7 +109,7 @@ public String register(Model model){
 
     UserAppDTO registerUserDetails = customUserDetailsService.addUserDetails(currentUser.getId(), userDetailsDTO);
     currentUser.setUserDetails(new UserDetailsMapper().mapToDAO(registerUserDetails.getUserDetailsDTO()));
-
+    logger.info("User {} add details to account.", registerUserDetails.getUsername());
         return "redirect:/home?info=details";
 }
 

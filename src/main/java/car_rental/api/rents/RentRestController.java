@@ -115,10 +115,15 @@ public class RentRestController {
     @DeleteMapping("/rents/delete")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Rent> deleteRentById(@RequestParam Long id){
-        if (rentService.deleteRentById(id) > 0){
-            logger.info("Delete rent with id {}.", id);
-            return new ResponseEntity<>(HttpStatus.OK);
-        }
+       try{
+           if (rentService.deleteRentById(id) > 0){
+               logger.info("Delete rent with id {}.", id);
+               return new ResponseEntity<>(HttpStatus.OK);
+           }
+       }catch (WrongArgumentException e){
+           logger.error(e.getMessage());
+           return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+       }
         logger.info("Rent with id {} do not exist.", id);
         return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
     }

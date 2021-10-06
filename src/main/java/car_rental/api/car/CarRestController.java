@@ -2,6 +2,7 @@ package car_rental.api.car;
 
 import car_rental.api.exceptions.BadRequestException;
 import car_rental.api.exceptions.CarNotFoundException;
+import car_rental.api.exceptions.WrongArgumentException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -85,10 +86,16 @@ public class CarRestController {
     @DeleteMapping("/cars/delete")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Car> deleteCarById(@RequestParam Long id){
-        if (carService.deleteCarById(id) > 0){
-            logger.info("Delete car with id {}.", id);
-            return new ResponseEntity<>(HttpStatus.OK);
+        try{
+            if (carService.deleteCarById(id) > 0){
+                logger.info("Delete car with id {}.", id);
+                return new ResponseEntity<>(HttpStatus.OK);
+            }
+        }catch (WrongArgumentException e){
+            logger.error(e.getMessage());
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
+
         logger.info("Car with id {} not exists.", id);
         return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
     }

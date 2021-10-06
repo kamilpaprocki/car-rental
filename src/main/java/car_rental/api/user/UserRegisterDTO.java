@@ -13,26 +13,26 @@ import java.util.Objects;
 public class UserRegisterDTO {
 
     @JsonProperty("username")
-    @NotEmpty(message = "This can not be empty")
-    @NotNull(message = "This can not be null")
-    @Size(min = 5, message = "Try one with at least 5 characters")
+    @NotEmpty(message = "Field: \"username\" cannot be empty.")
+    @NotNull(message = "Field: \"username\" cannot be null.")
+    @Size(min = 5, message = "Try one with at least 5 characters in username field.")
     private String username;
 
     @JsonProperty("email")
-    @NotEmpty(message = "This can not be empty")
-    @NotNull(message = "This can not be null")
+    @NotEmpty(message = "Field: \"email\" cannot be empty.")
+    @NotNull(message = "Field: \"email\" cannot be null.")
     @Email
     private String email;
 
     @JsonProperty("password")
-    @NotEmpty(message = "This can not be empty")
-    @NotNull(message = "This can not be null")
-    @Size(min = 6, message = "Try one with at least 6 characters")
+    @NotEmpty(message = "Field: \"password\" cannot be empty.")
+    @NotNull(message = "Field: \"password\" cannot be null.")
+    @Size(min = 6, message = "Try one with at least 6 characters in password field.")
     private String password;
 
     @JsonProperty("confirmPassword")
-    @NotEmpty(message = "This can not be empty")
-    @NotNull(message = "This can not be null")
+    @NotEmpty(message = "Field: \"confirm password\" cannot be empty.")
+    @NotNull(message = "Field: \"confirm password\" can not be null.")
     private String confirmPassword;
 
     public String getUsername() {

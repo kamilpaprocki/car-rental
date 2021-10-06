@@ -1,5 +1,7 @@
 package car_rental.api.user;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
@@ -14,7 +16,9 @@ import javax.servlet.http.HttpServletResponse;
 @Controller
 public class UserLoginFrontController {
 
-    CustomUserDetailsService customUserDetailsService;
+    private final CustomUserDetailsService customUserDetailsService;
+
+    private final static Logger logger = LoggerFactory.getLogger(UserLoginFrontController.class);
 
     public UserLoginFrontController(CustomUserDetailsService customUserDetailsService) {
         this.customUserDetailsService = customUserDetailsService;
@@ -23,6 +27,7 @@ public class UserLoginFrontController {
     @GetMapping("/login")
     public String loginView(Model model, @RequestParam(required = false) String info){
         model.addAttribute("info", info);
+        logger.info("User log in.");
         return "login";
 }
 
@@ -30,6 +35,7 @@ public class UserLoginFrontController {
     public String logoutView(HttpServletRequest request, HttpServletResponse response){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null){
+            logger.info("User log out.");
             new SecurityContextLogoutHandler().logout(request, response, authentication);
         }
         return "redirect:/login?info=logout";
