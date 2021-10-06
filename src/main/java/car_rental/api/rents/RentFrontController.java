@@ -6,7 +6,6 @@ import car_rental.api.promotionCode.PromotionCodeDTO;
 import car_rental.api.user.UserApp;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -15,7 +14,6 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -47,7 +45,6 @@ public class RentFrontController {
         List<CarDTO> carDTOs = carService.getAvailableCar();
         if (carDTOs.isEmpty()){
             logger.error("List of available cars to rent is empty.");
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "There is no available cars to rent.");
         }
         logger.info("Return {} available cars to rent.", carDTOs.size());
        model.addAttribute("cars", carDTOs);
@@ -128,7 +125,6 @@ public class RentFrontController {
         List<RentDTO> rentDTO = rentService.getRentByUserApp(userApp);
         if (rentDTO.isEmpty()){
             logger.error("User {} has not active rents.", userApp.getUsername());
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User: " + userApp.getUsername() + ", has not active rents");
         }
         model.addAttribute("rents", rentDTO);
         return "get-rent";
@@ -171,7 +167,6 @@ public class RentFrontController {
         List<RentDTO> rentDTOS = rentService.getActiveRents();
         if (rentDTOS.isEmpty()){
             logger.error("List of rents to finish is empty.");
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND,"There is no rents to finish.");
         }
         logger.info("Return {} active rents to finish.", rentDTOS.size());
         model.addAttribute("rents", rentDTOS);

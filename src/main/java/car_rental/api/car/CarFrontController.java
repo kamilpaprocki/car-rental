@@ -56,7 +56,6 @@ private static final Logger logger = LoggerFactory.getLogger(CarFrontController.
             carDTOS = carService.getAllCars();
             if (carDTOS.isEmpty()){
                 logger.error("List of cars is empty.");
-                throw new ResponseStatusException(HttpStatus.NOT_FOUND,"There is no car");
             }
             logger.info("Return {} cars.", carDTOS.size());
             model.addAttribute("allCars", carDTOS);
@@ -65,7 +64,6 @@ private static final Logger logger = LoggerFactory.getLogger(CarFrontController.
             carDTOS = carService.getAvailableCar();
             if (carDTOS.isEmpty()){
                 logger.error("List of available cars is empty.");
-                throw new ResponseStatusException(HttpStatus.NOT_FOUND,"There is no available cars");
             }
             logger.info("Return {} available cars.", carDTOS.size());
             model.addAttribute("availableCars", carDTOS);
@@ -74,7 +72,6 @@ private static final Logger logger = LoggerFactory.getLogger(CarFrontController.
             carDTOS = carService.getUnavailableCars();
             if (carDTOS.isEmpty()){
                 logger.error("List of unavailable cars is empty.");
-                throw new ResponseStatusException(HttpStatus.NOT_FOUND,"There is no unavailable cars");
             }
             logger.info("Return {} unavailable cars.", carDTOS.size());
             model.addAttribute("unavailableCars", carDTOS);

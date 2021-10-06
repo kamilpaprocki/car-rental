@@ -41,7 +41,6 @@ private final static Logger logger = LoggerFactory.getLogger(PromotionCodeFrontC
             promotionCodeDTOList = promotionCodeService.getAllPromotionCodes();
             if (promotionCodeDTOList.isEmpty()){
                 logger.error("List of all promotion codes is empty");
-                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "There is no promotion codes");
             }
             logger.info("Return {} promotion codes.", promotionCodeDTOList.size());
             model.addAttribute("allPromotionCodes", promotionCodeDTOList);
@@ -51,7 +50,6 @@ private final static Logger logger = LoggerFactory.getLogger(PromotionCodeFrontC
             promotionCodeDTOList = promotionCodeService.getActivePromotionCodes();
             if (promotionCodeDTOList.isEmpty()){
                 logger.error("List of active promotion codes is empty");
-                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "There is no active promotion codes");
             }
             logger.info("Return {} active promotion codes.", promotionCodeDTOList.size());
             model.addAttribute("activePromotionCodes", promotionCodeDTOList);
@@ -61,7 +59,6 @@ private final static Logger logger = LoggerFactory.getLogger(PromotionCodeFrontC
             promotionCodeDTOList = promotionCodeService.getInactivePromotionCodes();
             if (promotionCodeDTOList.isEmpty()){
                 logger.error("List of inactive promotion codes is empty");
-                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "There is no inactive promotion codes");
             }
             logger.info("Return {} inactive promotion codes.", promotionCodeDTOList.size());
             model.addAttribute("inactivePromotionCodes", promotionCodeService.getInactivePromotionCodes());
