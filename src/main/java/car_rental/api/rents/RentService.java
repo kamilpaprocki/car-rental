@@ -13,6 +13,8 @@ import car_rental.api.user.UserApp;
 import car_rental.api.user.UserAppDTO;
 import car_rental.api.user.UserAppMapper;
 import car_rental.api.utils.DateParser;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,6 +32,8 @@ public class RentService {
     private final PromotionCodeService promotionCodeService;
     private final CarService carService;
     private final CustomUserDetailsService customUserDetailsService;
+
+    private final static Logger logger = LoggerFactory.getLogger(RentService.class);
 
     public RentService(RentRepository rentRepository, PromotionCodeService promotionCodeService, CarService carService, CustomUserDetailsService customUserDetailsService) {
         this.rentRepository = rentRepository;
@@ -56,6 +60,7 @@ public class RentService {
 
     public RentDTO getRentById(String rentId){
         if (rentId == null){
+            logger.error("Rent id is null.");
             throw new WrongArgumentException("Rent id cannot be null");
         }
         Rent rent = rentRepository.findById(Long.parseLong(rentId)).orElse(null);
@@ -70,6 +75,7 @@ public class RentService {
     public RentDTO extendPlannedRentDays(Long id, int days){
         Rent rent = getRentById(id);
         if (rent == null){
+            logger.error("Rent id is null.");
             throw new WrongArgumentException("There is no rent with id: " + id);
         }
         if(days <= 0){

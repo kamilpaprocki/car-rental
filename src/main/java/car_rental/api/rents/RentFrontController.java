@@ -4,6 +4,8 @@ import car_rental.api.car.CarDTO;
 import car_rental.api.car.CarService;
 import car_rental.api.promotionCode.PromotionCodeDTO;
 import car_rental.api.user.UserApp;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
@@ -25,6 +27,8 @@ public class RentFrontController {
     private final RentService rentService;
     private final CarService carService;
 
+    private final static Logger logger = LoggerFactory.getLogger(RentFrontController.class);
+
     public RentFrontController(RentService rentService, CarService carService) {
         this.rentService = rentService;
         this.carService = carService;
@@ -34,11 +38,18 @@ public class RentFrontController {
     @GetMapping("/rent")
       public String rentForm(Model model){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (((UserApp)(authentication.getPrincipal())).isHasActiveRent()) {
+        UserApp userApp = ((UserApp)(authentication.getPrincipal()));
+        if (userApp.isHasActiveRent()) {
+            logger.error("User {} has active rents.", userApp.getUsername());
             return "redirect:/home?info=multiplerents";
         }
 
         List<CarDTO> carDTOs = carService.getAvailableCar();
+        if (carDTOs.isEmpty()){
+            logger.error("List of available cars to rent is empty.");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "There is no available cars to rent.");
+        }
+        logger.info("Return {} available cars to rent.", carDTOs.size());
        model.addAttribute("cars", carDTOs);
        return "rent-form";
     }
@@ -50,6 +61,7 @@ public class RentFrontController {
         UserApp userApp = (UserApp)(authentication.getPrincipal());
         CarDTO car = carService.getCarById(Long.parseLong(carid));
         rentDTO = rentService.addUserAndCar(rentDTO, userApp, car);
+        logger.info("Add to new rent user and car.");
         model.addAttribute("rentDTO", rentDTO);
         return "rent-details";
     }
@@ -58,10 +70,14 @@ public class RentFrontController {
     @PreAuthorize("hasAnyRole('USER', 'WORKER', 'ADMIN')")
     public String addRentDetails(@ModelAttribute("rentDTO") @Valid RentDTO rentDTO, BindingResult bindingResult, Model model){
         if (bindingResult.hasErrors()){
+            for (ObjectError error: bindingResult.getAllErrors()) {
+                logger.error(error.getDefaultMessage());
+            }
             return "rent-details";
         }
 
         rentDTO = rentService.addOrUpdateRentDetails(rentDTO);
+        logger.info("Add details to new rent.");
         model.addAttribute("rentDTO", rentDTO);
         model.addAttribute("promotionCodeDTO", new PromotionCodeDTO());
         return "rent-summary";
@@ -71,7 +87,7 @@ public class RentFrontController {
     @PreAuthorize("hasAnyRole('USER', 'WORKER', 'ADMIN')")
     public String summary(@ModelAttribute("rentDTO") RentDTO rentDTO){
         rentService.addRent(rentDTO);
-
+        logger.info("Save new rent.");
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         UserApp currentUser = (UserApp) authentication.getPrincipal();
         currentUser.setHasActiveRent(true);
@@ -83,13 +99,18 @@ public class RentFrontController {
     public String use(@ModelAttribute("promotionCodeDTO") @Valid PromotionCodeDTO promotionCodeDTO, BindingResult bindingResult,
                       @ModelAttribute("rentDTO") RentDTO rentDTO, Model model){
         if (bindingResult.hasErrors()){
+            for (ObjectError error: bindingResult.getAllErrors()) {
+                logger.error(error.getDefaultMessage());
+            }
             return "rent-summary";
         }
         if ((rentDTO.getPromotionCode() != null)){
             bindingResult.addError(new ObjectError("multipleUse", "Promotion codes cannot be used multiple times"));
+            logger.error("Multiple user promotion code.");
             return "rent-summary";
         }
         rentDTO = rentService.addPromotionCode(rentDTO, promotionCodeDTO);
+        logger.info("Activated promotion code {} to new rent.", promotionCodeDTO.getPromotionCodeDTO());
         model.addAttribute("rentDTO", rentDTO);
         return "rent-summary";
     }
@@ -106,6 +127,7 @@ public class RentFrontController {
         UserApp userApp = (UserApp)(authentication.getPrincipal());
         List<RentDTO> rentDTO = rentService.getRentByUserApp(userApp);
         if (rentDTO.isEmpty()){
+            logger.error("User {} has not active rents.", userApp.getUsername());
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User: " + userApp.getUsername() + ", has not active rents");
         }
         model.addAttribute("rents", rentDTO);
@@ -116,6 +138,7 @@ public class RentFrontController {
     @PreAuthorize("hasAnyRole('USER', 'WORKER', 'ADMIN')")
     public String extendRent(Model model, @RequestParam String rentid){
         RentDTO rentDTO = rentService.getRentById(rentid);
+        logger.info("Return rent with id {}, to extend.", rentid);
         model.addAttribute("activeRentDTO", rentDTO);
         return "extend-rent";
     }
@@ -124,9 +147,13 @@ public class RentFrontController {
     @PreAuthorize("hasAnyRole('USER', 'WORKER', 'ADMIN')")
     public String updateRent(@ModelAttribute("activeRentDTO") @Valid RentDTO rentDTO, BindingResult bindingResult, Model model){
         if (bindingResult.hasErrors()){
+            for (ObjectError error : bindingResult.getAllErrors()) {
+                logger.error(error.getDefaultMessage());
+            }
             return "extend-rent";
         }
         model.addAttribute("activeRentDTO", rentService.updatePlannedReturnDate(rentDTO));
+        logger.info("Update planned return date in rent with id {}.", rentDTO.getId());
         return "extend-rent-summary";
     }
 
@@ -134,13 +161,21 @@ public class RentFrontController {
     @PreAuthorize("hasAnyRole('USER', 'WORKER', 'ADMIN')")
     public String saveUpdatedRent(@ModelAttribute("activeRentDTO") RentDTO rentDTO){
         rentService.createOrUpdateRent(rentDTO);
+        logger.info("Update rent with id {}.", rentDTO.getId());
         return "redirect:/home?info=extended";
     }
 
     @GetMapping("/finish/rent")
     @PreAuthorize("hasAnyRole('WORKER', 'ADMIN')")
     public String getActiveRents(Model model){
-        model.addAttribute("rents", rentService.getActiveRents());
+        List<RentDTO> rentDTOS = rentService.getActiveRents();
+        if (rentDTOS.isEmpty()){
+            logger.error("List of rents to finish is empty.");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND,"There is no rents to finish.");
+        }
+        logger.info("Return {} active rents to finish.", rentDTOS.size());
+        model.addAttribute("rents", rentDTOS);
+
         return "get-rents-to-finish";
     }
 
@@ -150,17 +185,22 @@ public class RentFrontController {
         RentDTO finishRentDTO = rentService.getRentById(rentid);
         model.addAttribute("finishRentDTO", finishRentDTO);
         model.addAttribute("odometerWrapper", rentService.getCarLastOdometer(finishRentDTO));
+        logger.info("Return rent with id {} to finish.", rentid);
     return "finish-rent";
     }
 
     @PostMapping("/finish/rent/update")
     @PreAuthorize("hasAnyRole('WORKER', 'ADMIN')")
-    public String finishRent(@ModelAttribute("odometerWrapper") @Valid  CarReturnOdometerWrapper carReturnOdometerWrapper, BindingResult bindingResult
-            , @ModelAttribute("finishRentDTO") RentDTO rentDTO){
+    public String finishRent(@ModelAttribute("odometerWrapper") @Valid  CarReturnOdometerWrapper carReturnOdometerWrapper, BindingResult bindingResult,
+                             @ModelAttribute("finishRentDTO") RentDTO rentDTO){
         if (bindingResult.hasErrors()){
+            for (ObjectError error : bindingResult.getAllErrors()){
+                logger.error(error.getDefaultMessage());
+            }
             return "finish-rent";
         }
       rentService.finishRent(rentDTO, carReturnOdometerWrapper);
+        logger.info("Finish rent with id {}.", rentDTO.getId());
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         UserApp currentUser = (UserApp) authentication.getPrincipal();
