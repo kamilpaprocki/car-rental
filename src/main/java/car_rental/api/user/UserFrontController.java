@@ -44,7 +44,7 @@ public class UserFrontController {
         }
         logger.info("Return {} active users.", userApps.size());
         model.addAttribute("users", userApps);
-        return "get-users";
+        return "user/get-users";
     }
 
     @PostMapping("/set/user/role")
@@ -71,14 +71,14 @@ public class UserFrontController {
         }
         model.addAttribute("user", userApp);
         model.addAttribute("info", info);
-        return "user-details";
+        return "user/user-details";
     }
 
     @GetMapping("/change/password")
     @PreAuthorize("isAuthenticated()")
     public String getChangePasswordForm(Model model){
         model.addAttribute("changePasswordWrapper",new ChangePasswordWrapper());
-        return "change-password";
+        return "user/change-password";
     }
 
     @PostMapping("/change/password")
@@ -88,7 +88,7 @@ public class UserFrontController {
             for (ObjectError error : bindingResult.getAllErrors()){
                 logger.error(error.getDefaultMessage());
             }
-            return "change-password";
+            return "user/change-password";
         }
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         UserApp userApp = (UserApp)(authentication.getPrincipal());
@@ -101,7 +101,7 @@ public class UserFrontController {
     @PreAuthorize("isAuthenticated()")
     public String getChangeEmailForm(Model model){
         model.addAttribute("email", new ChangeEmailWrapper());
-        return "change-email";
+        return "user/change-email";
     }
 
     @PostMapping("/change/email")
@@ -111,7 +111,7 @@ public class UserFrontController {
             for(ObjectError error : bindingResult.getAllErrors()){
                 logger.error(error.getDefaultMessage());
             }
-            return "change-email";
+            return "user/change-email";
         }
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -123,7 +123,7 @@ public class UserFrontController {
         }catch (UserAlreadyExistException e){
            bindingResult.addError(new ObjectError("alreadyExist", "There is already an account registered with that email/username"));
            logger.error("User with id {} try to change to existing email.", userApp.getId());
-           return "change-email";
+           return "user/change-email";
        }
         return "redirect:/info/user?info=changed";
     }
@@ -140,7 +140,7 @@ public class UserFrontController {
 
         model.addAttribute("userDetailsId", id);
         model.addAttribute("userDetails", new UserDetailsDTO());
-        return "change-details";
+        return "user/change-details";
     }
 
     @PostMapping("/change/details")
@@ -151,7 +151,7 @@ public class UserFrontController {
                 logger.error(error.getDefaultMessage());
             }
             model.addAttribute("userDetailsId", userDetailsDTO.getId());
-            return "change-details";
+            return "user/change-details";
         }
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

@@ -26,7 +26,7 @@ public class CurrencyReplaceController {
 
     @RequestMapping("")
     public String loadPage(){
-        return "rent-summary";
+        return "rents/rent-summary";
     }
 
     @RequestMapping("currency-pln")
@@ -34,7 +34,7 @@ public class CurrencyReplaceController {
 
         BigDecimal rentalCost = new JSONParser().parseJSONtoBigDecimal(rentalCostJSON);
         logger.info("Return rental cost in PLN");
-        return "currency :: currency-pln(rentalCost="+rentalCost+")";
+        return "rents/currency :: currency-pln(rentalCost="+rentalCost+")";
     }
 
     @RequestMapping("currency-usd")
@@ -43,7 +43,7 @@ public class CurrencyReplaceController {
         BigDecimal rentalCost = new JSONParser().parseJSONtoBigDecimal(rentalCostJSON);
         rentalCost = currencyService.convertAmountFromPLN(USD, rentalCost);
         logger.info("Return rental cost in USD");
-        return "currency :: currency-usd(rentalCost="+rentalCost+")";
+        return "rents/currency :: currency-usd(rentalCost="+rentalCost+")";
     }
 
     @RequestMapping("currency-eur")
@@ -52,7 +52,7 @@ public class CurrencyReplaceController {
         BigDecimal rentalCost = new JSONParser().parseJSONtoBigDecimal(rentalCostJSON);
         rentalCost = currencyService.convertAmountFromPLN(EUR, rentalCost);
         logger.info("Return rental cost in EUR");
-        return "currency :: currency-eur(rentalCost="+rentalCost+")";
+        return "rents/currency :: currency-eur(rentalCost="+rentalCost+")";
     }
 
 }

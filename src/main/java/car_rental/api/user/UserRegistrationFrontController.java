@@ -49,7 +49,7 @@ public class UserRegistrationFrontController {
     @GetMapping("/registration")
 public String register(Model model){
     model.addAttribute("userDTO", new UserRegisterDTO());
-    return  "registration";
+    return  "user/registration";
 }
 
 @PostMapping("/registration")
@@ -59,7 +59,7 @@ public String register(Model model){
         for (ObjectError error : bindingResult.getAllErrors()){
             logger.error(error.getDefaultMessage());
         }
-        return "registration";
+        return "user/registration";
     }
     try {
         customUserDetailsService.registerUser(userRegisterDTO);
@@ -67,7 +67,7 @@ public String register(Model model){
     }catch(UserAlreadyExistException uE){
             bindingResult.addError(new ObjectError("alreadyExist", "There is already an account registered with that email/username"));
             logger.error("User with email {} or username {} is exist.", userRegisterDTO.getEmail(), userRegisterDTO.getUsername());
-            return "registration";
+            return "user/registration";
         }
     try{
         authenticateUserAfterRegistration(userRegisterDTO, request);
@@ -90,7 +90,7 @@ public String register(Model model){
 
         model.addAttribute("userDetailsDTO", new UserDetailsDTO());
         model.addAttribute("info", info);
-        return "registration-user-details";
+        return "user/registration-user-details";
 }
 
 @PostMapping("/registration-user-details")
@@ -101,7 +101,7 @@ public String register(Model model){
             for(ObjectError error : bindingResult.getAllErrors()){
                 logger.error(error.getDefaultMessage());
             }
-            return "registration-user-details";
+            return "user/registration-user-details";
         }
 
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

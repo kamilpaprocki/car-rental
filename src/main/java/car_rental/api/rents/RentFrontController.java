@@ -48,7 +48,7 @@ public class RentFrontController {
         }
         logger.info("Return {} available cars to rent.", carDTOs.size());
        model.addAttribute("cars", carDTOs);
-       return "rent-form";
+       return "rents/rent-form";
     }
 
     @GetMapping("/add/rent")
@@ -60,7 +60,7 @@ public class RentFrontController {
         rentDTO = rentService.addUserAndCar(rentDTO, userApp, car);
         logger.info("Add to new rent user and car.");
         model.addAttribute("rentDTO", rentDTO);
-        return "rent-details";
+        return "rents/rent-details";
     }
 
     @PostMapping("/add/rent/details")
@@ -70,14 +70,14 @@ public class RentFrontController {
             for (ObjectError error: bindingResult.getAllErrors()) {
                 logger.error(error.getDefaultMessage());
             }
-            return "rent-details";
+            return "rents/rent-details";
         }
 
         rentDTO = rentService.addOrUpdateRentDetails(rentDTO);
         logger.info("Add details to new rent.");
         model.addAttribute("rentDTO", rentDTO);
         model.addAttribute("promotionCodeDTO", new PromotionCodeDTO());
-        return "rent-summary";
+        return "rents/rent-summary";
     }
 
     @PostMapping("/add/rent/summary")
@@ -99,17 +99,17 @@ public class RentFrontController {
             for (ObjectError error: bindingResult.getAllErrors()) {
                 logger.error(error.getDefaultMessage());
             }
-            return "rent-summary";
+            return "rents/rent-summary";
         }
         if ((rentDTO.getPromotionCode() != null)){
             bindingResult.addError(new ObjectError("multipleUse", "Promotion codes cannot be used multiple times"));
             logger.error("Multiple user promotion code.");
-            return "rent-summary";
+            return "rents/rent-summary";
         }
         rentDTO = rentService.addPromotionCode(rentDTO, promotionCodeDTO);
         logger.info("Activated promotion code {} to new rent.", promotionCodeDTO.getPromotionCodeDTO());
         model.addAttribute("rentDTO", rentDTO);
-        return "rent-summary";
+        return "rents/rent-summary";
     }
 
     @ModelAttribute("rentDTO")
@@ -127,7 +127,7 @@ public class RentFrontController {
             logger.error("User {} has not active rents.", userApp.getUsername());
         }
         model.addAttribute("rents", rentDTO);
-        return "get-rent";
+        return "rents/get-rent";
     }
 
     @GetMapping("/extend/rent/update")
@@ -136,7 +136,7 @@ public class RentFrontController {
         RentDTO rentDTO = rentService.getRentById(rentid);
         logger.info("Return rent with id {}, to extend.", rentid);
         model.addAttribute("activeRentDTO", rentDTO);
-        return "extend-rent";
+        return "rents/extend-rent";
     }
 
     @PostMapping("/extend/rent")
@@ -146,11 +146,11 @@ public class RentFrontController {
             for (ObjectError error : bindingResult.getAllErrors()) {
                 logger.error(error.getDefaultMessage());
             }
-            return "extend-rent";
+            return "rents/extend-rent";
         }
         model.addAttribute("activeRentDTO", rentService.updatePlannedReturnDate(rentDTO));
         logger.info("Update planned return date in rent with id {}.", rentDTO.getId());
-        return "extend-rent-summary";
+        return "rents/extend-rent-summary";
     }
 
     @PostMapping("/update/extend/rent")
@@ -171,7 +171,7 @@ public class RentFrontController {
         logger.info("Return {} active rents to finish.", rentDTOS.size());
         model.addAttribute("rents", rentDTOS);
 
-        return "get-rents-to-finish";
+        return "rents/get-rents-to-finish";
     }
 
     @GetMapping("/finish/rent/update")
@@ -181,7 +181,7 @@ public class RentFrontController {
         model.addAttribute("finishRentDTO", finishRentDTO);
         model.addAttribute("odometerWrapper", rentService.getCarLastOdometer(finishRentDTO));
         logger.info("Return rent with id {} to finish.", rentid);
-    return "finish-rent";
+    return "rents/finish-rent";
     }
 
     @PostMapping("/finish/rent/update")
@@ -192,7 +192,7 @@ public class RentFrontController {
             for (ObjectError error : bindingResult.getAllErrors()){
                 logger.error(error.getDefaultMessage());
             }
-            return "finish-rent";
+            return "rents/finish-rent";
         }
       rentService.finishRent(rentDTO, carReturnOdometerWrapper);
         logger.info("Finish rent with id {}.", rentDTO.getId());
