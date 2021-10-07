@@ -4,7 +4,7 @@ import car_rental.api.exceptions.UserAlreadyExistException;
 import car_rental.api.exceptions.WrongArgumentException;
 import car_rental.api.userDetails.UserDetailsDTO;
 import car_rental.api.userDetails.UserDetailsMapper;
-import car_rental.api.utils.ChangePasswordWrapper;
+import car_rental.api.validators.ChangePasswordWrapper;
 import com.google.common.collect.Sets;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.core.userdetails.UserDetails;

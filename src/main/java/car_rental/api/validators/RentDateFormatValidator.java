@@ -1,42 +1,40 @@
-package car_rental.api.utils;
+package car_rental.api.validators;
 
 import car_rental.api.rents.RentDTO;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.ZoneId;
 
-public class RentDateFormatValidator implements ConstraintValidator<DateFormat, RentDTO> {
+public class RentDateFormatValidator implements ConstraintValidator<DateFormatChecker, RentDTO> {
 
     private String message;
 
 
     @Override
-    public void initialize(DateFormat constraintAnnotation) {
+    public void initialize(DateFormatChecker constraintAnnotation) {
         message = constraintAnnotation.message();
     }
 
     @Override
     public boolean isValid(RentDTO rentDTO, ConstraintValidatorContext constraintValidatorContext) {
-        boolean isValid;
-        java.text.DateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
+        DateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
 
         if (rentDTO.getRentDate().isEmpty()) {
-            isValid = false;
             constraintValidatorContext.disableDefaultConstraintViolation();
             message = "Rent date can not be empty.";
             constraintValidatorContext.buildConstraintViolationWithTemplate(message).addConstraintViolation();
-            return isValid;
+            return false;
         }
         if (rentDTO.getPlannedReturnDate().isEmpty()) {
-            isValid = false;
             constraintValidatorContext.disableDefaultConstraintViolation();
             message = "Return date can not be empty.";
             constraintValidatorContext.buildConstraintViolationWithTemplate(message).addConstraintViolation();
-            return isValid;
+            return false;
         }
 
 
@@ -46,36 +44,30 @@ public class RentDateFormatValidator implements ConstraintValidator<DateFormat, 
             LocalDate now = LocalDate.now();
 
             if (rentDate.compareTo(now) < 0){
-                isValid = false;
                 constraintValidatorContext.disableDefaultConstraintViolation();
                 message = "Rent date can not to be before actual date.";
                 constraintValidatorContext.buildConstraintViolationWithTemplate(message).addConstraintViolation();
-                return isValid;
+                return false;
             }
 
             LocalDate returnDate = dateFormat.parse(rentDTO.getPlannedReturnDate()).toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
             if (returnDate.compareTo(now) < 0){
-                isValid = false;
                 constraintValidatorContext.disableDefaultConstraintViolation();
                 message = "Return date can not to be before actual date.";
                 constraintValidatorContext.buildConstraintViolationWithTemplate(message).addConstraintViolation();
-                return isValid;
+                return false;
             }
 
             if (returnDate.compareTo(rentDate) < 0){
-                isValid = false;
                 constraintValidatorContext.disableDefaultConstraintViolation();
                 message = "Return date can not to be before rent date.";
                 constraintValidatorContext.buildConstraintViolationWithTemplate(message).addConstraintViolation();
-                return isValid;
+                return false;
             }
 
-
-            isValid = true;
+            return true;
         }catch(ParseException e){
-            isValid = false;
-            return isValid;
+            return false;
         }
-        return isValid;
     }
 }

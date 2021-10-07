@@ -1,9 +1,10 @@
-package car_rental.api.utils;
+package car_rental.api.validators;
 
 import car_rental.api.userDetails.UserDetailsDTO;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -12,27 +13,25 @@ import java.time.ZoneId;
 import java.util.Calendar;
 import java.util.Date;
 
-public class BirthDateFormatValidator implements ConstraintValidator<DateFormat, UserDetailsDTO> {
+public class BirthDateFormatValidator implements ConstraintValidator<DateFormatChecker, UserDetailsDTO> {
 
     private String message;
 
     @Override
-    public void initialize(DateFormat constraintAnnotation) {
+    public void initialize(DateFormatChecker constraintAnnotation) {
             message = constraintAnnotation.message();
     }
 
     @Override
     public boolean isValid(UserDetailsDTO userDetailsDTO, ConstraintValidatorContext constraintValidatorContext) {
 
-        boolean isValid;
-        java.text.DateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
+        DateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
 
         if (userDetailsDTO.getBirthDate().isEmpty()) {
-            isValid = false;
             constraintValidatorContext.disableDefaultConstraintViolation();
             message = "Birth date can not be empty.";
             constraintValidatorContext.buildConstraintViolationWithTemplate(message).addConstraintViolation();
-            return isValid;
+            return false;
         }
 
 
@@ -41,26 +40,22 @@ public class BirthDateFormatValidator implements ConstraintValidator<DateFormat,
             Date birthDate = dateFormat.parse(userDetailsDTO.getBirthDate());
             Date now = Calendar.getInstance().getTime();
             if (!birthDate.before(now)){
-                isValid = false;
                 constraintValidatorContext.disableDefaultConstraintViolation();
                 message = "Birth date can not to be after actual date.";
                 constraintValidatorContext.buildConstraintViolationWithTemplate(message).addConstraintViolation();
-                return isValid;
+                return false;
             }
 
             LocalDate localBirthDate = birthDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
             if(Period.between(localBirthDate, LocalDate.now()).getYears() <18 ){
-                isValid = false;
                 constraintValidatorContext.disableDefaultConstraintViolation();
                 message = "You must be 18 years old.";
                 constraintValidatorContext.buildConstraintViolationWithTemplate(message).addConstraintViolation();
-                return isValid;
+                return false;
             }
-            isValid = true;
+            return true;
         }catch(ParseException e){
-            isValid = false;
-            return isValid;
+            return false;
         }
-        return isValid;
     }
 }

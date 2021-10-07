@@ -1,4 +1,4 @@
-package car_rental.api.utils;
+package car_rental.api.validators;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;

@@ -1,6 +1,8 @@
-package car_rental.api.user;
+package car_rental.api.configuration;
 
 import car_rental.api.car.CarRepository;
+import car_rental.api.user.CustomUserDetailsService;
+import car_rental.api.user.UserRepository;
 import car_rental.api.userDetails.UserDetailsRepository;
 import car_rental.api.promotionCode.PromotionCodeRepository;
 import car_rental.api.rents.RentRepository;
@@ -24,7 +26,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Autowired
-    private  CustomUserDetailsService customUserDetailsService;
+    private CustomUserDetailsService customUserDetailsService;
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception{

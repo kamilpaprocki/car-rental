@@ -1,4 +1,4 @@
-package car_rental.api.utils;
+package car_rental.api.validators;
 
 import javax.validation.Constraint;
 import javax.validation.Payload;
@@ -11,13 +11,12 @@ import static java.lang.annotation.ElementType.TYPE;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 
-
 @Target({TYPE, ANNOTATION_TYPE})
 @Retention(RUNTIME)
-@Constraint(validatedBy = {BirthDateFormatValidator.class, RentDateFormatValidator.class})
+@Constraint(validatedBy = {CarRentOdometerValidator.class})
 @Documented
-public @interface DateFormat {
-    String message() default "Wrong data format. Correct format: dd.MM.yyyy";
+public @interface CarRentOdometerChecker {
+    String message() default "Current car odometer cannot be less than last odometer.";
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};
 

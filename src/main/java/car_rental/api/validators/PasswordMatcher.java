@@ -1,4 +1,5 @@
-package car_rental.api.utils;
+package car_rental.api.validators;
+
 
 import javax.validation.Constraint;
 import javax.validation.Payload;
@@ -12,11 +13,10 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 @Target({TYPE, ANNOTATION_TYPE})
 @Retention(RUNTIME)
-@Constraint(validatedBy = EmailValidator.class)
+@Constraint(validatedBy = {PasswordMatchesValidator.class, ChangePasswordValidator.class})
 @Documented
-public @interface EmailMatcher {
-    String message() default "Email does not match";
+public @interface PasswordMatcher {
+    String message() default "Password does not match";
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};
-
 }

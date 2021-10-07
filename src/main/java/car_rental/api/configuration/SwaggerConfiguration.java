@@ -1,4 +1,4 @@
-package car_rental.api.utils;
+package car_rental.api.configuration;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -22,7 +22,6 @@ public class SwaggerConfiguration {
         return new Docket(DocumentationType.SWAGGER_2)
                 .select()
                 .apis(RequestHandlerSelectors.basePackage("car_rental"))
-                //.paths(PathSelectors.regex("/.*"))
                 .paths(any())
                 .build()
                 .apiInfo(apiInfo());

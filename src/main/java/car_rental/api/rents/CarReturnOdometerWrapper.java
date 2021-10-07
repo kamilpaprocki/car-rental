@@ -1,6 +1,6 @@
 package car_rental.api.rents;
 
-import car_rental.api.utils.CarRentOdometerChecker;
+import car_rental.api.validators.CarRentOdometerChecker;
 
 @CarRentOdometerChecker
 public class CarReturnOdometerWrapper {

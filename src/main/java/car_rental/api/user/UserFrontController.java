@@ -4,7 +4,7 @@ import car_rental.api.exceptions.UserAlreadyExistException;
 import car_rental.api.exceptions.UserNotFoundExceptions;
 import car_rental.api.exceptions.WrongArgumentException;
 import car_rental.api.userDetails.UserDetailsDTO;
-import car_rental.api.utils.ChangePasswordWrapper;
+import car_rental.api.validators.ChangePasswordWrapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
