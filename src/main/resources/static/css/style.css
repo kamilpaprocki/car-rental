@@ -1,0 +1,7 @@
+.socialcontact{
+    display: inline-block;
+}
+
+.social:hover {
+    border-radius: 10px;
+    background-color: darkgray;}
