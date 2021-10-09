@@ -1,11 +1,12 @@
 package car_rental.api.configuration;
 
 import car_rental.api.car.CarRepository;
+import car_rental.api.exceptions.CustomAuthenticationEntryPoint;
+import car_rental.api.promotionCode.PromotionCodeRepository;
+import car_rental.api.rents.RentRepository;
 import car_rental.api.user.CustomUserDetailsService;
 import car_rental.api.user.UserRepository;
 import car_rental.api.userDetails.UserDetailsRepository;
-import car_rental.api.promotionCode.PromotionCodeRepository;
-import car_rental.api.rents.RentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -40,8 +41,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         httpSecurity
                 .csrf().disable()
                 .authorizeRequests()
-                .antMatchers("**/api/**").authenticated()
-                .anyRequest().permitAll()
+                .antMatchers("/api/v1/**").authenticated()
                 .and()
                 .formLogin()
                 .loginPage("/login")
@@ -50,8 +50,9 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .permitAll()
                 .and()
                 .logout()
-                .logoutUrl("/logout");
-
+                .logoutUrl("/logout")
+               .and().exceptionHandling()
+               .authenticationEntryPoint(customAuthenticationEntryPoint);
     }
 
     @Bean
@@ -64,4 +65,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     public AuthenticationManager authenticationManagerBean() throws Exception {
         return super.authenticationManagerBean();
     }
+
+    @Autowired
+    public CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
+
 }
