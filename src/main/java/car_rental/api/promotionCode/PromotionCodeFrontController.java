@@ -41,7 +41,6 @@ private final static Logger logger = LoggerFactory.getLogger(PromotionCodeFrontC
             promotionCodeDTOList = promotionCodeService.getAllPromotionCodes();
             if (promotionCodeDTOList.isEmpty()){
                 logger.error("List of all promotion codes is empty");
-                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "There is no promotion codes");
             }
             logger.info("Return {} promotion codes.", promotionCodeDTOList.size());
             model.addAttribute("allPromotionCodes", promotionCodeDTOList);
@@ -51,7 +50,6 @@ private final static Logger logger = LoggerFactory.getLogger(PromotionCodeFrontC
             promotionCodeDTOList = promotionCodeService.getActivePromotionCodes();
             if (promotionCodeDTOList.isEmpty()){
                 logger.error("List of active promotion codes is empty");
-                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "There is no active promotion codes");
             }
             logger.info("Return {} active promotion codes.", promotionCodeDTOList.size());
             model.addAttribute("activePromotionCodes", promotionCodeDTOList);
@@ -61,7 +59,6 @@ private final static Logger logger = LoggerFactory.getLogger(PromotionCodeFrontC
             promotionCodeDTOList = promotionCodeService.getInactivePromotionCodes();
             if (promotionCodeDTOList.isEmpty()){
                 logger.error("List of inactive promotion codes is empty");
-                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "There is no inactive promotion codes");
             }
             logger.info("Return {} inactive promotion codes.", promotionCodeDTOList.size());
             model.addAttribute("inactivePromotionCodes", promotionCodeService.getInactivePromotionCodes());
@@ -93,13 +90,13 @@ private final static Logger logger = LoggerFactory.getLogger(PromotionCodeFrontC
             model.addAttribute("promotionCode", promotionCodeDTO);
 
         }
-        return "promotioncodes";
+        return "promotionCode/promotioncodes";
     }
 
     @GetMapping("/generate/promotioncode")
     @PreAuthorize("hasAnyRole('WORKER', 'ADMIN')")
     public String getPromotionCodePage(@ModelAttribute("generatedPromotionCode") String generatedPromotionCode){
-        return "generate-promotioncode";
+        return "promotionCode/generate-promotioncode";
     }
 
     @PostMapping("/generate/promotioncode")
@@ -120,13 +117,13 @@ private final static Logger logger = LoggerFactory.getLogger(PromotionCodeFrontC
     @GetMapping("/promotioncodes")
     @PreAuthorize("hasAnyRole('USER', 'WORKER', 'ADMIN')")
     public String getPromotionCodesPage(){
-        return "get-promotion-code";
+        return "promotionCode/get-promotion-code";
     }
 
     @GetMapping("/delete/delete-promotion-code")
     @PreAuthorize("hasRole('ADMIN')")
     public String getDeletePromotionCode(){
-        return "delete-promotion-code";
+        return "promotionCode/delete-promotion-code";
     }
 
     @GetMapping("/delete/promotioncode")

@@ -1,6 +1,6 @@
 package car_rental.api.user;
 
-import car_rental.api.utils.PasswordMatcher;
+import car_rental.api.validators.PasswordMatcher;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.validation.constraints.Email;

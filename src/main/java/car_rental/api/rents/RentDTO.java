@@ -3,12 +3,12 @@ package car_rental.api.rents;
 import car_rental.api.car.CarDTO;
 import car_rental.api.promotionCode.PromotionCodeDTO;
 import car_rental.api.user.UserAppDTO;
-import car_rental.api.utils.DateFormat;
+import car_rental.api.validators.DateFormatChecker;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.validation.Valid;
 
-@DateFormat
+@DateFormatChecker
 public class RentDTO {
 
     @JsonProperty(value = "id")

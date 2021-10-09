@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org">
+<head th:replace="headers::head"></head>
+
+<body>
+<div th:replace="navigation :: nav"></div>
+
+<div class = "container-sm">
+    <div class ="row">
+        <div class="col-sm-10 mt-5">
+
+            <form method="post" th:action="@{/update/extend/rent}" th:object="${activeRentDTO}" name="form">
+
+                <div class = "container-fluid" >
+                    <div class = "model-container">
+                        <div class="mb-2 row col-sm-6">
+                            <label class="col-sm-6 col-form-label fw-bold" >Rent date: </label>
+                            <div readonly="" class="alert alert-primary" role="alert" th:text="${activeRentDTO.rentDate}" th:if="${activeRentDTO.rentDate}"></div>
+                        </div>
+
+                    </div>
+
+                    <div class = "model-container">
+                        <div class="mb-2 row col-sm-6">
+                            <label class="col-sm-6 col-form-label fw-bold" >Currently planned return date: </label>
+                            <div class="alert alert-primary" role="alert" th:text="${activeRentDTO.plannedReturnDate}" th:if="${activeRentDTO.plannedReturnDate}"></div>
+                        </div>
+
+                    </div>
+
+                    <div class = "model-container">
+                        <div class="mb-2 row col-sm-6">
+                            <label class="col-sm-6 col-form-label fw-bold" >Rental cost [PLN]: </label>
+                            <div class="alert alert-warning" role="alert" th:text="${activeRentDTO.rentalCost}" th:if="${activeRentDTO.rentalCost}"></div>
+                        </div>
+
+                    </div>
+
+                    <div class = "model-container" >
+                        <div class="mb-2 row col-sm-6">
+                            <label class="col-sm-6 col-form-label fw-bold" >Rental cost: </label>
+                            <div class="alert alert-secondary" role="alert" id = "replace_div" th:text="${activeRentDTO.rentalCost}" ></div>
+                        </div>
+
+                    </div>
+
+                    <div class="mb-2 row  col-sm-6" style = "display:none">
+                        <label class="col-sm-6 col-form-label fw-bold" >Currency: </label>
+                        <div class="col-sm-6">
+                            <select name="currency" id = "selection">
+                                <option th:value="${activeRentDTO.currency}"></option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="mb-2 row  col-sm-6">
+                        <button style="margin-left: auto; margin-right: auto" type="submit" class="col-sm-2 btn btn-info fst-italic">Extend</button>
+
+                    </div>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+
+<script type = "text/javascript">
+    const inputValue = [[${activeRentDTO.rentalCost}]];
+
+</script>
+
+<script type="text/javascript" th:src="@{/js/getRentalCost.js}" th:inline="javascript"></script>
+</body>
+<footer th:replace="footers::footer"></footer>
+</html>

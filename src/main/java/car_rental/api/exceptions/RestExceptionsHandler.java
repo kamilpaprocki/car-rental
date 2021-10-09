@@ -3,6 +3,7 @@ package car_rental.api.exceptions;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
@@ -23,6 +24,17 @@ public class RestExceptionsHandler extends ResponseEntityExceptionHandler {
                 .timestamp(new Date().toString())
                 .build();
         return handleExceptionInternal(e, body, new HttpHeaders(), HttpStatus.NOT_FOUND, request);
+    }
+
+    @ExceptionHandler(AuthenticationException.class)
+    public ResponseEntity<Object> handleAuthenticationException(AuthenticationException e, WebRequest request){
+        ExceptionBody body = ExceptionBody.builder()
+                .message(e.getMessage())
+                .status(401)
+                .path(request.getDescription(true))
+                .timestamp(new Date().toString())
+                .build();
+        return handleExceptionInternal(e, body, new HttpHeaders(), HttpStatus.UNAUTHORIZED, request);
     }
 
     @ExceptionHandler(value = BadRequestException.class)

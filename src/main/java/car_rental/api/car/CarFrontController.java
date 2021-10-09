@@ -56,7 +56,6 @@ private static final Logger logger = LoggerFactory.getLogger(CarFrontController.
             carDTOS = carService.getAllCars();
             if (carDTOS.isEmpty()){
                 logger.error("List of cars is empty.");
-                throw new ResponseStatusException(HttpStatus.NOT_FOUND,"There is no car");
             }
             logger.info("Return {} cars.", carDTOS.size());
             model.addAttribute("allCars", carDTOS);
@@ -65,7 +64,6 @@ private static final Logger logger = LoggerFactory.getLogger(CarFrontController.
             carDTOS = carService.getAvailableCar();
             if (carDTOS.isEmpty()){
                 logger.error("List of available cars is empty.");
-                throw new ResponseStatusException(HttpStatus.NOT_FOUND,"There is no available cars");
             }
             logger.info("Return {} available cars.", carDTOS.size());
             model.addAttribute("availableCars", carDTOS);
@@ -74,19 +72,18 @@ private static final Logger logger = LoggerFactory.getLogger(CarFrontController.
             carDTOS = carService.getUnavailableCars();
             if (carDTOS.isEmpty()){
                 logger.error("List of unavailable cars is empty.");
-                throw new ResponseStatusException(HttpStatus.NOT_FOUND,"There is no unavailable cars");
             }
             logger.info("Return {} unavailable cars.", carDTOS.size());
             model.addAttribute("unavailableCars", carDTOS);
         }
-        return "cars";
+        return "car/cars";
     }
 
     @GetMapping("/add/car")
     @PreAuthorize("hasAnyRole('WORKER', 'ADMIN')")
     public String getAddCarPage(Model model){
        model.addAttribute("car", new CarDTO());
-        return "add-form-car";
+        return "car/add-form-car";
     }
 
     @PostMapping("/add/car")
@@ -96,7 +93,7 @@ private static final Logger logger = LoggerFactory.getLogger(CarFrontController.
             for (ObjectError error :bindingResult.getAllErrors()) {
                 logger.error(error.getDefaultMessage());
             }
-            return "add-form-car";
+            return "car/add-form-car";
         }
         logger.info("Create new car.");
         carService.createOrUpdateCar(carDTO);
@@ -106,7 +103,7 @@ private static final Logger logger = LoggerFactory.getLogger(CarFrontController.
     @GetMapping("/update/edit-car")
     @PreAuthorize("hasAnyRole('WORKER', 'ADMIN')")
     public String getUpdateCar(){
-        return "update-car";
+        return "car/update-car";
     }
 
     @GetMapping("/update/car")
@@ -125,7 +122,7 @@ private static final Logger logger = LoggerFactory.getLogger(CarFrontController.
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "There is no car with id: " + carId);
         }
         model.addAttribute("updateCar", carDTO);
-        return "update-form-car";
+        return "car/update-form-car";
     }
 
     @PostMapping("/update/car")
@@ -135,7 +132,7 @@ private static final Logger logger = LoggerFactory.getLogger(CarFrontController.
             for (ObjectError error :bindingResult.getAllErrors()) {
                 logger.error(error.getDefaultMessage());
             }
-            return "update-form-car";
+            return "car/update-form-car";
         }
         logger.info("Update car with id {}.", carDTO.getId());
         carService.createOrUpdateCar(carDTO);
@@ -145,13 +142,13 @@ private static final Logger logger = LoggerFactory.getLogger(CarFrontController.
     @GetMapping("/cars")
     @PreAuthorize("hasAnyRole('USER', 'WORKER', 'ADMIN')")
     public String getCarsPage(){
-        return "get-car";
+        return "car/get-car";
     }
 
     @GetMapping("/delete/delete-car")
     @PreAuthorize("hasRole('ADMIN')")
     public String getDeleteCar(){
-        return "delete-car";
+        return "car/delete-car";
     }
 
     @GetMapping("/delete/car")

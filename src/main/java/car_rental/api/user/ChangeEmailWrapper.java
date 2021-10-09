@@ -1,6 +1,6 @@
 package car_rental.api.user;
 
-import car_rental.api.utils.EmailMatcher;
+import car_rental.api.validators.EmailMatcher;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;

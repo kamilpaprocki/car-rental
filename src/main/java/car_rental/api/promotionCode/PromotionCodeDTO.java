@@ -1,6 +1,6 @@
 package car_rental.api.promotionCode;
 
-import car_rental.api.utils.PromotionCodeChecker;
+import car_rental.api.validators.PromotionCodeChecker;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.validation.constraints.NotEmpty;

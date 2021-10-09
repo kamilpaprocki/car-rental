@@ -1,13 +1,13 @@
 package car_rental.api.userDetails;
 
-import car_rental.api.utils.DateFormat;
+import car_rental.api.validators.DateFormatChecker;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Pattern;
 
-@DateFormat
+@DateFormatChecker
 public class UserDetailsDTO {
 
     @JsonProperty(value = "id")
