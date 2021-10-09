@@ -1,4 +1,4 @@
-package car_rental.api.exceptions;
+package car_rental.api.configuration;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;

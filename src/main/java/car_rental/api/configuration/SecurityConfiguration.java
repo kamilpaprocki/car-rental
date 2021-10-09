@@ -1,7 +1,6 @@
 package car_rental.api.configuration;
 
 import car_rental.api.car.CarRepository;
-import car_rental.api.exceptions.CustomAuthenticationEntryPoint;
 import car_rental.api.promotionCode.PromotionCodeRepository;
 import car_rental.api.rents.RentRepository;
 import car_rental.api.user.CustomUserDetailsService;
