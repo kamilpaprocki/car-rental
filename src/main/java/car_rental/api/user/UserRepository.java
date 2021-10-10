@@ -18,7 +18,7 @@ public interface UserRepository extends JpaRepository<UserApp, Long> {
     @Query(value = "SELECT u FROM UserApp u WHERE u.isActive = true")
     Optional<List<UserApp>> getActiveUsers();
 
-   @Query(value = "SELECT u FROM UserApp u WHERE u.isActive = false")
+    @Query(value = "SELECT u FROM UserApp u WHERE u.isActive = false")
     Optional<List<UserApp>> getInactiveUsers();
 
     @Query(value = "SELECT u FROM UserApp u WHERE u.id = :id")
