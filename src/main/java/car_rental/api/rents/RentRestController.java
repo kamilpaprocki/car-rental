@@ -3,7 +3,6 @@ package car_rental.api.rents;
 import car_rental.api.exceptions.BadRequestException;
 import car_rental.api.exceptions.PromotionCodeNotFoundException;
 import car_rental.api.exceptions.RentNotFoundException;
-import car_rental.api.exceptions.WrongArgumentException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -91,39 +90,24 @@ public class RentRestController {
     @PutMapping("/rents/extend")
     @PreAuthorize("hasAnyRole('USER', 'WORKER', 'ADMIN')")
     public ResponseEntity<RentDTO> extendPlannedRentDays(@RequestParam Long id, @RequestParam int days){
-        try{
             logger.info("Extend rent with id {} by {} days.", id, days);
             return new ResponseEntity<>(rentService.extendPlannedRentDays(id,days), HttpStatus.OK);
-        }catch(WrongArgumentException e){
-            logger.error(e.getMessage());
-            throw new RentNotFoundException(e.getMessage());
-        }
     }
 
     @PutMapping("/rents/update")
     @PreAuthorize("hasAnyRole('USER', 'WORKER', 'ADMIN')")
     public ResponseEntity<RentDTO> updatePlannedRentDate(@RequestParam Long id, @RequestParam String returndate){
-        try{
             logger.info("Extend rent with id {} to date {}.", id, returndate);
             return new ResponseEntity<>(rentService.updatePlannedReturnDate(id, returndate), HttpStatus.OK);
-        }catch(WrongArgumentException e){
-            logger.error(e.getMessage());
-            throw new RentNotFoundException(e.getMessage());
-        }
     }
 
     @DeleteMapping("/rents/delete")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Rent> deleteRentById(@RequestParam Long id){
-       try{
            if (rentService.deleteRentById(id) > 0){
                logger.info("Delete rent with id {}.", id);
                return new ResponseEntity<>(HttpStatus.OK);
            }
-       }catch (WrongArgumentException e){
-           logger.error(e.getMessage());
-           return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-       }
         logger.info("Rent with id {} do not exist.", id);
         return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
     }

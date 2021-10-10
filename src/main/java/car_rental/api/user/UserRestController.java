@@ -3,7 +3,6 @@ package car_rental.api.user;
 import car_rental.api.exceptions.BadRequestException;
 import car_rental.api.exceptions.UserAlreadyExistException;
 import car_rental.api.exceptions.UserNotFoundExceptions;
-import car_rental.api.exceptions.WrongArgumentException;
 import car_rental.api.userDetails.UserDetailsDTO;
 import car_rental.api.validators.ChangePasswordWrapper;
 import org.slf4j.Logger;
@@ -99,7 +98,7 @@ public class UserRestController {
            UserAppDTO userAppDTO = customUserDetailsService.setRoles(userid, roles);
            logger.info("Set {} roles to user with id {}.", roles.length, userid);
             return new ResponseEntity<>(userAppDTO, HttpStatus.OK);
-        }catch (WrongArgumentException | UsernameNotFoundException e){
+        }catch (UsernameNotFoundException e){
             logger.error(e.getMessage());
             throw new BadRequestException(e.getMessage());
         }
@@ -184,15 +183,10 @@ public class UserRestController {
     @DeleteMapping("/user/delete")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<UserApp> deleteUserById(@RequestParam Long userid){
-        try{
             if (customUserDetailsService.deleteUserById(userid) > 0){
                 logger.info("Delete user with id {}. ", userid);
                 return new ResponseEntity<>(HttpStatus.OK);
             }
-        }catch (WrongArgumentException e){
-            logger.error(e.getMessage());
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
         logger.info("User with id {} not exist.", userid);
         return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
     }

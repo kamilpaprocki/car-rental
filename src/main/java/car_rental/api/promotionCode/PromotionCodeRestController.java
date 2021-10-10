@@ -28,13 +28,8 @@ public class PromotionCodeRestController {
     @PostMapping("/promotioncodes")
     @PreAuthorize("hasAnyRole('WORKER', 'ADMIN')")
     public ResponseEntity<PromotionCodeDTO> createPromotionCode(@RequestParam BigDecimal discount, @RequestParam int activeDays, @RequestParam boolean isMultipleUse){
-        try{
             logger.info("Generate new promotion code with {} discount, with {} active days and is multiple use {}.", discount, activeDays, isMultipleUse);
             return new ResponseEntity<>(promotionCodeService.getGeneratedPromotionCode(promotionCodeService.createPromotionCode(discount, activeDays, isMultipleUse)), HttpStatus.CREATED);
-        }catch(WrongArgumentException e){
-            logger.error(e.getMessage());
-            throw new BadRequestException(e.getMessage());
-        }
     }
 
     @GetMapping("/promotioncodes/")
@@ -112,16 +107,10 @@ public class PromotionCodeRestController {
     @DeleteMapping("/promotioncodes/delete")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<PromotionCode> deletePromotionCodeById(@RequestParam Long id){
-        try{
             if (promotionCodeService.deletePromotionCodeById(id) > 0){
                 logger.info("Delete promotion code with id {}.", id);
                 return new ResponseEntity<>(HttpStatus.OK);
             }
-        }catch (WrongArgumentException e){
-            logger.error(e.getMessage());
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-
         logger.info("Promotion code with id {} not exists.", id);
         return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
     }

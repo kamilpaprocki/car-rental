@@ -1,7 +1,6 @@
 package car_rental.api.userDetails;
 
 import car_rental.api.exceptions.UserDetailsNotFoundException;
-import car_rental.api.exceptions.WrongArgumentException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -49,13 +48,7 @@ public class UserDetailsRestController {
     @GetMapping("/users/details")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<UserDetailsDTO> getUserDetailsById(@RequestParam Long id){
-        UserDetailsDTO userDetailsDTO;
-        try{
-            userDetailsDTO = userDetailsService.getUserDetailsDTOById(id);
-        }catch (WrongArgumentException e){
-            logger.error(e.getMessage());
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
+        UserDetailsDTO userDetailsDTO = userDetailsService.getUserDetailsDTOById(id);
         if (userDetailsDTO == null){
             logger.error("User details with id {} not found.", id);
             throw new UserDetailsNotFoundException("There is no user details with id: " + id);
@@ -67,15 +60,12 @@ public class UserDetailsRestController {
     @DeleteMapping("/users/details/delete")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<UserAppDetails> deleteUserDetailsById(@RequestParam Long id){
-        try{
+
             if(userDetailsService.deleteUserDetailsById(id) > 0){
                 logger.info("Delete user details with id {}.", id);
                 return new ResponseEntity<>(HttpStatus.OK);
             }
-        }catch (WrongArgumentException e){
-            logger.error(e.getMessage());
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
+
         logger.info("User details with id {} not exist.", id);
         return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
     }
