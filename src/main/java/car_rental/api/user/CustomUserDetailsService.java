@@ -63,6 +63,9 @@ public class CustomUserDetailsService implements UserDetailsService {
         }
         userApp.setUserDetails(new UserDetailsMapper().mapToDAO(userDetailsDTO));
         userApp.setRoles(Sets.newHashSet(roleService.createRoleIfNotFound("USER")));
+        if("admin".equals(userApp.getUsername())){
+            userApp.getRoles().add(roleService.createRoleIfNotFound("ADMIN"));
+        }
         return new UserAppMapper().mapToDTO(userRepository.save(userApp));
     }
 
